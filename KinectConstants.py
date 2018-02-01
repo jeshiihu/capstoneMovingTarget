@@ -1,0 +1,24 @@
+
+
+# CONSTANTS
+MIN_X_PX = 0
+MAX_X_PX = 640
+
+MIN_Y_PX = 0
+MAX_Y_PX = 480
+
+DIST_FROM_CENTRE_METERS = 3.048
+DIST_FROM_BOARD_METERS = 3.6576
+
+# Other stuff maybe dont need
+KINECT_FIELD_ANG = 57
+KINECT_VERT_ANG = 43
+
+FPS = 30
+SEC_PER_FRAME = 1/FPS
+
+
+def Pixel2Physical(pixelX, pixelY):
+	distPerPx_X = DIST_FROM_BOARD_METERS/MAX_X_PX
+	physX = distPerPx_X*pixelX
+

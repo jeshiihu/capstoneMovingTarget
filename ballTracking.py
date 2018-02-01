@@ -3,14 +3,15 @@ import freenect
 import cv2
 import numpy as np
 import threading
-import csv
 import os.path
+import csv
  
-prev = 0;
-framecount = 0;
+prev = 0
+framecount = 0
 
 # https://naman5.wordpress.com/2014/06/24/experimenting-with-kinect-using-opencv-python-and-open-kinect-libfreenect/
 #function to get RGB image from kinect
+# https://pastebin.com/WVhfmphS
 def get_video():
     array,_ = freenect.sync_get_video()
     array = cv2.cvtColor(array,cv2.COLOR_RGB2BGR)
@@ -24,12 +25,22 @@ def get_depth():
 
 fieldnames = ['frame', 'x', 'y', 'predicted']
 
+# MIGHT NEED TO CONVERT TO RAD
+def GetMaxX(initVel, tmax, angle):
+    return initVal*tmx*np.cos(angle)
+
 def CalculatePredicted(x1, x2, y1, y2, t):
-    velocityX = (x2-x1)/t
-    velocityY = (y2-y1)/t
-    angle = np.arctan((y2-y1)/(x2-x1))
+    (physX1, physY1) = Pixel2Physical(x1, y1)
+    (physX2, physY2) = Pixel2Physical(x2, y2)
+
+    velocityX = (physX2-physX1)/t
+    velocityY = (physY2-physY1)/t
+
+    angle = np.arctan((physY2-physY1)/(physX2-physX1))
     velocity = np.sqrt(np.square(velocityX)+np.square(velocityY))
-    time = 3.7
+
+    xMax = GetMaxX(velocity, tmax, angle)
+    time = SEC_PER_FRAME
 
 
 def CalculateVelocity(frmCount, x, y):
@@ -48,15 +59,13 @@ def DetectHSV():
         #get a frame from depth sensor
         # depth = get_depth()
         #display RGB image
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        cv2.imshow("HSV", hsv)
 
         # define the lower and upper boundaries of the colors in the HSV color space
-        lower = {'yellow':(23, 59, 119)} #assign new item lower['blue'] = (93, 10, 0)
-        upper = {'yellow':(54,255,255)}
+        lower = {'red':(166, 84, 141), 'green':(66, 122, 129), 'blue':(97, 100, 117), 'yellow':(23, 59, 119), 'orange':(0, 50, 80)} #assign new item lower['blue'] = (93, 10, 0)
+        upper = {'red':(186,255,255), 'green':(86,255,255), 'blue':(117,255,255), 'yellow':(54,255,255), 'orange':(20,255,255)}
          
         # define standard colors for circle around the object
-        colors = {'yellow':(0, 255, 217)}
+        colors = {'red':(0,0,255), 'green':(0,255,0), 'blue':(255,0,0), 'yellow':(0, 255, 217), 'orange':(0,140,255)}
 
         blurred = cv2.GaussianBlur(frame, (11, 11), 0)
         hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
@@ -97,10 +106,10 @@ def DetectHSV():
             CalculateVelocity(framecount,x, y)
      
         # show the frame to our screen
-        cv2.imshow("Frame", frame)
         # cv2.imshow("Depth", depth)
         height, width = frame.shape[:2]
         cv2.putText(frame, 'height: ' + str(height) + ", width: " + str(width), (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6,colors['yellow'],2)
+        cv2.imshow("Frame", frame)
 
 
 def printit():
