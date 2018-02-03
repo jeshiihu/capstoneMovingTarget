@@ -20,8 +20,8 @@ fps = 0
 #function to get RGB image from kinect
 # https://pastebin.com/WVhfmphS
 def getVideoFrame():
-    return freenect.sync_get_video()[0]
-##    return frame_convert2.video_cv(freenect.sync_get_video()[0])
+##    return freenect.sync_get_video()[0]
+    return frame_convert2.video_cv(freenect.sync_get_video()[0])
 
 def getDepthVideoFrame():
     return frame_convert2.pretty_depth_cv(freenect.sync_get_depth(0, freenect.DEPTH_10BIT)[0])
@@ -122,25 +122,28 @@ def DetectHSV():
     cv2.imshow("Frame", frame)
     
 def trackObject():
-    print "In Track Object"
+    print("In Track Object")
     global frames
     frames = frames + 1
-    print "Upped Framecount"
+    print("Upped Framecount")
     frame = getVideoFrame()
-    print "Got Frame"
+    print("Got Frame")
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    print "Got HSV"
+    print("Got HSV")
     lower = np.array([0, 0, 0])
-    upper = np.array([255,255,255])
+    upper = np.array([255, 255, 255])
     
     mask = cv2.inRange(hsv, lower, upper)
-    print "Got Mask"
+    print("Got Mask")
     
     res = cv2.bitwise_and(frame, frame, mask= mask)
     
-    cv2.putText(res, 'fps: ' + str(fps), (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6,(0, 255, 217),2)
-    cv2.imshow("Mask", res)
-    print "Print Frame"
+    colors = {'yellow':(0, 255, 217)}
+    
+    cv2.putText(res, 'fps: ' + str(fps), (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6,colors['yellow'], 2)
+    cv2.imshow("Res", res)
+##    cv2.imwrite("ballimage.jpg", res)
+    print("Print Frame")
     
         
 def getDepthVideo():
@@ -150,7 +153,7 @@ def getDepthVideo():
     cv2.imshow("Depth", frame)
     
 def getVideo():
-    frame = get_video()
+    frame = getVideoFrame()
     global frames
     frames = frames + 1
     cv2.imshow("Video", frame)
@@ -168,7 +171,7 @@ if __name__ == "__main__":
 ##            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 ##            writer.writeheader()
             
-    
+##    trackObject()
             
 
     while 1:
@@ -176,7 +179,7 @@ if __name__ == "__main__":
         # cv2.imshow("Frame", frame)
 
 ##        DetectHSV()
-##        showVideo()
+##        getVideo()
 ##        showDepthVideo()
         trackObject()
         
