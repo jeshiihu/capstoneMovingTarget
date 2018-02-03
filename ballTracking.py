@@ -7,25 +7,27 @@ import os.path
 import csv
 import frame_convert2
  
-prev = 0
-framecount = 0
 
-cv2.namedWindow('Depth')
-cv2.namedWindow('Video')
+frames = 0
+prevFrames = 0
+fps = 0
+
+
+##cv2.namedWindow('Depth')
+##cv2.namedWindow('Video')
 
 # https://naman5.wordpress.com/2014/06/24/experimenting-with-kinect-using-opencv-python-and-open-kinect-libfreenect/
 #function to get RGB image from kinect
 # https://pastebin.com/WVhfmphS
-def get_video():
-    array,_ = freenect.sync_get_video()
-##    array = cv2.cvtColor(array,cv2.COLOR_RGB2BGR)
-    return array
+def getVideoFrame():
+    return freenect.sync_get_video()[0]
+##    return frame_convert2.video_cv(freenect.sync_get_video()[0])
 
-def get_depth_video():
-    return frame_convert2.pretty_depth_cv(freenect.sync_get_depth())
+def getDepthVideoFrame():
+    return frame_convert2.pretty_depth_cv(freenect.sync_get_depth(0, freenect.DEPTH_10BIT)[0])
  
 #function to get depth image from kinect
-def get_depth():
+def getDepthFrame():
     array,_ = freenect.sync_get_depth()
     array = array.astype(np.uint8)
     return array
@@ -61,8 +63,8 @@ def DetectHSV():
     #get a frame from RGB camera
     frame = get_video()
 ##  frame = get_depth()
-    global framecount
-    framecount = framecount + 1
+    global frames
+    frames = frames + 1
 
     #get a frame from depth sensor
     # depth = get_depth()
@@ -111,41 +113,60 @@ def DetectHSV():
             cv2.putText(frame,'yellow' + " ball", (int(x-radius),int(y-radius)), cv2.FONT_HERSHEY_SIMPLEX, 0.6,colors['yellow'],2)
         
         cv2.putText(frame, 'x: ' + str(x) + ", y: " + str(y), (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.6,colors['yellow'],2)
-        CalculateVelocity(framecount,x, y)
+        CalculateVelocity(frames,x, y)
  
     # show the frame to our screen
     # cv2.imshow("Depth", depth)
     height, width = frame.shape[:2]
-    cv2.putText(frame, 'height: ' + str(height) + ", width: " + str(width), (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6,colors['yellow'],2)
+    cv2.putText(frame, 'height: ' + str(height) + ", width: " + str(width), (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['yellow'],2)
     cv2.imshow("Frame", frame)
+    
+def trackObject():
+    print "In Track Object"
+    global frames
+    frames = frames + 1
+    print "Upped Framecount"
+    frame = getVideoFrame()
+    print "Got Frame"
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    print "Got HSV"
+    lower = np.array([0, 0, 0])
+    upper = np.array([255,255,255])
+    
+    mask = cv2.inRange(hsv, lower, upper)
+    print "Got Mask"
+    
+    res = cv2.bitwise_and(frame, frame, mask= mask)
+    
+    cv2.putText(res, 'fps: ' + str(fps), (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6,(0, 255, 217),2)
+    cv2.imshow("Mask", res)
+    print "Print Frame"
+    
         
-def showDepthVideo():
+def getDepthVideo():
     frame = get_depth_video()
-    global framecount
-    framecount = framecount + 1
+    global frames
+    frames = frames + 1
     cv2.imshow("Depth", frame)
     
-def showVideo():
+def getVideo():
     frame = get_video()
-    global framecount
-    framecount = framecount + 1
+    global frames
+    frames = frames + 1
     cv2.imshow("Video", frame)
-
-
 
 def printit():
     threading.Timer(1.0, printit).start()
-    global prev
-    print str(framecount - prev) + " frames/sec"
-    prev = framecount
+    global fps, prevFrames
+    fps = frames - prevFrames
+    prevFrames = frames
 
 if __name__ == "__main__":
-    
 ##    printit()
-    if not os.path.isfile('./trajectory.csv'):
-        with open('trajectory.csv', "w+") as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            writer.writeheader()
+##    if not os.path.isfile('./trajectory.csv'):
+##        with open('trajectory.csv', "w+") as csvfile:
+##            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+##            writer.writeheader()
             
     
             
@@ -155,10 +176,12 @@ if __name__ == "__main__":
         # cv2.imshow("Frame", frame)
 
 ##        DetectHSV()
-        showVideo()
-        showDepthVideo()
+##        showVideo()
+##        showDepthVideo()
+        trackObject()
+        
         
         # quit program when 'esc' key is pressed
-        if cv2.waitKey(10) == 27:
+        if (cv2.waitKey(5) & 0xFF) == 27:
             break
     cv2.destroyAllWindows()
