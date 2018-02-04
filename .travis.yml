@@ -4,4 +4,4 @@ python:
   
 # command to run tests
 script:
-  - run pyUnit.py
+  - python pyUnit.py
