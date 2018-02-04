@@ -2,19 +2,23 @@ import unittest
 
 class TestProjectileCalculation(unittest.TestCase):
     
-    def test_upper(self):
-        self.assertEqual('foo'.upper(), 'FOO')
+    def test_convertx2physical(self):
+        self.fail("Test not implemented")
     
-    def test_isupper(self):
-        self.assertTrue('FOO'.isupper())
-        self.assertFalse('Foo'.isupper())
+    def test_converty2physical(self):
+        self.fail("Test not implemented")
     
-    def test_split(self):
-        s = 'hello world'
-        self.assertEqual(s.split(), ['hello', 'world'])
-        # check that s.split fails when the separator is not a string
-        with self.assertRaises(TypeError):
-            s.split(2)
+    def test_calculateProjectileAngle(self):
+        self.fail("Test not implemented")
+
+    def test_calculateInitialVelocity(self):
+        self.fail("Test not implemented")
+
+    def test_calculatePredictedX(self):
+        self.fail("Test not implemented")
+
+    def test_calculatePredictedY(self):
+        self.fail("Test not implemented")
 
 if __name__ == '__main__':
     unittest.main()
