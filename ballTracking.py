@@ -13,15 +13,11 @@ prevFrames = 0
 fps = 0
 
 
-##cv2.namedWindow('Depth')
-##cv2.namedWindow('Video')
-
 # https://naman5.wordpress.com/2014/06/24/experimenting-with-kinect-using-opencv-python-and-open-kinect-libfreenect/
 #function to get RGB image from kinect
 # https://pastebin.com/WVhfmphS
 def getVideoFrame():
     return freenect.sync_get_video()[0]
-##    return frame_convert2.video_cv(freenect.sync_get_video()[0])
 
 def getDepthVideoFrame():
     return frame_convert2.pretty_depth_cv(freenect.sync_get_depth(0, freenect.DEPTH_11BIT)[0])
@@ -55,19 +51,15 @@ def CalculatePredicted(x1, x2, y1, y2, t):
 def CalculateVelocity(frmCount, x, y):
     with open('trajectory.csv', "a+") as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-
-        # pred = CalculatePredicted();
         writer.writerow({'frame': frmCount,'x': x, 'y': y, 'predicted': 0})
 
 def DetectHSV():
     #get a frame from RGB camera
     frame = get_video()
-##  frame = get_depth()
     global frames
     frames = frames + 1
 
     #get a frame from depth sensor
-    # depth = get_depth()
     #display RGB image
 
     # define the lower and upper boundaries of the colors in the HSV color space
@@ -81,7 +73,6 @@ def DetectHSV():
     hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
 
     #for each color in dictionary check object in frame
-    # for key, value in upper.items():
     # construct a mask for the color from dictionary`1, then perform
     # a series of dilations and erosions to remove any small
     # blobs left in the mask
@@ -116,7 +107,6 @@ def DetectHSV():
         CalculateVelocity(frames,x, y)
  
     # show the frame to our screen
-    # cv2.imshow("Depth", depth)
     height, width = frame.shape[:2]
     cv2.putText(frame, 'height: ' + str(height) + ", width: " + str(width), (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['yellow'],2)
     cv2.imshow("Frame", frame)
@@ -134,7 +124,7 @@ def trackObject():
     
     lower = np.array([50, 100, 0])
     upper = np.array([100, 255, 255])
-##    
+
     mask = cv2.inRange(hsv, lower, upper)
     mask = cv2.erode(mask, None, iterations = 4)
     mask = cv2.dilate(mask, None, iterations = 2)
@@ -153,16 +143,11 @@ def trackObject():
         
         cv2.circle(frame, (int(x), int(y)), int(radius), (0,255,255), 2)
     
-##    res = cv2.bitwise_and(frame, frame, mask= mask)
-    
     colors = {'yellow':(0, 255, 217)}
     
-    
-##    cv2.putText(frame, 'fps: ' + str(fps), (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6,colors['yellow'], 2)
     cv2.putText(frame, 'Depth: ' + str(depth[0][int(y)][int(x)]), (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6,colors['yellow'], 2)
     cv2.imshow("Video", frame)
     
-##    cv2.imwrite("ballimage.jpg", res)
     print("Print Frame")
     
         
@@ -185,25 +170,9 @@ def printit():
     prevFrames = frames
 
 if __name__ == "__main__":
-##    printit()
-##    if not os.path.isfile('./trajectory.csv'):
-##        with open('trajectory.csv', "w+") as csvfile:
-##            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-##            writer.writeheader()
-            
-##    trackObject()
-            
 
     while 1:
-        # frame = get_video()
-        # cv2.imshow("Frame", frame)
-
-##        DetectHSV()
-##        getVideo()
-##        showDepthVideo()
         trackObject()
-        
-        
         # quit program when 'esc' key is pressed
         if (cv2.waitKey(5) & 0xFF) == 27:
             break

@@ -33,7 +33,6 @@ def DetectHSV():
         depth = get_depth()
         #display RGB image
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        # cv2.imshow("HSV", hsv)
 
         # define the lower and upper boundaries of the colors in the HSV color space
         lower = {'red':(166, 84, 141), 'green':(66, 122, 129), 'blue':(97, 100, 117), 'yellow':(23, 59, 119)} #assign new item lower['blue'] = (93, 10, 0)
@@ -97,8 +96,6 @@ def printit():
 if __name__ == "__main__":
     #printit()
     while 1:
-        # frame = get_video()
-        # cv2.imshow("Frame", frame)
 
         DetectHSV()
         
