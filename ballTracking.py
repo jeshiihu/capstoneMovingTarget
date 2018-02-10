@@ -6,11 +6,14 @@ import threading
 import os.path
 import csv
 import frame_convert2
+import KinectFrameThread
  
 
 frames = 0
 prevFrames = 0
 fps = 0
+
+kinect = KinectFrameThread()
 
 
 ##cv2.namedWindow('Depth')
@@ -28,9 +31,7 @@ def getDepthVideoFrame():
  
 #function to get depth image from kinect
 def getDepthFrame():
-    array,_ = freenect.sync_get_depth()
-    array = array.astype(np.uint8)
-    return array
+    return freenect.sync_get_depth()[0]
 
 fieldnames = ['frame', 'x', 'y', 'predicted']
 
@@ -126,8 +127,8 @@ def trackObject():
     global frames
     frames = frames + 1
     print("Upped Framecount")
-    frame = getVideoFrame()
-    depth = freenect.sync_get_depth()
+    frame = kinect.readVideoFrame()
+    depth = kinect.readDepthFrame()
     print("Got Frame")
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     print("Got HSV")
@@ -159,7 +160,7 @@ def trackObject():
     
     
 ##    cv2.putText(frame, 'fps: ' + str(fps), (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6,colors['yellow'], 2)
-    cv2.putText(frame, 'Depth: ' + str(depth[0][int(y)][int(x)]), (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6,colors['yellow'], 2)
+    cv2.putText(frame, 'Depth: ' + str(depth[int(y)][int(x)]), (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6,colors['yellow'], 2)
     cv2.imshow("Video", frame)
     
 ##    cv2.imwrite("ballimage.jpg", res)
@@ -192,6 +193,8 @@ if __name__ == "__main__":
 ##            writer.writeheader()
             
 ##    trackObject()
+
+    global kinect
             
 
     while 1:
@@ -201,10 +204,12 @@ if __name__ == "__main__":
 ##        DetectHSV()
 ##        getVideo()
 ##        showDepthVideo()
+        Kinect = KinectFrameThread()
         trackObject()
         
         
         # quit program when 'esc' key is pressed
         if (cv2.waitKey(5) & 0xFF) == 27:
+            Kinect.stopThread()
             break
     cv2.destroyAllWindows()
