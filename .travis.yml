@@ -5,3 +5,8 @@ python:
 # command to run tests
 script:
   - python pyUnit.py
+
+notifications:
+  email:
+    on_success: change # default: always
+    on_failure: change # default: always
