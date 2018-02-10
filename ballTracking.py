@@ -127,7 +127,7 @@ def trackObject():
     frames = frames + 1
     print("Upped Framecount")
     frame = getVideoFrame()
-    depth = freenect.sync_get_depth()
+    depth = freenect.sync_get_depth(0, freenect.DEPTH_MM)
     print("Got Frame")
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     print("Got HSV")
@@ -165,6 +165,52 @@ def trackObject():
 ##    cv2.imwrite("ballimage.jpg", res)
     print("Print Frame")
     
+def trackThrow():
+    for i in range(0, 60):
+        print("In Track Throw")
+        global frames
+        frames = frames + 1
+        print("Upped Framecount")
+        frame = getVideoFrame()
+        depth = freenect.sync_get_depth(0, freenect.DEPTH_MM)
+        print("Got Frame")
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        print("Got HSV")
+        
+        lower = np.array([50, 100, 0])
+        upper = np.array([100, 255, 255])
+    ##    
+        mask = cv2.inRange(hsv, lower, upper)
+        mask = cv2.erode(mask, None, iterations = 4)
+        mask = cv2.dilate(mask, None, iterations = 2)
+        print("Got Mask")
+        
+        cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+        center = None
+        x = 0
+        y = 0
+        if len(cnts) > 0:
+            
+            c = max(cnts, key=cv2.contourArea)
+            ((x, y), radius) = cv2.minEnclosingCircle(c)
+            M = cv2.moments(c)
+            center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
+            
+            cv2.circle(frame, (int(x), int(y)), int(radius), (0,255,255), 2)
+        
+    ##    res = cv2.bitwise_and(frame, frame, mask= mask)
+        
+        colors = {'yellow':(0, 255, 217)}
+        
+        
+    ##    cv2.putText(frame, 'fps: ' + str(fps), (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6,colors['yellow'], 2)
+        cv2.putText(frame, 'Depth: ' + str(depth[0][int(y)][int(x)]), (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6,colors['yellow'], 2)
+        cv2.imshow("Video", frame)
+        cv2.imwrite("throw/throwimage" + str(i) + ".jpg", frame)
+        
+    ##    cv2.imwrite("ballimage.jpg", res)
+        print("Print Frame")    
+    
         
 def getDepthVideo():
     frame = get_depth_video()
@@ -201,10 +247,14 @@ if __name__ == "__main__":
 ##        DetectHSV()
 ##        getVideo()
 ##        showDepthVideo()
-        trackObject()
         
         
         # quit program when 'esc' key is pressed
-        if (cv2.waitKey(5) & 0xFF) == 27:
+        key = cv2.waitKey(5) & 0xFF
+        if key == 27:
             break
+        elif key == 32:
+            trackThrow()
+        else:
+            trackObject()
     cv2.destroyAllWindows()
