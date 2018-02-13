@@ -6,7 +6,6 @@ import math
 from decimal import *
 import datetime
 
-
 def init():
     hoopArray = []
     for i in range(0,9):
@@ -20,7 +19,7 @@ def getDepthFrame():
 
 def getFrames():
     time = datetime.datetime.now()
-    return (getVideoFrame(), getDepthFrame(), time.microsecond)
+    return (getVideoFrame(), getDepthFrame(), time)
 
 def trackObject(video, depth):
 
@@ -63,13 +62,13 @@ def translationTo3D(xFrame, yFrame, depth):
     return (xDist, yDist, zDist)
 
 def calculateXVelocity(x1, x2, timedelta):
-    return ((x2-x1)/timedelta) * 1000
+    return ((x2-x1)/float(timedelta)) * 1000
 
 def calculateYVelocity(y1, y2, timedelta):
-    return ((y2-y1)/timedelta) * 1000
+    return ((y2-y1)/float(timedelta)) * 1000
 
 def calculateZVelocity(z1, z2, timedelta):
-    return ((z2-z1)/timedelta) * 1000
+    return ((z2-z1)/float(timedelta)) * 1000
 
 
 def test3DCoordinates():
@@ -101,9 +100,9 @@ def testVelocity():
         object = trackObject(frames[0], frames[1])
         if (object != -1):
             coordinates = translationTo3D(object[0], object[1], object[2])
-            xV = calculateXVelocity(firstCoordinates[0], coordinates[0], frames[2]-firstFrames[2])
-            yV = calculateYVelocity(firstCoordinates[1], coordinates[1], frames[2]-firstFrames[2])
-            zV = calculateZVelocity(firstCoordinates[2], coordinates[2], frames[2]-firstFrames[2])
+            xV = calculateXVelocity(firstCoordinates[0], coordinates[0], (frames[2]-firstFrames[2]).total_seconds()*1000000)
+            yV = calculateYVelocity(firstCoordinates[1], coordinates[1], (frames[2]-firstFrames[2]).total_seconds()*1000000)
+            zV = calculateZVelocity(firstCoordinates[2], coordinates[2], (frames[2]-firstFrames[2]).total_seconds()*1000000)
             firstFrames = frames
             firstCoordinates = coordinates
             print(yV)
@@ -128,14 +127,15 @@ def saveFrames():
         object = trackObject(frames[0], frames[1])
         if (object != -1):
             coordinates = translationTo3D(object[0], object[1], object[2])
-            xV = calculateXVelocity(firstCoordinates[0], coordinates[0], frames[2]-firstFrames[2])
-            yV = calculateYVelocity(firstCoordinates[1], coordinates[1], frames[2]-firstFrames[2])
-            zV = calculateZVelocity(firstCoordinates[2], coordinates[2], frames[2]-firstFrames[2])
+            xV = calculateXVelocity(firstCoordinates[0], coordinates[0], (frames[2]-firstFrames[2]).total_seconds()*1000000)
+            yV = calculateYVelocity(firstCoordinates[1], coordinates[1], (frames[2]-firstFrames[2]).total_seconds()*1000000)
+            zV = calculateZVelocity(firstCoordinates[2], coordinates[2], (frames[2]-firstFrames[2]).total_seconds()*1000000)
             colors = {'yellow':(0, 0, 0)}
             cv2.putText(frames[0], 'y1: ' + str(firstCoordinates[1]), (500,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['yellow'], 2)
             cv2.putText(frames[0], 'y2: ' + str(coordinates[1]), (500,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['yellow'], 2)
-            cv2.putText(frames[0], 't1: ' + str(firstFrames[2]), (500,100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['yellow'], 2)
-            cv2.putText(frames[0], 't2: ' + str(frames[2]), (500,140), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['yellow'], 2)
+            cv2.putText(frames[0], 't1: ' + str(firstFrames[2].microsecond), (500,100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['yellow'], 2)
+            cv2.putText(frames[0], 't2: ' + str(frames[2].microsecond), (500,140), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['yellow'], 2)
+            cv2.putText(frames[0], 'tdelta: ' + str((frames[2]-firstFrames[2]).total_seconds()*1000000), (480,180), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['yellow'], 2)
             cv2.putText(frames[0], 'yV: ' + str(yV), (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6,colors['yellow'], 2)
             cv2.imwrite("throw/throw" + str(i) + ".jpg", frames[0])
             firstFrames = frames
