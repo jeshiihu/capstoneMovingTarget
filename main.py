@@ -5,6 +5,7 @@ import frame_convert2
 import math
 from decimal import *
 import datetime
+import frame_convert2
 
 def init():
     hoopArray = []
@@ -22,15 +23,26 @@ def getFrames():
     return (getVideoFrame(), getDepthFrame(), time)
 
 def trackObject(video, depth):
-
+   
+    cv2.imshow("Original", video)
+    cv2.imshow("Depth", frame_convert2.pretty_depth_cv(depth))
+    
     hsv = cv2.cvtColor(video, cv2.COLOR_BGR2HSV)
     
     lower = np.array([50, 100, 0])
     upper = np.array([100, 255, 255])
 
     mask = cv2.inRange(hsv, lower, upper)
-    mask = cv2.erode(mask, None, iterations = 4)
-    mask = cv2.dilate(mask, None, iterations = 2)
+    
+    cv2.imshow("Masked", mask)
+    
+    mask = cv2.erode(mask, None, iterations = 2)
+    
+    cv2.imshow("Eroded", mask)
+    
+##    mask = cv2.dilate(mask, None, iterations = 2)
+    
+    
     
     cnts = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2]
     x = 0
@@ -42,9 +54,50 @@ def trackObject(video, depth):
 
         if radius > 6:
             cv2.circle(video, (int(x), int(y)), int(radius), (0,255,255), 2)
+            
+            cv2.imshow("Tracked", video)
+            
             return (int(x), int(y), depth[int(y)][int(x)])
 
     return -1
+
+def saveImage(video, depth, i):
+    
+    
+##    cv2.imwrite("images/original"+ str(i) +".jpg", video)
+    
+    hsv = cv2.cvtColor(video, cv2.COLOR_BGR2HSV)
+    
+    lower = np.array([50, 100, 0])
+    upper = np.array([100, 255, 255])
+
+    mask = cv2.inRange(hsv, lower, upper)
+    
+##    cv2.imwrite("images/masked"+ str(i) +".jpg", mask)
+    
+    mask = cv2.erode(mask, None, iterations = 2)
+    
+##    cv2.imwrite("images/eroded"+ str(i) +".jpg", mask)
+    
+##    mask = cv2.dilate(mask, None, iterations = 2)
+    
+    
+    
+    cnts = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2]
+    x = 0
+    y = 0
+    if len(cnts) > 0:
+        
+        c = max(cnts, key=cv2.contourArea)
+        ((x, y), radius) = cv2.minEnclosingCircle(c)
+
+        if radius > 6:
+            cv2.circle(video, (int(x), int(y)), int(radius), (0,255,255), 2)
+            cv2.imwrite("images/tracked"+ str(i) +".jpg", video)
+            
+            
+##            return (int(x), int(y), depth[int(y)][int(x)])
+##    return -1
 
 def translationTo3D(xFrame, yFrame, depth):
     horizDegPerPixel = Decimal(57) / Decimal(640)
@@ -144,12 +197,17 @@ def saveFrames():
 
 if __name__ == "__main__":
     while 1:
-        test3DCoordinates()
-        key = cv2.waitKey(100) & 0xFF
+        frames = getFrames()
+        trackObject(frames[0], frames[1])
+##        test3DCoordinates()
+        key = cv2.waitKey(5) & 0xFF
         if key == 27:
             break
         elif key == 32:
-            saveFrames()
+            for i in range(0,30):
+                frames = getFrames()
+                saveImage(frames[0], frames[1], i)
+##            saveFrames()
     cv2.destroyAllWindows()
 
 
