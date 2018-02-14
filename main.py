@@ -25,22 +25,21 @@ def getFrames():
 def trackObject(video, depth):
    
     cv2.imshow("Original", video)
-    cv2.imshow("Depth", frame_convert2.pretty_depth_cv(depth))
+##    cv2.imshow("Depth", frame_convert2.pretty_depth_cv(depth))
     
     hsv = cv2.cvtColor(video, cv2.COLOR_BGR2HSV)
     
-    lower = np.array([50, 100, 0])
-    upper = np.array([100, 255, 255])
+    lower = np.array([20, 90, 140])
+    upper = np.array([130, 240, 255])
 
     mask = cv2.inRange(hsv, lower, upper)
     
-    cv2.imshow("Masked", mask)
+##    cv2.imshow("Masked", mask)
     
-    mask = cv2.erode(mask, None, iterations = 2)
+    mask = cv2.erode(mask, None, iterations = 1)
     
-    cv2.imshow("Eroded", mask)
-    
-##    mask = cv2.dilate(mask, None, iterations = 2)
+    mask = cv2.dilate(mask, None, iterations = 1)
+##    cv2.imshow("Eroded", mask)
     
     
     
@@ -64,22 +63,24 @@ def trackObject(video, depth):
 def saveImage(video, depth, i):
     
     
-##    cv2.imwrite("images/original"+ str(i) +".jpg", video)
+    cv2.imwrite("images/original"+ str(i) +".jpg", video)
     
     hsv = cv2.cvtColor(video, cv2.COLOR_BGR2HSV)
     
-    lower = np.array([50, 100, 0])
-    upper = np.array([100, 255, 255])
+    lower = np.array([20, 90, 140])
+    upper = np.array([130, 240, 255])
 
     mask = cv2.inRange(hsv, lower, upper)
     
-##    cv2.imwrite("images/masked"+ str(i) +".jpg", mask)
+    cv2.imwrite("images/masked"+ str(i) +".jpg", mask)
     
-    mask = cv2.erode(mask, None, iterations = 2)
+    mask = cv2.erode(mask, None, iterations = 1)
     
-##    cv2.imwrite("images/eroded"+ str(i) +".jpg", mask)
+    cv2.imwrite("images/eroded"+ str(i) +".jpg", mask)
     
-##    mask = cv2.dilate(mask, None, iterations = 2)
+    mask = cv2.dilate(mask, None, iterations = 1)
+    
+    cv2.imwrite("images/dilated"+ str(i) +".jpg", mask)
     
     
     
