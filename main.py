@@ -7,6 +7,9 @@ from decimal import *
 import datetime
 import frame_convert2
 
+lower = np.array([20, 90, 140])
+upper = np.array([130, 240, 255])
+
 def init():
     hoopArray = []
     for i in range(0,9):
@@ -24,7 +27,7 @@ def getFrames():
 
 def trackObject(video, depth):
    
-    cv2.imshow("Original", video)
+##    cv2.imshow("Original", video)
 ##    cv2.imshow("Depth", frame_convert2.pretty_depth_cv(depth))
     
     hsv = cv2.cvtColor(video, cv2.COLOR_BGR2HSV)
@@ -39,7 +42,7 @@ def trackObject(video, depth):
     mask = cv2.erode(mask, None, iterations = 1)
     
     mask = cv2.dilate(mask, None, iterations = 1)
-##    cv2.imshow("Eroded", mask)
+    cv2.imshow("Masked", mask)
     
     
     
@@ -198,17 +201,16 @@ def saveFrames():
 
 if __name__ == "__main__":
     while 1:
+        print "frames"
         frames = getFrames()
+        print "frames got"
         trackObject(frames[0], frames[1])
 ##        test3DCoordinates()
         key = cv2.waitKey(5) & 0xFF
         if key == 27:
             break
         elif key == 32:
-            for i in range(0,30):
-                frames = getFrames()
-                saveImage(frames[0], frames[1], i)
-##            saveFrames()
+            saveFrames()
     cv2.destroyAllWindows()
 
 
