@@ -58,7 +58,7 @@ def trackObject(video, depth):
     cv2.putText(video, 'radius: ' + str(radius), (500,100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['yellow'], 2)
     cv2.putText(video, 'depth: ' + str(depth[int(y)][int(x)]), (500,140), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['yellow'], 2)
 
-    return (video, int(x), int(y), depth[int(y)][int(x)])
+    return video, int(x), int(y), depth[int(y)][int(x)]
 
 #   Translates pixel coordinates to cartesian coordinates
 def translationTo3D(xFrame, yFrame, depth):
@@ -74,7 +74,7 @@ def translationTo3D(xFrame, yFrame, depth):
     yDist = yzHyp * math.sin(math.radians(yzAngle))
     zDist = yzHyp * math.cos(math.radians(yzAngle))
 
-    return (xDist, yDist, zDist)
+    return xDist, yDist, zDist
 
 def calculateXVelocity(x1, x2, timedelta):
     return ((x2-x1)/float(timedelta)) * 1000
