@@ -27,14 +27,14 @@ entity new_component is
 		read_n    : in  std_logic                     := '0';             --             .read_n
 		readdata  : out std_logic_vector(31 downto 0);                    --             .readdata
 		reset_n   : in  std_logic                     := '0';             --        reset.reset_n
-		clk       : in  std_logic      x               := '0'              --        clock.clk
+		clk       : in  std_logic                     := '0'              --        clock.clk
 	);
 end entity new_component;
 
 architecture rtl of new_component is
 	procedure get_step (	-- A(Brown) A#(Red) B(Green) B#(White) 
 
-	curr : in std_logic_vector(1 downto 0);
+	signal current : in std_logic_vector(1 downto 0);
 	
 	constant fs_one : std_logic_vector (3 downto 0)     := b"1010";
 	constant fs_two : std_logic_vector (3 downto 0)     := b"1001";
@@ -45,7 +45,7 @@ architecture rtl of new_component is
 	) is
 		begin
 		
-		case curr is
+		case current is
 			when b"00" => four_coils <= fs_one;
 			when b"01" => four_coils <= fs_two;
 			when b"10" => four_coils <= fs_three;
@@ -53,18 +53,23 @@ architecture rtl of new_component is
 		end case;
 		
 	end get_step;
-
-	-- 1600Hz or 1600PPS for 0.7kg load (75.68mHm) at FULL STEP 
-	variable numPeriodsToDo: integer := 31250; 
-	variable numPulsesToDo: integer:= 28125; -- 90% duty cycle
 	
-	variable curr : std_logic_vector (1 downto 0) := b"00";
 	
-	variable required : integer := 0;
+	
+	signal curr :  std_logic_vector(1 downto 0) := "00";
+	
+	signal required : std_logic_vector(15 downto 0) := (others => '0'); -- integer is 2 bytes or 16 bits 
+	
+	signal output_coils : std_logic_vector(3 downto 0) ;
+	
 	
 begin
 	write_to_hBridge:
 		process(clk, reset_n,write_n) is
+		
+			-- 1600Hz or 1600PPS for 0.7kg load (75.68mHm) at FULL STEP 
+			variable numPeriodsToDo: integer := 31250; 
+			variable numPulsesToDo: integer:= 28125; -- 90% duty cycle
 
 		begin
 		
@@ -75,18 +80,24 @@ begin
 				en_a <= '0';
 				en_b <= '0';
 				
-			elsif(write_n) then
-				required <= writedata(30 downto 0); -- first bit is for direction
+			elsif(write_n = '0') then
+				required <= writedata(15 downto 0); -- last half of writedata is required pulses
 				
 				
-			elsif rising_edge(clk)  then
+			elsif rising_edge(clk)  and (required /= "0000000000000000") then
 			
-				while (required > 0) loop
+			--	while (required /= "0000000000000000") loop
 					--rising edge
 					if(numPeriodsToDo = 31250) and (numPulsesToDo = 28125) then
 						numPeriodsToDo := numPeriodsToDo - 1;
 						numPulsesToDo := numPulsesToDo - 1;
 						
+						get_step(curr, four_coils => output_coils ); 
+					
+						a <= output_coils(3);
+						a_comp <= output_coils(2);
+						b <= output_coils(1);
+						b_comp <= output_coils(0);
 						
 					
 					--pull high
@@ -94,34 +105,37 @@ begin
 						numPeriodsToDo := numPeriodsToDo - 1;
 						numPulsesToDo := numPulsesToDo - 1;
 						
-						en_a <= 1;
-						en_b <= 1;
+						en_a <= '1';
+						en_b <= '1';
 					
 					--falling edge
 					elsif(numPeriodsToDo = 3125) and (numPulsesToDo = 0) then
 						numPeriodsToDo := numPeriodsToDo - 1;
 						
-						curr := curr + b"1";
+						curr <= std_logic_vector(unsigned(curr) + 1);
 					 
 					--pull low
 					elsif(numPeriodsToDo > 0) and (numPulsesToDo = 0) then
 						numPeriodsToDo := numPeriodsToDo - 1;
 						
-						en_a <= 0;
-						en_b <= 0;
+						en_a <= '0';
+						en_b <= '0';
 						
 					--end of cycle
 					elsif(numPeriodsToDo = 0) and (numPulsesToDo = 0) then
-						required := required - 1;
+						required <= std_logic_vector(unsigned(required) - 1);
 						numPeriodsToDo := 31250;
 						numPulsesToDo := 28125;
+
 						
 						
 						
 					end if;
-				end loop;
-				
+				--end loop;
+			--	wait;
 			end if;
 		end process;
+		
+
 
 end architecture rtl; -- of new_component
