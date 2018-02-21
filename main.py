@@ -7,8 +7,8 @@ from decimal import *
 import datetime
 import frame_convert2
 
-lower = np.array([40, 0, 155])
-upper = np.array([80, 255, 255])
+lower = np.array([60, 0, 155])
+upper = np.array([120, 255, 255])
 colors = {'yellow':(0, 255, 255)}
 
 #   Returns video frame [Y][X][RGB]
@@ -21,8 +21,13 @@ def getDepthFrame():
 
 #   Gets both frames and current time
 def getFrames():
+    print("1")
     time = datetime.datetime.now()
-    return (getVideoFrame(), getDepthFrame(), time)
+    print("2")
+    video = getVideoFrame()
+    print("3")
+    depth = getDepthFrame()
+    return video, depth, time
 
 #   Tracks the ball in frame
 #   Returns:
@@ -42,15 +47,15 @@ def trackObject(video, depth):
     
     cnts = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
     
-    if len(cnts) < 0:
-        return -1
+    if len(cnts) <= 0:
+        return -1, -1, -1, -1
         
     c = max(cnts, key=cv2.contourArea)
     ((x, y), radius) = cv2.minEnclosingCircle(c)
     cv2.circle(video, (int(x), int(y)), 1, colors['yellow'], 3)
 
     if radius < 6:
-        return -1
+        return -1, -1, -1, -1
             
     cv2.circle(video, (int(x), int(y)), int(radius), colors['yellow'], 2)
     cv2.putText(video, 'x: ' + str(x), (500,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['yellow'], 2)
@@ -86,8 +91,10 @@ def calculateZVelocity(z1, z2, timedelta):
     return ((z2-z1)/float(timedelta)) * 1000
 
 def testFilter():
-    (video, depth) = getFrames()
+    (video, depth, time) = getFrames()
     (tracked, x, y, depth) = trackObject(video, depth)
+    if (x == -1):
+        return
     cv2.imshow("Video", tracked)
 
 
