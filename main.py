@@ -7,8 +7,8 @@ from decimal import *
 import datetime
 import frame_convert2
 
-lower = np.array([60, 0, 155])
-upper = np.array([120, 255, 255])
+lower = np.array([60, 0, 100])
+upper = np.array([80, 255, 255])
 colors = {'yellow':(0, 255, 255)}
 
 #   Returns video frame [Y][X][RGB]
@@ -21,11 +21,8 @@ def getDepthFrame():
 
 #   Gets both frames and current time
 def getFrames():
-    print("1")
     time = datetime.datetime.now()
-    print("2")
     video = getVideoFrame()
-    print("3")
     depth = getDepthFrame()
     return video, depth, time
 
