@@ -54,8 +54,6 @@ architecture rtl of new_component is
 		
 	end get_step;
 	
-	
-	
 	signal curr :  std_logic_vector(1 downto 0) := "00";
 	
 	signal required : std_logic_vector(15 downto 0) := (others => '0'); -- integer is 2 bytes or 16 bits 
@@ -68,9 +66,16 @@ begin
 		process(clk, reset_n,write_n) is
 		
 			-- 1600Hz or 1600PPS for 0.7kg load (75.68mHm) at FULL STEP 
-			variable numPeriodsToDo: integer := 31250; 
-			variable numPulsesToDo: integer:= 28125; -- 90% duty cycle
+--			variable numPeriodsToDo: integer := 31250; 
+--			variable numPulsesToDo: integer:= 28125; -- 90% duty cycle
 
+			constant period : integer := 500000;
+			constant highDuty : integer := 250000;
+			constant lowDuty : integer := 250000;
+
+			variable numPeriodsToDo: integer := period; 
+			variable numPulsesToDo: integer:= highDuty; -- 90% duty cycle
+			
 		begin
 		
 			if(reset_n = '0') then
@@ -82,13 +87,25 @@ begin
 				
 			elsif(write_n = '0') then
 				required <= writedata(15 downto 0); -- last half of writedata is required pulses
+				readdata <= writedata;
 				
-				
-			elsif rising_edge(clk)  and (required /= "0000000000000000") then
+			elsif rising_edge(clk) and (required /= "0000000000000000") then
 			
-			--	while (required /= "0000000000000000") loop
 					--rising edge
-					if(numPeriodsToDo = 31250) and (numPulsesToDo = 28125) then
+					--if(numPeriodsToDo = period) and (numPulsesToDo = highDuty) then
+					--	numPeriodsToDo := numPeriodsToDo - 1;
+					--	numPulsesToDo := numPulsesToDo - 1;
+						
+					--	get_step(curr, four_coils => output_coils ); 
+					
+					--	a <= output_coils(3);
+					--	a_comp <= output_coils(2);
+					--	b <= output_coils(1);
+					--	b_comp <= output_coils(0);
+						
+					
+					--pull high
+					if(numPeriodsToDo > 0) and (numPulsesToDo > 0) then
 						numPeriodsToDo := numPeriodsToDo - 1;
 						numPulsesToDo := numPulsesToDo - 1;
 						
@@ -99,24 +116,28 @@ begin
 						b <= output_coils(1);
 						b_comp <= output_coils(0);
 						
-					
-					--pull high
-					elsif(numPeriodsToDo > 0) and (numPulsesToDo > 0) then
-						numPeriodsToDo := numPeriodsToDo - 1;
-						numPulsesToDo := numPulsesToDo - 1;
 						
 						en_a <= '1';
 						en_b <= '1';
 					
 					--falling edge
-					elsif(numPeriodsToDo = 3125) and (numPulsesToDo = 0) then
-						numPeriodsToDo := numPeriodsToDo - 1;
+					--elsif(numPeriodsToDo = lowDuty) and (numPulsesToDo = 0) then
+					--	numPeriodsToDo := numPeriodsToDo - 1;
 						
-						curr <= std_logic_vector(unsigned(curr) + 1);
+
 					 
 					--pull low
 					elsif(numPeriodsToDo > 0) and (numPulsesToDo = 0) then
 						numPeriodsToDo := numPeriodsToDo - 1;
+						
+						get_step(curr, four_coils => output_coils ); 
+					
+						a <= output_coils(3);
+						a_comp <= output_coils(2);
+						b <= output_coils(1);
+						b_comp <= output_coils(0);
+						
+						
 						
 						en_a <= '0';
 						en_b <= '0';
@@ -124,15 +145,19 @@ begin
 					--end of cycle
 					elsif(numPeriodsToDo = 0) and (numPulsesToDo = 0) then
 						required <= std_logic_vector(unsigned(required) - 1);
-						numPeriodsToDo := 31250;
-						numPulsesToDo := 28125;
+						curr <= std_logic_vector(unsigned(curr) + 1);
+						numPeriodsToDo := period;
+						numPulsesToDo := highDuty;
 
 						
 						
-						
+					else 
+						en_a <= '0';
+						en_b <= '0';
 					end if;
-				--end loop;
-			--	wait;
+					
+					
+
 			end if;
 		end process;
 		
