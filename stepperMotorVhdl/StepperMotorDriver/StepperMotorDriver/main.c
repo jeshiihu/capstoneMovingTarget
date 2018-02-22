@@ -10,7 +10,7 @@
 #include "stepper.h"
 
 
-void PrintParameters();
+void PrintParameters(void);
 
 int main(int argc, const char * argv[]) {
     // insert code here...
@@ -22,14 +22,14 @@ int main(int argc, const char * argv[]) {
     SetDirection(ccw);
     PrintParameters();
     
-    SetRPM(5);
+    SetPulses(5);
     PrintParameters();
     
-    SetRPM(-5);
+    SetPulses(-5);
     PrintParameters();
     
     SetDirection(cw);
-    SetRPM(300);
+    SetPulses(300);
     PrintParameters();
     
     return 0;
@@ -44,6 +44,6 @@ void PrintParameters()
     else
         printf("Direction: %s\r\n", "Counter Clockwise");
 
-    printf("RPM: %d\r\n", GetRPM());
+    printf("Pulses: %d\r\n", GetPulses());
 }
 

@@ -19,6 +19,12 @@ enum Direction
     ccw = 1
 };
 
+enum StepType
+{
+    full = 200,
+    half = 400
+};
+
 enum State
 {
     off, on, rotating
@@ -27,8 +33,9 @@ enum State
 //////////////////////////////////////////////////////////////////
 //Initialize the motor
 static enum Direction _direction;
+static enum StepType _step;
 static enum State _motorState;
-static int32_t _rpm;
+static int32_t _pulses;
 
 void InitMotor(void);
 
@@ -37,8 +44,11 @@ void InitMotor(void);
 void SetDirection(enum Direction dir);
 enum Direction GetDirection(void);
 
-void SetRPM(int32_t rpm);
-int32_t GetRPM(void);
+void SetPulses(int32_t pulses);
+int32_t GetPulses(void);
+
+void SetStepType(enum StepType type);
+enum StepType GetStepType(void);
 
 //////////////////////////////////////////////////////////////////
 // Motor Control
