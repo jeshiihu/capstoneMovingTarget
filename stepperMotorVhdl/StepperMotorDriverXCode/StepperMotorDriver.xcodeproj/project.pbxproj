@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C81465EE203F6B34004100B1 /* app.c in Sources */ = {isa = PBXBuildFile; fileRef = C81465EC203F6B34004100B1 /* app.c */; };
 		C8AFBC0A203CA2D700540DBE /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = C8AFBC09203CA2D700540DBE /* main.c */; };
 		C8AFBC12203CA30200540DBE /* stepper.c in Sources */ = {isa = PBXBuildFile; fileRef = C8AFBC10203CA30200540DBE /* stepper.c */; };
 /* End PBXBuildFile section */
@@ -24,6 +25,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C81465EC203F6B34004100B1 /* app.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = app.c; sourceTree = "<group>"; };
 		C8AFBC06203CA2D700540DBE /* StepperMotorDriver */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = StepperMotorDriver; sourceTree = BUILT_PRODUCTS_DIR; };
 		C8AFBC09203CA2D700540DBE /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		C8AFBC10203CA30200540DBE /* stepper.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = stepper.c; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 				C8AFBC09203CA2D700540DBE /* main.c */,
 				C8AFBC10203CA30200540DBE /* stepper.c */,
 				C8AFBC11203CA30200540DBE /* stepper.h */,
+				C81465EC203F6B34004100B1 /* app.c */,
 				C8AFBC15203CB43A00540DBE /* common.h */,
 			);
 			path = StepperMotorDriver;
@@ -126,6 +129,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C81465EE203F6B34004100B1 /* app.c in Sources */,
 				C8AFBC0A203CA2D700540DBE /* main.c in Sources */,
 				C8AFBC12203CA30200540DBE /* stepper.c in Sources */,
 			);
