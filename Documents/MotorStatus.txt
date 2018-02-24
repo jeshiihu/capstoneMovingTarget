@@ -1,0 +1,28 @@
+MotorNoPwm: vhdl only sets a, a_comp, b, b_comp directly
+- driven by software and delays
+
+MotorHardcodedPwm: set's the frequency and duty in vhdl
+- software simply sets the steps
+
+MotorPwm: vhdl is dynamic and reads the data from software
+- software sets the freq (duty is set by this), direction and step
+- NOTE: I think there is a bug i caught but may have noto fixed in this version. In SetFrequency() it should be int32u and also in that function it should calc and set duty cycle. Similar to the InitMotor Method
+	- also i think its writing hword so it needs to be changed to word
+
+- Step: int16u, hword (x200 addr)
+- cycle: int32u, word (x300 addr)
+- duty: intt32u, word (x400 addr)
+- Dir: int8u, byte (x500 addr)
+
+MotorPwmAccel: was me trying to introduce acceleration, through software
+- this is where i caught the bug i mentioned aboved and it should be fixed so you can look here
+- IMP: the motor slips and stalls at a freq greater than 280, 500 will still make it move but it does not do the proper steps :(
+
+
+I tested the signals and nancy looked that them and they seem good.
+- we did a test (that you can see in MotorPwmAccel) where it goes from 100 to 280 freq and the motor doent do it smoothly but it doesn't stall. The pwm curve on the oscilliscope changes smoothly.
+- her suggestiion was to check if we where setting the steps correctly when its a higher frequency
+- bc she said sometimes when u think its sequential its not
+- so thats why i was doing the model sim
+
+But! we can work with MotorPwm, copy that into another project that does the "spi" and pretend we get a value and distance.
