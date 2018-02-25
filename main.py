@@ -11,8 +11,28 @@ lower = np.array([60, 0, 100])
 upper = np.array([80, 255, 255])
 colors = {'yellow':(0, 255, 255), 'black':(0,0,0)}
 
+ctx
+
 def init():
-    freenect.
+    global ctx, dev
+    ctx = freenect.init()
+    dev = freenect.open_device(ctx, freenect.num_devices(ctx) - 1)
+    if not dev:
+        freenect.error_open_device()
+    freenect.start_video(dev)
+    freenect.start_depth(dev)
+
+def shutdown():
+    global ctx, dev
+    freenect.stop_video(dev)
+    freenect.stop_depth(dev)
+    freenect.shutdown(ctx)
+
+def tilt():
+    for tilt in range(0,30):
+        freenect.set_tilt_degs(dev, tilt)
+        time.sleep(1)
+
 
 #   Returns video frame [Y][X][RGB]
 def getVideoFrame():
@@ -223,6 +243,8 @@ def saveFrames():
 
 
 if __name__ == "__main__":
+    init()
+    tilt()
     while 1:
         mainRun()
         key = cv2.waitKey(5) & 0xFF
@@ -231,7 +253,7 @@ if __name__ == "__main__":
         elif key == 32:
             testPrediction()
 
-
+    shutdown()
     cv2.destroyAllWindows()
 
 
