@@ -32,6 +32,11 @@
  *                   Cyclone V dev kit board to DE1-SoC
  *
  * Mods from Template: Jessica Huynh jhuynh@ualberta.ca
+ * 					   Kelly Chin kgchin28@ualberta.ca
+ *
+ * 					   Changes from the template: Run Motor Task, Stepper drivers
+ * 					   distance (cm) to steps & dir
+ *
  *********************************************************************************************************
  * Note(s)       : none.
  *********************************************************************************************************
@@ -221,27 +226,27 @@ static  void  RunStepperMotorTask(void *p_arg)
  * */
 static void TestSeqeuence(void)
 {
-	enum Direction dir = YCoord2Dir(-25);
+	enum Direction dir = YCoord2Dir(-16);
 	SetDirection(dir);
-	INT16U steps = YCoord2Steps(-25);
+	INT16U steps = YCoord2Steps(-16);
     StepMotor(steps);
     OSTimeDlyHMSM(0, 0, 1, 0);
 
-	dir = YCoord2Dir(-25);
+	dir = YCoord2Dir(-16);
 	SetDirection(dir);
-	steps = YCoord2Steps(-25);
+	steps = YCoord2Steps(-16);
     StepMotor(steps);
     OSTimeDlyHMSM(0, 0, 1, 0);
 
-	dir = YCoord2Dir(25);
+	dir = YCoord2Dir(16);
 	SetDirection(dir);
-	steps = YCoord2Steps(25);
+	steps = YCoord2Steps(16);
     StepMotor(steps);
     OSTimeDlyHMSM(0, 0, 1, 0);
 
-	dir = YCoord2Dir(25);
+	dir = YCoord2Dir(16);
 	SetDirection(dir);
-	steps = YCoord2Steps(25);
+	steps = YCoord2Steps(16);
     StepMotor(steps);
     OSTimeDlyHMSM(0, 0, 1, 0);
 }
