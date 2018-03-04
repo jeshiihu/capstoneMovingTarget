@@ -2,7 +2,7 @@
  * stepper.h
  *
  *  Created on: Feb 22, 2018
- *      Author: kgchin
+ *      Author: kgchin & jhuynh
  */
 
 #ifndef HWLIBS_STEPPER_H_

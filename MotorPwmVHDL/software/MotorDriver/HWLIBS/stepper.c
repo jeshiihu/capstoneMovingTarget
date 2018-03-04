@@ -2,7 +2,7 @@
  * stepper.c
  *
  *  Created on: Feb 22, 2018
- *      Author: kgchin
+ *      Author: kgchin & jhuynh
  */
 
 #include <os.h>
