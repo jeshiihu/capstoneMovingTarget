@@ -10,6 +10,10 @@ fps = 90
 videoSize = (640, 480)
 rotation = 180
 
+lower = np.array([60, 0, 100])
+upper = np.array([80, 255, 255])
+colors = {'yellow':(0, 255, 255), 'black':(0,0,0)}
+
 class FrameAnalysis(PiRGBAnalysis):
 
     def analyze(self, frame):
