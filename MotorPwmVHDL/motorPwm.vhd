@@ -1,3 +1,19 @@
+
+-- motorPwm.vhd
+-- Created by: Kelly Chin and Jessica Huynh
+-- Date: Feb 28, 2018
+-- Summary: Added GPIO_0 pins to the hbridge
+-- 
+--			GPIO_0_0					: out std_logic; -- A
+--			GPIO_0_2					: out std_logic; -- #A
+--			
+--			GPIO_0_1					: out std_logic; -- B
+--			GPIO_0_3					: out std_logic; -- #B
+--			
+--			GPIO_0_4					: out std_logic; -- en A
+--			GPIO_0_5					: out std_logic  -- en B
+
+
 -- A library clause declares a name as a library.  It 
 -- does not create the library; it simply forward declares 
 -- it. 
