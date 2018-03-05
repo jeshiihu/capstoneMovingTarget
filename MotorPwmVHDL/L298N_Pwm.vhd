@@ -1,4 +1,9 @@
 -- L298N_Pwm.vhd
+-- Created by: Kelly Chin and Jessica Huynh
+-- Date: Feb 28, 2018
+-- Summary: VHDL that will produce a step sequence to the correct signals (A,#A, B #B) at the frequency 
+-- and duty cycle specified. The direction and step mode may also be configured.
+-- Entity: L298N_Pwm
 
 -- This file was auto-generated as a prototype implementation of a module
 -- created in component editor.  It ties off all outputs to ground and
