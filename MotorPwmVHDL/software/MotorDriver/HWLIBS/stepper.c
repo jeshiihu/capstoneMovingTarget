@@ -1,5 +1,5 @@
 /*
- * Filename      : app.c
+ * Filename      : stepper.c
  * Created on: Feb 22, 2018
  * Author: kgchin & jhuynh
  * Stepper driver that can read and write to the addresses set by avalon mm slave
