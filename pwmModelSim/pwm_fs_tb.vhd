@@ -1,3 +1,8 @@
+-- pwm_fs_tb.vhd
+-- Created by: Jessica Huynh
+-- Date: March 2nd, 2018
+-- This testbench sets the pwm signal to produce a 2000Hz, 90% duty cycle,
+-- full step, counter clockwise simulation
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -94,7 +99,8 @@ begin
       en_a => sig_en_a,
       en_b => sig_en_b
   );
-  
+
+-- FPGA clk frequency is 50MHz
 process is
   begin
 	sig_rst <= '1';
@@ -105,31 +111,31 @@ process is
   end process;
   
 process is
-  begin
+  begin -- reset all (since active low)
 	sig_step_write <= '1';
 	sig_cycle_write <= '1';
 	sig_duty_write <= '1';
 	sig_dir_write <= '1';
 	sig_mode_write <= '1';
  	wait for 10 ns;
-
+	-- set 400 steps
 	sig_step_write <= '0';
 	sig_step <= "0000000110010000";
 
-        -- 25000
+        -- 25000 = 50MHz/2000Hz
 	sig_cycle_write <= '0';
 	sig_cycle <= "00000000000000000110000110101000";
 
-	-- 90% duty is, "00000000000000000101011111100100", 22500
-        -- 50% duty is, "00000000000000000011000011010100", 12500
+	-- 90% duty is, "00000000000000000101011111100100", 22500 = cycle*0.9
+        -- 50% duty is, "00000000000000000011000011010100", 12500 = cycle*0.5
 	sig_duty_write <= '0';
 	sig_duty <= "00000000000000000011000011010100";
 
 	sig_dir_write <= '0';
-	sig_dir <= "00000000";
+	sig_dir <= "00000000"; -- cw
 
 	sig_mode_write <= '0';
-	sig_mode <= "00000000";
+	sig_mode <= "00000000"; -- full
 	wait for 10 ns;
 
 	sig_step_write <= '1';
