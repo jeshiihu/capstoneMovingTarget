@@ -6,11 +6,16 @@ import threading
 import os.path
 import csv
 import frame_convert2
+import KinectFrameThread
+from datetime import datetime
  
 
 frames = 0
 prevFrames = 0
 fps = 0
+fpsStop = False
+
+kinect = KinectFrameThread.KinectFrameThread()
 
 
 ##cv2.namedWindow('Depth')
@@ -28,9 +33,7 @@ def getDepthVideoFrame():
  
 #function to get depth image from kinect
 def getDepthFrame():
-    array,_ = freenect.sync_get_depth()
-    array = array.astype(np.uint8)
-    return array
+    return freenect.sync_get_depth()[0]
 
 fieldnames = ['frame', 'x', 'y', 'predicted']
 
@@ -87,7 +90,8 @@ def DetectHSV():
     # blobs left in the mask
     kernel = np.ones((9,9),np.uint8)
     mask = cv2.inRange(hsv, lower['yellow'], upper['yellow'])
-    mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+    mask = cv2.morphologyEx(
+mask, cv2.MORPH_OPEN, kernel)
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
            
     # find contours in the mask and initialize the current
@@ -122,23 +126,25 @@ def DetectHSV():
     cv2.imshow("Frame", frame)
     
 def trackObject():
-    print("In Track Object")
+##    print("In Track Object")
     global frames
     frames = frames + 1
-    print("Upped Framecount")
+##    print("Upped Framecount")
+    start = datetime.now()
     frame = getVideoFrame()
-    depth = freenect.sync_get_depth()
-    print("Got Frame")
+    depth = getDepthFrame()
+    framesGot = datetime.now()
+##    print("Got Frame")
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    print("Got HSV")
+##    print("Got HSV")
     
     lower = np.array([50, 100, 0])
     upper = np.array([100, 255, 255])
 ##    
     mask = cv2.inRange(hsv, lower, upper)
-    mask = cv2.erode(mask, None, iterations = 4)
-    mask = cv2.dilate(mask, None, iterations = 2)
-    print("Got Mask")
+    mask = cv2.erode(mask, None, iterations = 2)
+##    mask = cv2.dilate(mask, None, iterations = 2)
+##    print("Got Mask")
     
     cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
     center = None
@@ -148,22 +154,28 @@ def trackObject():
         
         c = max(cnts, key=cv2.contourArea)
         ((x, y), radius) = cv2.minEnclosingCircle(c)
-        M = cv2.moments(c)
-        center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
-        
-        cv2.circle(frame, (int(x), int(y)), int(radius), (0,255,255), 2)
+##        M = cv2.moments(c)
+##        center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
+        print(radius)
+        if radius > 6:
+            cv2.circle(frame, (int(x), int(y)), int(radius), (0,255,255), 2)
     
 ##    res = cv2.bitwise_and(frame, frame, mask= mask)
     
     colors = {'yellow':(0, 255, 217)}
     
     
-##    cv2.putText(frame, 'fps: ' + str(fps), (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6,colors['yellow'], 2)
-    cv2.putText(frame, 'Depth: ' + str(depth[0][int(y)][int(x)]), (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6,colors['yellow'], 2)
+    cv2.putText(frame, 'fps: ' + str(fps), (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6,colors['yellow'], 2)
+##    cv2.putText(frame, 'Depth: ' + str(depth[int(y)][int(x)]), (0, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6,colors['yellow'], 2)
     cv2.imshow("Video", frame)
+    end = datetime.now()
+    print("total: " + str((end.microsecond-start.microsecond)))
+    print("frame: " + str((framesGot.microsecond-start.microsecond)))
+    print("proccessing: " + str((end.microsecond-framesGot.microsecond)))
+    print()
     
 ##    cv2.imwrite("ballimage.jpg", res)
-    print("Print Frame")
+##    print("Print Frame")
     
         
 def getDepthVideo():
@@ -173,38 +185,52 @@ def getDepthVideo():
     cv2.imshow("Depth", frame)
     
 def getVideo():
+##    frame = kinect.readVideoFrame()
+    start = datetime.now()
     frame = getVideoFrame()
+    end = datetime.now()
+    print((end.microsecond-start.microsecond)/1000)
     global frames
     frames = frames + 1
     cv2.imshow("Video", frame)
 
 def printit():
+    if fpsStop:
+        return
     threading.Timer(1.0, printit).start()
     global fps, prevFrames
     fps = frames - prevFrames
     prevFrames = frames
+    
+def displayFrameThread():
+    while 1:
+    # frame = get_video()
+    # cv2.imshow("Frame", frame)
+
+##        DetectHSV()
+##        getVideo()
+##        showDepthVideo()
+    
+        trackObject()
+    
+    
+    # quit program when 'esc' key is pressed
+        if (cv2.waitKey(5) & 0xFF) == 27:
+            kinect.stopThread()
+            fpsStop = True
+            break
+        
+    cv2.destroyAllWindows()
 
 if __name__ == "__main__":
-##    printit()
+    printit()
 ##    if not os.path.isfile('./trajectory.csv'):
 ##        with open('trajectory.csv', "w+") as csvfile:
 ##            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 ##            writer.writeheader()
             
 ##    trackObject()
-            
+##    kinect.start()    
 
-    while 1:
-        # frame = get_video()
-        # cv2.imshow("Frame", frame)
+    threading.Thread(target=displayFrameThread, args=()).start()
 
-##        DetectHSV()
-##        getVideo()
-##        showDepthVideo()
-        trackObject()
-        
-        
-        # quit program when 'esc' key is pressed
-        if (cv2.waitKey(5) & 0xFF) == 27:
-            break
-    cv2.destroyAllWindows()
