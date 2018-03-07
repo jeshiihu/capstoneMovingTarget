@@ -1,0 +1,70 @@
+/*
+ * stepper.c
+ *
+ *  Created on: Feb 22, 2018
+ *      Author: kgchin
+ */
+
+#include <os.h>
+#include <hps.h>
+#include <socal.h>
+
+#include "stepper.h"
+
+//////////////////////////////////////////////////////////////////
+//Initialize & control the motor
+void InitMotor(INT32U freq)
+{
+    // convert freq (pps) to n, n = fin/fout, and set
+	INT16U numCycles = Freq2NumCycle(freq);
+	numCycles = 500000;
+    alt_write_hword(CYCLE_BASE, numCycles);
+//
+//    // calculate the duty cycle, and set
+//    INT16U duty = numCycles*0.5;
+//    alt_write_hword(DUTY_BASE, duty);
+}
+
+INT16U Freq2NumCycle(INT32U freq)
+{
+    return FPGA_CLK_FREQ_HZ/freq;
+}
+
+void StepMotor(INT16U steps)
+{
+    alt_write_hword(STEP_BASE, steps);
+}
+
+//////////////////////////////////////////////////////////////////
+// Getters and Setters
+void SetDirection(enum Direction dir)
+{
+    alt_write_byte(DIR_BASE, (INT8U)dir);
+}
+
+enum Direction GetDirection(void)
+{
+    return (enum Direction)alt_read_byte(DIR_BASE);
+}
+
+void SetFrequency(INT32U freq)
+{
+	INT16U numCycles = Freq2NumCycle(freq);
+    alt_write_hword(CYCLE_BASE, numCycles);
+}
+
+INT16U GetFrequency(void)
+{
+	INT16U cycle = alt_read_hword(CYCLE_BASE);
+    return FPGA_CLK_FREQ_HZ/cycle;
+}
+
+INT16U GetDutyCycle(void)
+{
+    return alt_read_hword(DUTY_BASE);
+}
+
+INT16U GetReqSteps(void)
+{
+    return alt_read_hword(STEP_BASE);
+}
