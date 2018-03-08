@@ -73,7 +73,7 @@ module soc_system (
 	memory_mem_dm,
 	memory_oct_rzqin,
 	reset_reset_n,
-	push_buttons_0_conduit_push_btn_export);	
+	push_button_0_conduit_push_btn_export);	
 
 	input		clk_clk;
 	output		hps_io_hps_io_emac1_inst_TX_CLK;
@@ -148,5 +148,5 @@ module soc_system (
 	output	[3:0]	memory_mem_dm;
 	input		memory_oct_rzqin;
 	input		reset_reset_n;
-	input	[3:0]	push_buttons_0_conduit_push_btn_export;
+	input		push_button_0_conduit_push_btn_export;
 endmodule

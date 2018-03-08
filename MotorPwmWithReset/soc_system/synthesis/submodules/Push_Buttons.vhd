@@ -14,19 +14,28 @@ use IEEE.numeric_std.all;
 
 entity Push_Buttons is
 	port (
-		clk            : in  std_logic                    := '0';             --            clock.clk
-		rst_n          : in  std_logic                    := '0';             --            reset.reset_n
-		push_btn_press : in  std_logic_vector(2 downto 0) := (others => '0'); -- conduit_push_btn.export
-		btn_read_n     : in  std_logic                    := '0';             --     avalon_slave.read_n
-		btn_readdata   : out std_logic_vector(7 downto 0)                     --                 .readdata
+		clk            : in  std_logic                    := '0'; --            clock.clk
+		rst_n          : in  std_logic                    := '0'; --            reset.reset_n
+		push_btn_press : in  std_logic                    := '0'; -- conduit_push_btn.export
+		btn_read_n     : in  std_logic                    := '0'; --     avalon_slave.read_n
+		btn_readdata   : out std_logic_vector(7 downto 0)         --                 .readdata
 	);
 end entity Push_Buttons;
 
 architecture rtl of Push_Buttons is
+signal currVal : std_logic := '0';
+
 begin
-
-	-- TODO: Auto-generated HDL template
-
-	btn_readdata <= "00000000";
-
+	process(rst_n, push_btn_press)
+	begin
+		if(rst_n = '0') then
+			currVal <= '0';
+		elsif(rising_edge(push_btn_press)) then
+			currVal <= '1';
+		else
+			currVal <= '0';
+		end if;
+	end process;
+	
+	btn_readdata <= currVal;
 end architecture rtl; -- of Push_Buttons

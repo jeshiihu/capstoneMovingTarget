@@ -121,7 +121,7 @@ GND                          : AA11      : gnd    :                   :         
 RESERVED_INPUT_WITH_WEAK_PULLUP : AA12      :        :                   :         : 3A        :                
 RESERVED_INPUT_WITH_WEAK_PULLUP : AA13      :        :                   :         : 3B        :                
 KEY_N_0                      : AA14      : input  : 3.3-V LVTTL       :         : 3B        : Y              
-KEY_N[1]                     : AA15      : input  : 3.3-V LVTTL       :         : 3B        : Y              
+RESERVED_INPUT_WITH_WEAK_PULLUP : AA15      :        :                   :         : 3B        :                
 RESERVED_INPUT_WITH_WEAK_PULLUP : AA16      :        :                   :         : 4A        :                
 VCCIO4A                      : AA17      : power  :                   : 3.3V    : 4A        :                
 RESERVED_INPUT_WITH_WEAK_PULLUP : AA18      :        :                   :         : 4A        :                
@@ -929,7 +929,7 @@ GND                          : W11       : gnd    :                   :         
 VCC                          : W12       : power  :                   : 1.1V    :           :                
 GND                          : W13       : gnd    :                   :         :           :                
 VCC                          : W14       : power  :                   : 1.1V    :           :                
-KEY_N[2]                     : W15       : input  : 3.3-V LVTTL       :         : 3B        : Y              
+RESERVED_INPUT_WITH_WEAK_PULLUP : W15       :        :                   :         : 3B        :                
 RESERVED_INPUT_WITH_WEAK_PULLUP : W16       :        :                   :         : 4A        :                
 RESERVED_INPUT_WITH_WEAK_PULLUP : W17       :        :                   :         : 4A        :                
 GND                          : W18       : gnd    :                   :         :           :                
@@ -960,7 +960,7 @@ GND                          : Y12       : gnd    :                   :         
 VCC                          : Y13       : power  :                   : 1.1V    :           :                
 GND                          : Y14       : gnd    :                   :         :           :                
 GND                          : Y15       : gnd    :                   :         :           :                
-KEY_N[3]                     : Y16       : input  : 3.3-V LVTTL       :         : 3B        : Y              
+KEY_N_3                      : Y16       : input  : 3.3-V LVTTL       :         : 3B        : Y              
 GPIO_0_1                     : Y17       : output : 3.3-V LVTTL       :         : 4A        : Y              
 GPIO_0_3                     : Y18       : output : 3.3-V LVTTL       :         : 4A        : Y              
 RESERVED_INPUT_WITH_WEAK_PULLUP : Y19       :        :                   :         : 4A        :                

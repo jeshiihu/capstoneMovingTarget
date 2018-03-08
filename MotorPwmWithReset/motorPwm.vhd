@@ -141,7 +141,8 @@
 			GPIO_0_4					: out std_logic; -- en A
 			GPIO_0_5					: out std_logic;  -- en B
 			
-			KEY_N	: in std_logic_vector(3 downto 1)
+			-- Push button to reset the motors to origin
+			KEY_N_3					: in std_logic := 'X'
 	);
 end motorPwm;
 
@@ -226,7 +227,7 @@ architecture rtl of motorPwm is
             l298n_pwm_0_conduit_end_b                 : out   std_logic;                                        -- b
             l298n_pwm_0_conduit_end_a_comp            : out   std_logic;                                        -- a_comp
             l298n_pwm_0_conduit_end_b_comp            : out   std_logic;        
-				push_buttons_0_conduit_push_btn_export : in    std_logic_vector(2 downto 0)  := (others => 'X')  -- export
+				push_button_0_conduit_push_btn_export  : in std_logic                     := 'X'              -- export
            
         );
     end component soc_system;
@@ -322,7 +323,8 @@ begin
 						
 						l298n_pwm_0_conduit_end_en_a              => GPIO_0_4,              --            pwm_0_conduit_end.en_a
 						l298n_pwm_0_conduit_end_en_b              => GPIO_0_5,
-						push_buttons_0_conduit_push_btn_export    => KEY_N
+						
+						push_button_0_conduit_push_btn_export  => KEY_N_3
 
         );
 

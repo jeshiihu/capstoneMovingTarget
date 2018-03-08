@@ -77,6 +77,9 @@
 #define APP_TASK_PRIO 5
 #define TASK_STACK_SIZE 4096
 
+#define BTN_ADDR 0x00000700 // number of steps
+#define BTN_BASE FPGA_TO_HPS_LW_ADDR(BTN_ADDR)
+
 /*
  *********************************************************************************************************
  *                                       LOCAL GLOBAL VARIABLES
@@ -85,6 +88,9 @@
 
 CPU_STK AppTaskStartStk[TASK_STACK_SIZE];
 CPU_STK RunStepperMotorTaskStk[TASK_STACK_SIZE];
+CPU_STK ListenForPushbuttonTaskStk[TASK_STACK_SIZE];
+
+//OS_EVENT *SemPushBtn;
 
 /*
  *********************************************************************************************************
@@ -94,6 +100,8 @@ CPU_STK RunStepperMotorTaskStk[TASK_STACK_SIZE];
 
 static  void  AppTaskStart              (void        *p_arg);
 static  void  RunStepperMotorTask       (void        *p_arg);
+static  void  ListenForPushbuttonTask   (void        *p_arg);
+
 static  void  TestSeqeuence             (void              );
 
 /*
@@ -126,11 +134,13 @@ int main ()
     BSP_Init();
     OSInit();
 
+//    SemPushBtn = OSSemCreate(0);
+
     os_err = OSTaskCreateExt((void (*)(void *)) AppTaskStart,   /* Create the start task.                               */
                              (void          * ) 0,
                              (OS_STK        * )&AppTaskStartStk[TASK_STACK_SIZE - 1],
-                             (INT8U           ) APP_TASK_PRIO+1,
-                             (INT16U          ) APP_TASK_PRIO+1,  // reuse prio for ID
+                             (INT8U           ) APP_TASK_PRIO,
+                             (INT16U          ) APP_TASK_PRIO,  // reuse prio for ID
                              (OS_STK        * )&AppTaskStartStk[0],
                              (INT32U          ) TASK_STACK_SIZE,
                              (void          * )0,
@@ -143,9 +153,23 @@ int main ()
     os_err = OSTaskCreateExt((void (*)(void *)) RunStepperMotorTask,   /* Create the start task.                               */
                              (void          * ) 0,
                              (OS_STK        * )&RunStepperMotorTaskStk[TASK_STACK_SIZE - 1],
-                             (INT8U           ) APP_TASK_PRIO,
-                             (INT16U          ) APP_TASK_PRIO,  // reuse prio for ID
+                             (INT8U           ) APP_TASK_PRIO+1,
+                             (INT16U          ) APP_TASK_PRIO+1,  // reuse prio for ID
                              (OS_STK        * )&RunStepperMotorTaskStk[0],
+                             (INT32U          ) TASK_STACK_SIZE,
+                             (void          * )0,
+                             (INT16U          )(OS_TASK_OPT_STK_CLR | OS_TASK_OPT_STK_CHK));
+
+    if (os_err != OS_ERR_NONE) {
+        ; /* Handle error. */
+    }
+
+    os_err = OSTaskCreateExt((void (*)(void *)) ListenForPushbuttonTask,   /* Create the start task.                               */
+                             (void          * ) 0,
+                             (OS_STK        * )&ListenForPushbuttonTaskStk[TASK_STACK_SIZE - 1],
+                             (INT8U           ) APP_TASK_PRIO+2,
+                             (INT16U          ) APP_TASK_PRIO+2,  // reuse prio for ID
+                             (OS_STK        * )&ListenForPushbuttonTaskStk[0],
                              (INT32U          ) TASK_STACK_SIZE,
                              (void          * )0,
                              (INT16U          )(OS_TASK_OPT_STK_CLR | OS_TASK_OPT_STK_CHK));
@@ -249,4 +273,36 @@ static void TestSeqeuence(void)
 	steps = YCoord2Steps(16);
     StepMotor(steps);
     OSTimeDlyHMSM(0, 0, 1, 0);
+}
+
+/*
+ *********************************************************************************************************
+ *                                           ListenForPushbuttonTask(void *p_arg)
+ * Description : Listen for push buttons to reset the pulley system
+ * Arguments   : p_arg       Argument passed by 'OSTaskCreate()'.
+ * Returns     : none.
+ * Created by  : main().
+ * Notes       : (1) The ticker MUST be initialised AFTER multitasking has started.
+ *********************************************************************************************************
+ */
+
+// if it hasnt been pushed do the move motor task as is
+// else if it has been pushed stop the motor task and reset to centre then continue the motor task again
+static  void  ListenForPushbuttonTask(void *p_arg)
+{
+    BSP_OS_TmrTickInit(OS_TICKS_PER_SEC);                /* Configure and enable OS tick interrupt.              */
+    BSP_WatchDog_Reset();                                /* Reset the watchdog.                                  */
+
+    INT8U prevBtnValue = 0;
+    for(;;)
+    {
+    	INT8U btnValue = alt_read_byte(BTN_BASE);
+    	if(prevBtnValue != btnValue)
+    	{
+    		prevBtnValue = btnValue;
+//    		OSSemPost(SemPushBtn);
+    	}
+
+        OSTimeDlyHMSM(0, 0, 0, 500);
+    }
 }

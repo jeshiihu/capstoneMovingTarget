@@ -1,45 +1,45 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="com.arm.debugger.launcher2">
 <mapAttribute key="AverageDurationTracker">
-<mapEntry key="*Fetching Data" value="275405723"/>
-<mapEntry key="*Fetching Data Model" value="152896"/>
-<mapEntry key="*list global low level symbols" value="2539077"/>
-<mapEntry key="*loading memory from target" value="25615548"/>
-<mapEntry key="*loading values from target" value="921548"/>
-<mapEntry key="*updating local_variables" value="580533"/>
+<mapEntry key="*Fetching Data" value="60974123"/>
+<mapEntry key="*Fetching Data Model" value="555741"/>
+<mapEntry key="*list global low level symbols" value="4617550"/>
+<mapEntry key="*loading memory from target" value="7223604"/>
+<mapEntry key="*loading values from target" value="1216375"/>
+<mapEntry key="*updating local_variables" value="1574719"/>
 <mapEntry key="*updating variables" value="2239223"/>
-<mapEntry key="AddEventObserver" value="264968"/>
-<mapEntry key="Evaluate" value="964997"/>
+<mapEntry key="AddEventObserver" value="640540"/>
+<mapEntry key="Evaluate" value="13173571"/>
 <mapEntry key="Retrieving globals list" value="30983105"/>
-<mapEntry key="areCachesAvailable" value="303792"/>
-<mapEntry key="backtrace" value="1862969"/>
-<mapEntry key="break" value="8034797"/>
-<mapEntry key="continue" value="113352322"/>
+<mapEntry key="areCachesAvailable" value="753475"/>
+<mapEntry key="backtrace" value="2335366"/>
+<mapEntry key="break" value="6704002"/>
+<mapEntry key="continue" value="37087077"/>
 <mapEntry key="disassemble" value="78490187"/>
-<mapEntry key="file" value="56058913"/>
-<mapEntry key="get byte order" value="1086956"/>
-<mapEntry key="get capabilities" value="151178"/>
-<mapEntry key="get execution addresss" value="554693"/>
-<mapEntry key="get source lines" value="494635"/>
-<mapEntry key="getValidEncodings" value="270822"/>
-<mapEntry key="initialize command help" value="19618103"/>
+<mapEntry key="file" value="55038745"/>
+<mapEntry key="get byte order" value="6105005"/>
+<mapEntry key="get capabilities" value="281822"/>
+<mapEntry key="get execution addresss" value="1344849"/>
+<mapEntry key="get source lines" value="523394"/>
+<mapEntry key="getValidEncodings" value="566762"/>
+<mapEntry key="initialize command help" value="26664335"/>
 <mapEntry key="interrupt" value="40025478"/>
-<mapEntry key="list breakpoints" value="254706"/>
-<mapEntry key="list instruction sets" value="376065"/>
-<mapEntry key="list signals" value="9849875"/>
-<mapEntry key="list watchpoints" value="375533"/>
-<mapEntry key="loadfile" value="394410507"/>
-<mapEntry key="next" value="91676099"/>
-<mapEntry key="remove" value="18273447"/>
-<mapEntry key="set CWD" value="520394"/>
-<mapEntry key="set breakpoint properties" value="21757752"/>
-<mapEntry key="set debug-from" value="520498"/>
-<mapEntry key="source altera_target_check.py" value="208747002"/>
-<mapEntry key="source preloader.ds" value="6117406331"/>
-<mapEntry key="start" value="49737882"/>
-<mapEntry key="step" value="112832360"/>
-<mapEntry key="toggleBreakpoint" value="31165463"/>
-<mapEntry key="waitForTargetToStop" value="281904576"/>
+<mapEntry key="list breakpoints" value="683755"/>
+<mapEntry key="list instruction sets" value="470899"/>
+<mapEntry key="list signals" value="27805869"/>
+<mapEntry key="list watchpoints" value="2443662"/>
+<mapEntry key="loadfile" value="331977042"/>
+<mapEntry key="next" value="100893344"/>
+<mapEntry key="remove" value="12398815"/>
+<mapEntry key="set CWD" value="1816883"/>
+<mapEntry key="set breakpoint properties" value="12523170"/>
+<mapEntry key="set debug-from" value="848030"/>
+<mapEntry key="source altera_target_check.py" value="239523980"/>
+<mapEntry key="source preloader.ds" value="6030114916"/>
+<mapEntry key="start" value="51976779"/>
+<mapEntry key="step" value="81365215"/>
+<mapEntry key="toggleBreakpoint" value="18161006"/>
+<mapEntry key="waitForTargetToStop" value="248926916"/>
 </mapAttribute>
 <intAttribute key="DEBUG_TAB..RESOURCES.COUNT" value="0"/>
 <intAttribute key="FILES.CONNECT_TO_GDB_SERVER.RESOURCES.COUNT" value="0"/>
@@ -123,7 +123,7 @@
 <booleanAttribute key="VFS_ENABLED" value="true"/>
 <stringAttribute key="VFS_LOCAL_DIR" value="${workspace_loc}"/>
 <stringAttribute key="VFS_REMOTE_MOUNT" value="/writeable"/>
-<stringAttribute key="breakpoints" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;breakpoints&gt;&#10;&#9;&lt;breakpoint ignorecount=&quot;0&quot; threadenabled=&quot;no&quot; list_all_threads=&quot;no&quot; core_list=&quot;{}&quot; continue=&quot;no&quot; verboseBreakpoints=&quot;yes&quot; kind=&quot;SOURCEPOSITION&quot;&gt;&#10;&#9;&#9;&lt;master_location index=&quot;0&quot; enabled=&quot;true&quot; version=&quot;2&quot; hostFile=&quot;C:\Users\jhuynh\Desktop\Capstone\MotorPwmAccel\software\MotorDriver\APP\app.c&quot; line=&quot;230&quot;/&gt;&#10;&#9;&#9;&lt;location index=&quot;0&quot; enabled=&quot;true&quot; version=&quot;2&quot; address=&quot;S:0x01006E00&quot; debugFile=&quot;C:/Users/jhuynh/Desktop/Capstone/MotorPwmAccel/software/MotorDriver/APP/app.c&quot; hostFile=&quot;C:\Users\jhuynh\Desktop\Capstone\MotorPwmAccel\software\MotorDriver\APP\app.c&quot; line=&quot;230&quot;/&gt;&#10;&#9;&lt;/breakpoint&gt;&#10;&#9;&lt;breakpoint ignorecount=&quot;0&quot; threadenabled=&quot;no&quot; list_all_threads=&quot;no&quot; core_list=&quot;{}&quot; continue=&quot;no&quot; verboseBreakpoints=&quot;yes&quot; kind=&quot;SOURCEPOSITION&quot;&gt;&#10;&#9;&#9;&lt;master_location index=&quot;0&quot; enabled=&quot;true&quot; version=&quot;2&quot; hostFile=&quot;C:\Users\jhuynh\Desktop\Capstone\MotorPwmAccel\software\MotorDriver\APP\app.c&quot; line=&quot;236&quot;/&gt;&#10;&#9;&#9;&lt;location index=&quot;0&quot; enabled=&quot;true&quot; version=&quot;2&quot; address=&quot;S:0x01006E3C&quot; debugFile=&quot;C:/Users/jhuynh/Desktop/Capstone/MotorPwmAccel/software/MotorDriver/APP/app.c&quot; hostFile=&quot;C:\Users\jhuynh\Desktop\Capstone\MotorPwmAccel\software\MotorDriver\APP\app.c&quot; line=&quot;236&quot;/&gt;&#10;&#9;&lt;/breakpoint&gt;&#10;&#9;&lt;breakpoint ignorecount=&quot;0&quot; threadenabled=&quot;no&quot; list_all_threads=&quot;no&quot; core_list=&quot;{}&quot; continue=&quot;no&quot; verboseBreakpoints=&quot;yes&quot; kind=&quot;SOURCEPOSITION&quot;&gt;&#10;&#9;&#9;&lt;master_location index=&quot;0&quot; enabled=&quot;true&quot; version=&quot;2&quot; hostFile=&quot;C:\Users\jhuynh\Desktop\Capstone\MotorPwmAccel\software\MotorDriver\APP\app.c&quot; line=&quot;242&quot;/&gt;&#10;&#9;&#9;&lt;location index=&quot;0&quot; enabled=&quot;true&quot; version=&quot;2&quot; address=&quot;S:0x01006E78&quot; debugFile=&quot;C:/Users/jhuynh/Desktop/Capstone/MotorPwmAccel/software/MotorDriver/APP/app.c&quot; hostFile=&quot;C:\Users\jhuynh\Desktop\Capstone\MotorPwmAccel\software\MotorDriver\APP\app.c&quot; line=&quot;242&quot;/&gt;&#10;&#9;&lt;/breakpoint&gt;&#10;&#9;&lt;breakpoint ignorecount=&quot;0&quot; threadenabled=&quot;no&quot; list_all_threads=&quot;no&quot; core_list=&quot;{}&quot; continue=&quot;no&quot; verboseBreakpoints=&quot;yes&quot; kind=&quot;SOURCEPOSITION&quot;&gt;&#10;&#9;&#9;&lt;master_location index=&quot;0&quot; enabled=&quot;true&quot; version=&quot;2&quot; address=&quot;S:0x01006D5C&quot; debugFile=&quot;C:/Users/jhuynh/Desktop/Capstone/MotorPwmAccel/software/MotorDriver/APP/app.c&quot; hostFile=&quot;C:\Users\jhuynh\Desktop\Capstone\MotorPwmAccel\software\MotorDriver\APP\app.c&quot; line=&quot;224&quot; function=&quot;TestSeqeuence&quot;/&gt;&#10;&#9;&#9;&lt;location index=&quot;0&quot; enabled=&quot;true&quot; version=&quot;2&quot; address=&quot;S:0x01006DC4&quot; debugFile=&quot;C:/Users/jhuynh/Desktop/Capstone/MotorPwmAccel/software/MotorDriver/APP/app.c&quot; hostFile=&quot;C:\Users\jhuynh\Desktop\Capstone\MotorPwmAccel\software\MotorDriver\APP\app.c&quot; line=&quot;224&quot; function=&quot;TestSeqeuence&quot;/&gt;&#10;&#9;&lt;/breakpoint&gt;&#10;&lt;/breakpoints&gt;&#10;"/>
+<stringAttribute key="breakpoints" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;breakpoints&gt;&#10;&#9;&lt;breakpoint ignorecount=&quot;0&quot; threadenabled=&quot;no&quot; list_all_threads=&quot;no&quot; core_list=&quot;{}&quot; continue=&quot;no&quot; verboseBreakpoints=&quot;yes&quot; kind=&quot;SOURCEPOSITION&quot;&gt;&#10;&#9;&#9;&lt;master_location index=&quot;0&quot; enabled=&quot;true&quot; version=&quot;2&quot; debugFile=&quot;C:/Users/jhuynh/Desktop/Capstone/MotorPwmAccel/software/MotorDriver/APP/app.c&quot; hostFile=&quot;C:\Users\jhuynh\Desktop\Capstone\MotorPwmAccel\software\MotorDriver\APP\app.c&quot; line=&quot;230&quot;/&gt;&#10;&#9;&#9;&lt;location index=&quot;0&quot; enabled=&quot;true&quot; version=&quot;2&quot; debugFile=&quot;C:/Users/jhuynh/Desktop/Capstone/MotorPwmAccel/software/MotorDriver/APP/app.c&quot; hostFile=&quot;C:\Users\jhuynh\Desktop\Capstone\MotorPwmAccel\software\MotorDriver\APP\app.c&quot; line=&quot;230&quot;/&gt;&#10;&#9;&lt;/breakpoint&gt;&#10;&#9;&lt;breakpoint ignorecount=&quot;0&quot; threadenabled=&quot;no&quot; list_all_threads=&quot;no&quot; core_list=&quot;{}&quot; continue=&quot;no&quot; verboseBreakpoints=&quot;yes&quot; kind=&quot;SOURCEPOSITION&quot;&gt;&#10;&#9;&#9;&lt;master_location index=&quot;0&quot; enabled=&quot;true&quot; version=&quot;2&quot; debugFile=&quot;C:/Users/jhuynh/Desktop/Capstone/MotorPwmAccel/software/MotorDriver/APP/app.c&quot; hostFile=&quot;C:\Users\jhuynh\Desktop\Capstone\MotorPwmAccel\software\MotorDriver\APP\app.c&quot; line=&quot;236&quot;/&gt;&#10;&#9;&#9;&lt;location index=&quot;0&quot; enabled=&quot;true&quot; version=&quot;2&quot; debugFile=&quot;C:/Users/jhuynh/Desktop/Capstone/MotorPwmAccel/software/MotorDriver/APP/app.c&quot; hostFile=&quot;C:\Users\jhuynh\Desktop\Capstone\MotorPwmAccel\software\MotorDriver\APP\app.c&quot; line=&quot;236&quot;/&gt;&#10;&#9;&lt;/breakpoint&gt;&#10;&#9;&lt;breakpoint ignorecount=&quot;0&quot; threadenabled=&quot;no&quot; list_all_threads=&quot;no&quot; core_list=&quot;{}&quot; continue=&quot;no&quot; verboseBreakpoints=&quot;yes&quot; kind=&quot;SOURCEPOSITION&quot;&gt;&#10;&#9;&#9;&lt;master_location index=&quot;0&quot; enabled=&quot;true&quot; version=&quot;2&quot; debugFile=&quot;C:/Users/jhuynh/Desktop/Capstone/MotorPwmAccel/software/MotorDriver/APP/app.c&quot; hostFile=&quot;C:\Users\jhuynh\Desktop\Capstone\MotorPwmAccel\software\MotorDriver\APP\app.c&quot; line=&quot;242&quot;/&gt;&#10;&#9;&#9;&lt;location index=&quot;0&quot; enabled=&quot;true&quot; version=&quot;2&quot; debugFile=&quot;C:/Users/jhuynh/Desktop/Capstone/MotorPwmAccel/software/MotorDriver/APP/app.c&quot; hostFile=&quot;C:\Users\jhuynh\Desktop\Capstone\MotorPwmAccel\software\MotorDriver\APP\app.c&quot; line=&quot;242&quot;/&gt;&#10;&#9;&lt;/breakpoint&gt;&#10;&#9;&lt;breakpoint ignorecount=&quot;0&quot; threadenabled=&quot;no&quot; list_all_threads=&quot;no&quot; core_list=&quot;{}&quot; continue=&quot;no&quot; verboseBreakpoints=&quot;yes&quot; kind=&quot;SOURCEPOSITION&quot;&gt;&#10;&#9;&#9;&lt;master_location index=&quot;0&quot; enabled=&quot;true&quot; version=&quot;2&quot; debugFile=&quot;C:/Users/jhuynh/Desktop/Capstone/MotorPwmAccel/software/MotorDriver/APP/app.c&quot; hostFile=&quot;C:\Users\jhuynh\Desktop\Capstone\MotorPwmAccel\software\MotorDriver\APP\app.c&quot; line=&quot;224&quot;/&gt;&#10;&#9;&#9;&lt;location index=&quot;0&quot; enabled=&quot;true&quot; version=&quot;2&quot; debugFile=&quot;C:/Users/jhuynh/Desktop/Capstone/MotorPwmAccel/software/MotorDriver/APP/app.c&quot; hostFile=&quot;C:\Users\jhuynh\Desktop\Capstone\MotorPwmAccel\software\MotorDriver\APP\app.c&quot; line=&quot;224&quot;/&gt;&#10;&#9;&lt;/breakpoint&gt;&#10;&#9;&lt;breakpoint ignorecount=&quot;0&quot; threadenabled=&quot;no&quot; list_all_threads=&quot;no&quot; core_list=&quot;{}&quot; continue=&quot;no&quot; verboseBreakpoints=&quot;yes&quot; kind=&quot;SOURCEPOSITION&quot;&gt;&#10;&#9;&#9;&lt;master_location index=&quot;0&quot; enabled=&quot;true&quot; version=&quot;2&quot; hostFile=&quot;C:\Users\jhuynh\Desktop\Capstone\MotorPwmWithReset\software\MotorDriver\APP\app.c&quot; line=&quot;302&quot;/&gt;&#10;&#9;&#9;&lt;location index=&quot;0&quot; enabled=&quot;true&quot; version=&quot;2&quot; address=&quot;S:0x01006DE4&quot; debugFile=&quot;C:/Users/jhuynh/Desktop/Capstone/MotorPwmWithReset/software/MotorDriver/APP/app.c&quot; hostFile=&quot;C:\Users\jhuynh\Desktop\Capstone\MotorPwmWithReset\software\MotorDriver\APP\app.c&quot; line=&quot;302&quot;/&gt;&#10;&#9;&lt;/breakpoint&gt;&#10;&lt;/breakpoints&gt;&#10;"/>
 <listAttribute key="com.arm.debug.views.common.AddressTracker.debugger.view.DisassemblyView.addresses">
 <listEntry value="&lt;Next Instruction&gt;"/>
 </listAttribute>
@@ -132,12 +132,14 @@
 </listAttribute>
 <listAttribute key="com.arm.debug.views.common.AddressTracker.debugger.view.MemoryView.addresses">
 <listEntry value=""/>
+<listEntry value="0xff200700"/>
 <listEntry value="0xff200400"/>
 <listEntry value="0xff200300"/>
 <listEntry value="0xff200200"/>
 </listAttribute>
 <listAttribute key="com.arm.debug.views.common.AddressTracker.debugger.view.MemoryView.ranges">
 <listEntry value=""/>
+<listEntry value="1024"/>
 <listEntry value="1024"/>
 <listEntry value="1024"/>
 <listEntry value="1024"/>

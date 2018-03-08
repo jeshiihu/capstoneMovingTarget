@@ -1,11 +1,11 @@
-Analysis & Synthesis Status : Successful - Wed Mar 07 10:13:26 2018
+Analysis & Synthesis Status : Successful - Thu Mar 08 11:32:03 2018
 Quartus Prime Version : 17.0.2 Build 602 07/19/2017 SJ Standard Edition
 Revision Name : motorPwm
 Top-level Entity Name : motorPwm
 Family : Cyclone V
 Logic utilization (in ALMs) : N/A
-Total registers : 1872
-Total pins : 132
+Total registers : 1879
+Total pins : 130
 Total virtual pins : 0
 Total block memory bits : 0
 Total DSP Blocks : 0

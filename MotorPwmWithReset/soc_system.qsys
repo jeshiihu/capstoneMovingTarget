@@ -82,7 +82,7 @@
          type = "String";
       }
    }
-   element Push_Buttons_0
+   element Push_Button_0
    {
       datum _sortIndex
       {
@@ -90,7 +90,7 @@
          type = "int";
       }
    }
-   element Push_Buttons_0.avalon_slave
+   element Push_Button_0.avalon_slave
    {
       datum _lockedAddress
       {
@@ -117,6 +117,54 @@
       {
          value = "1";
          type = "int";
+      }
+   }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
       }
    }
    element soc_system
@@ -202,13 +250,13 @@
    dir="end" />
  <interface name="memory" internal="hps_0.memory" type="conduit" dir="end" />
  <interface
-   name="push_buttons_0_conduit_push_btn"
-   internal="Push_Buttons_0.conduit_push_btn"
+   name="push_button_0_conduit_push_btn"
+   internal="Push_Button_0.conduit_push_btn"
    type="conduit"
    dir="end" />
  <interface name="reset" internal="clk_0.clk_in_reset" type="reset" dir="end" />
  <module name="L298N_Pwm_0" kind="L298N_Pwm" version="1.0" enabled="1" />
- <module name="Push_Buttons_0" kind="Push_Buttons" version="1.0" enabled="1" />
+ <module name="Push_Button_0" kind="Push_Button" version="1.0" enabled="1" />
  <module name="clk_0" kind="clock_source" version="17.0" enabled="1">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
@@ -756,7 +804,7 @@
    kind="avalon"
    version="17.0"
    start="hps_0.h2f_lw_axi_master"
-   end="Push_Buttons_0.avalon_slave">
+   end="Push_Button_0.avalon_slave">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0700" />
   <parameter name="defaultConnection" value="false" />
@@ -821,7 +869,7 @@
    kind="clock"
    version="17.0"
    start="clk_0.clk"
-   end="Push_Buttons_0.clock" />
+   end="Push_Button_0.clock" />
  <connection
    kind="clock"
    version="17.0"
@@ -841,7 +889,7 @@
    kind="reset"
    version="17.0"
    start="clk_0.clk_reset"
-   end="Push_Buttons_0.reset" />
+   end="Push_Button_0.reset" />
  <connection
    kind="reset"
    version="17.0"
@@ -856,7 +904,7 @@
    kind="reset"
    version="17.0"
    start="hps_0.h2f_reset"
-   end="Push_Buttons_0.reset" />
+   end="Push_Button_0.reset" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
  <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />

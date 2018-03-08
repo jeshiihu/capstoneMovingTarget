@@ -55,13 +55,13 @@ preplace inst soc_system.clk_0 -pg 1 -lvl 1 -y 160
 preplace inst soc_system.hps_0.f2s_periph_ref_clk -pg 1
 preplace inst soc_system.hps_0.fpga_interfaces -pg 1
 preplace inst soc_system.hps_0.axi_sdram -pg 1
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)clk_0.clk_in_reset,(SLAVE)soc_system.reset) 1 0 1 NJ
 preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)hps_0.memory,(SLAVE)soc_system.memory) 1 0 2 NJ 100 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)hps_0.hps_io,(SLAVE)soc_system.hps_io) 1 0 2 NJ 60 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.clk,(SLAVE)clk_0.clk_in) 1 0 1 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.reset,(SLAVE)clk_0.clk_in_reset) 1 0 1 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.hps_io,(SLAVE)hps_0.hps_io) 1 0 2 NJ 60 NJ
+preplace netloc FAN_OUT<net_container>soc_system</net_container>(SLAVE)L298N_Pwm_0.step,(SLAVE)L298N_Pwm_0.stepMode,(SLAVE)sysid_qsys_0.control_slave,(SLAVE)L298N_Pwm_0.dir,(SLAVE)L298N_Pwm_0.duty,(MASTER)hps_0.h2f_lw_axi_master,(SLAVE)L298N_Pwm_0.cycle) 1 2 1 690
+preplace netloc INTERCONNECT<net_container>soc_system</net_container>(SLAVE)L298N_Pwm_0.reset,(MASTER)clk_0.clk_reset,(MASTER)hps_0.h2f_reset,(SLAVE)sysid_qsys_0.reset) 1 1 2 NJ 190 670
+preplace netloc FAN_OUT<net_container>soc_system</net_container>(SLAVE)sysid_qsys_0.clk,(MASTER)clk_0.clk,(SLAVE)hps_0.h2f_lw_axi_clock,(SLAVE)L298N_Pwm_0.clock) 1 1 2 360 170 710
 preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.l298n_pwm_0_conduit_end,(SLAVE)L298N_Pwm_0.conduit_end) 1 0 3 NJ 150 NJ 150 NJ
-preplace netloc FAN_OUT<net_container>soc_system</net_container>(SLAVE)sysid_qsys_0.clk,(SLAVE)hps_0.h2f_lw_axi_clock,(SLAVE)L298N_Pwm_0.clock,(MASTER)clk_0.clk) 1 1 2 360 170 710
-preplace netloc INTERCONNECT<net_container>soc_system</net_container>(SLAVE)sysid_qsys_0.reset,(MASTER)hps_0.h2f_reset,(MASTER)clk_0.clk_reset,(SLAVE)L298N_Pwm_0.reset) 1 1 2 NJ 190 670
-preplace netloc FAN_OUT<net_container>soc_system</net_container>(SLAVE)sysid_qsys_0.control_slave,(MASTER)hps_0.h2f_lw_axi_master,(SLAVE)L298N_Pwm_0.step) 1 2 1 690
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)clk_0.clk_in,(SLAVE)soc_system.clk) 1 0 1 NJ
 levelinfo -pg 1 0 150 870
 levelinfo -hier soc_system 160 190 480 740 860

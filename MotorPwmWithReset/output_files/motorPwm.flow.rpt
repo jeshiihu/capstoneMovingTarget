@@ -1,5 +1,5 @@
 Flow report for motorPwm
-Wed Mar 07 10:15:37 2018
+Thu Mar 08 11:34:07 2018
 Quartus Prime Version 17.0.2 Build 602 07/19/2017 SJ Standard Edition
 
 
@@ -41,16 +41,16 @@ agreement for further details.
 +-----------------------------------------------------------------------------------+
 ; Flow Summary                                                                      ;
 +---------------------------------+-------------------------------------------------+
-; Flow Status                     ; Successful - Wed Mar 07 10:15:05 2018           ;
+; Flow Status                     ; Successful - Thu Mar 08 11:33:36 2018           ;
 ; Quartus Prime Version           ; 17.0.2 Build 602 07/19/2017 SJ Standard Edition ;
 ; Revision Name                   ; motorPwm                                        ;
 ; Top-level Entity Name           ; motorPwm                                        ;
 ; Family                          ; Cyclone V                                       ;
 ; Device                          ; 5CSEMA5F31C6                                    ;
 ; Timing Models                   ; Final                                           ;
-; Logic utilization (in ALMs)     ; 1,362 / 32,070 ( 4 % )                          ;
-; Total registers                 ; 1928                                            ;
-; Total pins                      ; 132 / 457 ( 29 % )                              ;
+; Logic utilization (in ALMs)     ; 1,375 / 32,070 ( 4 % )                          ;
+; Total registers                 ; 1933                                            ;
+; Total pins                      ; 130 / 457 ( 28 % )                              ;
 ; Total virtual pins              ; 0                                               ;
 ; Total block memory bits         ; 0 / 4,065,280 ( 0 % )                           ;
 ; Total DSP Blocks                ; 0 / 87 ( 0 % )                                  ;
@@ -68,7 +68,7 @@ agreement for further details.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 03/07/2018 10:10:31 ;
+; Start date & time ; 03/08/2018 11:29:08 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; motorPwm            ;
 +-------------------+---------------------+
@@ -79,7 +79,7 @@ agreement for further details.
 +---------------------------------------+--------------------------------------------------------------------------+---------------+--------------------------------+------------+
 ; Assignment Name                       ; Value                                                                    ; Default Value ; Entity Name                    ; Section Id ;
 +---------------------------------------+--------------------------------------------------------------------------+---------------+--------------------------------+------------+
-; COMPILER_SIGNATURE_ID                 ; 268883478210608.152044262703888                                          ; --            ; --                             ; --         ;
+; COMPILER_SIGNATURE_ID                 ; 268883478210608.152053374403516                                          ; --            ; --                             ; --         ;
 ; ECO_REGENERATE_REPORT                 ; On                                                                       ; Off           ; --                             ; --         ;
 ; HPS_ISW_FILE                          ; soc_system/synthesis/submodules/sequencer/alt_types.pre.h                ; --            ; soc_system_hps_0_hps_io_border ; --         ;
 ; HPS_ISW_FILE                          ; soc_system/synthesis/submodules/sequencer/emif.pre.xml                   ; --            ; soc_system_hps_0_hps_io_border ; --         ;
@@ -122,7 +122,7 @@ agreement for further details.
 ; PROJECT_OUTPUT_DIRECTORY              ; output_files                                                             ; --            ; --                             ; --         ;
 ; SLD_FILE                              ; soc_system/synthesis/soc_system.regmap                                   ; --            ; --                             ; --         ;
 ; SLD_FILE                              ; soc_system/synthesis/soc_system.debuginfo                                ; --            ; --                             ; --         ;
-; SLD_INFO                              ; QSYS_NAME soc_system HAS_SOPCINFO 1 GENERATION_ID 1520442568             ; --            ; soc_system                     ; --         ;
+; SLD_INFO                              ; QSYS_NAME soc_system HAS_SOPCINFO 1 GENERATION_ID 1520533687             ; --            ; soc_system                     ; --         ;
 ; SOPCINFO_FILE                         ; soc_system/synthesis/../../soc_system.sopcinfo                           ; --            ; --                             ; --         ;
 ; SYNTHESIS_ONLY_QIP                    ; On                                                                       ; --            ; --                             ; --         ;
 ; USE_DLL_FREQUENCY_FOR_DQS_DELAY_CHAIN ; On                                                                       ; Off           ; --                             ; --         ;
@@ -134,11 +134,11 @@ agreement for further details.
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name               ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis      ; 00:00:27     ; 1.0                     ; 973 MB              ; 00:00:40                           ;
-; Fitter                    ; 00:01:22     ; 1.1                     ; 3282 MB             ; 00:02:32                           ;
-; Assembler                 ; 00:00:11     ; 1.0                     ; 754 MB              ; 00:00:10                           ;
-; TimeQuest Timing Analyzer ; 00:00:30     ; 1.2                     ; 1448 MB             ; 00:00:34                           ;
-; Total                     ; 00:02:30     ; --                      ; --                  ; 00:03:56                           ;
+; Analysis & Synthesis      ; 00:00:27     ; 1.0                     ; 973 MB              ; 00:00:38                           ;
+; Fitter                    ; 00:01:19     ; 1.1                     ; 3279 MB             ; 00:02:33                           ;
+; Assembler                 ; 00:00:10     ; 1.0                     ; 751 MB              ; 00:00:10                           ;
+; TimeQuest Timing Analyzer ; 00:00:30     ; 1.2                     ; 1447 MB             ; 00:00:34                           ;
+; Total                     ; 00:02:26     ; --                      ; --                  ; 00:03:55                           ;
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 
