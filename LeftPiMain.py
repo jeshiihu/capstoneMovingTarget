@@ -5,6 +5,7 @@ from picamera.array import PiRGBAnalysis
 from picamera.streams import PiCameraCircularIO
 import time
 import sys
+import socket
 
 # CAMERA CONSTANTS
 # Focal length of camera in mm
@@ -24,49 +25,47 @@ upperHSVBound = np.array([80, 255, 255])
 displayColors = {'yellow':(0, 255, 255), 'black':(0,0,0)}
 
 programStatus = { 'idle' : 0 , 'seek' : 1 , 'track' : 2 , 'reset' : 3}
-piSide = {'left': 0, 'right': 1}
+
+HOST = '0.0.0.0'
+PORT = 5005
+BUFFER_SIZE = 1024
 
 
-
-class FrameAnalysis(PiRGBAnalysis):
+class LeftPiCameraAnalysis(PiRGBAnalysis):
 
     def analyze(self, frame):
         # Can be threaded to pipeline frames if needed
         processFrame(frame)
 
 
+
+# Run program with "python main.py (left/right)"
 def init():
-    global thisPi
-    
-    if (len(sys.argv) != 2):
-        raise ArgumentError('Invalid arguments, run again with: python main.py (left/right)')
-    
-    if str(sys.argv[1]) == 'left':
-        thisPi = piSide['left']
-    elif str(sys.argv[1]) == 'right':
-        thisPi = piSide['right']
-    else:
-        raise ArgumentError('Invalid arguments, run again with: python main.py (left/right)')
-    
     cv2.namedWindow("video")
-    
     program = programStatus['idle']
-    
+
+    tcpConnection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    tcpConnection.bind((HOST, PORT))
+    tcpConnection.listen(1)
+
+    global conn
+    conn, addr = tcpConnection.accept()
+    data = conn.recv(BUFFER_SIZE)
+    print "TCP init: ", data
+    conn.sendall("Hello back from left Pi")
+
     camera = PiCamera(resolution = videoSize, framerate = fps)
-    analysis = FrameAnalysis(camera)
-    
     camera.exposure_mode = 'off'
-    self.awb_mode = 'off'
-    self.vflip = True
-    
+    camera.awb_mode = 'off'
+    camera.vflip = True
+    analysis = LeftPiCameraAnalysis(camera)
     camera.start_recording(analysis, format='bgr')
     time.sleep(2)
 
-def processFrame(frame):
+def processLeft(frame):
     global frame1, frame 2
     if program == programStatus['idle']:
-        (tracked, _, _, _) = getTrackedFrame(frame)
-        cv2.imshow('video', tracked)
+        return
     
     elif program == programStatus['seek']:
         (tracked, x, y, _) = getTrackedFrame(frame)
@@ -102,6 +101,8 @@ def processFrame(frame):
 
     elif program == programStatus['reset']:
         programStatus['idle']
+
+def processRight(frame):
    
 def trackObject(frame):
     
