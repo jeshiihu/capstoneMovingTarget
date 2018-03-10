@@ -7,6 +7,7 @@ import sys
 import socket
 import json
 import numpy as np
+import datetime
 # Camera Settings
 fps = 90
 videoSize = (640, 480)
@@ -31,6 +32,8 @@ class RightPiCameraAnalysis(PiRGBAnalysis):
 
 # Run program with "python main.py (left/right)"
 def init():
+    global timeStart
+    timeStart = datetime.datetime.now()
     cv2.namedWindow("video")
     program = programStatus['idle']
 
@@ -41,13 +44,13 @@ def init():
     data = tcpConnection.recv(BUFFER_SIZE)
     print "TCP init: ", data
 
-    camera = PiCamera(resolution = videoSize, framerate = fps)
-    camera.exposure_mode = 'off'
-    camera.awb_mode = 'off'
-    camera.vflip = True
-    analysis = RightPiCameraAnalysis(camera)
-    camera.start_recording(analysis, format='bgr')
-    time.sleep(2)
+##    camera = PiCamera(resolution = videoSize, framerate = fps)
+##    camera.exposure_mode = 'off'
+##    camera.awb_mode = 'off'
+##    camera.vflip = True
+##    analysis = RightPiCameraAnalysis(camera)
+##    camera.start_recording(analysis, format='bgr')
+##    time.sleep(2)
 
 def processFrame(frame):
     global frame1, frame2
@@ -109,14 +112,40 @@ def cameraOriginToCenterX(x):
 def cameraOriginToCenterY(y):
     return 240-y
 
+def ntpHandshake():
+    global timeStart
+    print "timestart is: ", timeStart
+    t0 = getMicroseconds()
+    tcpConnection.sendall(str(t0))
+    data = tcpConnection.recv(BUFFER_SIZE)
+    t3 = getMicroseconds()
+    t1 = int(data)
+    transmissionTime = (t3 - t0)/2
+    timeOffset = ((t1-t0)+(t1-t3))/2
+    timeStart = timeStart + datetime.timedelta(microseconds=timeOffset)
+    tcpConnection.sendall(str(timeStart))
+    time.sleep(transmissionTime/1000000)
+    print "Time offset is: ", timeOffset
+    print "Sync time is: ",getMicroseconds()
+    
+def getMicroseconds():
+    time = datetime.datetime.now() - timeStart
+    return (time.seconds*1000000) + time.microseconds
+
+
 def main():
     init()
-
+    for i in range(0,10):
+        ntpHandshake()
+        time.sleep(1)
     while 1:
         key = cv2.waitKey(5) & 0xFF
         if key == 27:
-            camera.close()
+##            camera.close()
             break
+        
+        
+    tcpConnection.close()
 
 
 main()
