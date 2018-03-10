@@ -6,6 +6,7 @@ from picamera.streams import PiCameraCircularIO
 import time
 import sys
 import socket
+import numpy as np
 
 # CAMERA CONSTANTS
 # Focal length of camera in mm
@@ -63,7 +64,7 @@ def init():
     time.sleep(2)
 
 def processLeft(frame):
-    global frame1, frame 2
+    global frame1, frame2
     if program == programStatus['idle']:
         return
     
@@ -102,7 +103,6 @@ def processLeft(frame):
     elif program == programStatus['reset']:
         programStatus['idle']
 
-def processRight(frame):
    
 def trackObject(frame):
     
@@ -159,12 +159,6 @@ def getCartesianCoordinates(xLeft, yLeft, xRight, yRight):
     X = getXCoor(cameraOriginToCenterX(xLeft), Z)
     Y = getYCoor(cameraOriginToCenterY(yLeft), Z)
     return (X, Y, Z)
-
-def getRightPiCoor():
-    # Server side get coordinates from Right Pi
-
-def giveRightPiCoor():
-    # Client side give coordinates to Left Pi
 
 
 def xVelocity(x1, x2, timedelta):
