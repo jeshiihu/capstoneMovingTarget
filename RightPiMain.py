@@ -6,7 +6,7 @@ import time
 import sys
 import socket
 import json
-
+import numpy as np
 # Camera Settings
 fps = 90
 videoSize = (640, 480)
@@ -18,7 +18,7 @@ displayColors = {'yellow':(0, 255, 255), 'black':(0,0,0)}
 
 programStatus = { 'idle' : 0 , 'seek' : 1 , 'track' : 2 , 'reset' : 3}
 
-HOST = '0.0.0.0'
+HOST = '169.254.48.206'
 PORT = 5005
 BUFFER_SIZE = 1024
 
@@ -38,7 +38,7 @@ def init():
     tcpConnection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     tcpConnection.connect((HOST, PORT))
     tcpConnection.sendall("Hello from right Pi")
-    date tcpConnection.recv(BUFFER_SIZE)
+    data = tcpConnection.recv(BUFFER_SIZE)
     print "TCP init: ", data
 
     camera = PiCamera(resolution = videoSize, framerate = fps)
@@ -50,7 +50,7 @@ def init():
     time.sleep(2)
 
 def processFrame(frame):
-    global frame1, frame 2
+    global frame1, frame2
     if program == programStatus['idle']:
         return
 
