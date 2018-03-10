@@ -1,0 +1,60 @@
+-- EasyDriver.vhd
+
+-- This file was auto-generated as a prototype implementation of a module
+-- created in component editor.  It ties off all outputs to ground and
+-- ignores all inputs.  It needs to be edited to make it do something
+-- useful.
+-- 
+-- This file will not be automatically regenerated.  You should check it in
+-- to your version control system if you want to keep it.
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+
+entity EasyDriver is
+	port (
+		reset_n            : in  std_logic                    := '0';             --         reset.reset_n
+		clk                : in  std_logic                    := '0';             --         clock.clk
+		conduit_end_dir    : in  std_logic                    := '0';             --   conduit_end.dir
+		conduit_end_step   : in  std_logic                    := '0';             --              .step
+		conduit_end_enable : in  std_logic                    := '0';             --              .enable
+		step_read_n        : in  std_logic                    := '0';             --   avalon_step.read_n
+		step_readdata      : out std_logic_vector(7 downto 0);                    --              .readdata
+		step_write_n       : in  std_logic                    := '0';             --              .write_n
+		step_writedata     : in  std_logic_vector(7 downto 0) := (others => '0'); --              .writedata
+		dir_read_n         : in  std_logic                    := '0';             --    avalon_dir.read_n
+		dir_readdata       : out std_logic_vector(7 downto 0);                    --              .readdata
+		dir_write_n        : in  std_logic                    := '0';             --              .write_n
+		dir_writedata      : in  std_logic_vector(7 downto 0) := (others => '0'); --              .writedata
+		enable_read_n      : in  std_logic                    := '0';             -- avalon_enable.read_n
+		enable_readdata    : out std_logic_vector(7 downto 0);                    --              .readdata
+		enable_write_n     : in  std_logic                    := '0';             --              .write
+		enable_writedata   : in  std_logic_vector(7 downto 0) := (others => '0'); --              .writedata
+		cycle_read_n       : in  std_logic                    := '0';             --  avalon_cycle.read_n
+		cycle_readdata     : out std_logic_vector(7 downto 0);                    --              .readdata
+		cycle_write_n      : in  std_logic                    := '0';             --              .write_n
+		cycle_writedata    : in  std_logic_vector(7 downto 0) := (others => '0'); --              .writedata
+		freq_read_n        : in  std_logic                    := '0';             --   avalon_freq.read_n
+		freq_readdata      : out std_logic_vector(7 downto 0);                    --              .readdata
+		freq_write_n       : in  std_logic                    := '0';             --              .write_n
+		freq_writedata     : in  std_logic_vector(7 downto 0) := (others => '0')  --              .writedata
+	);
+end entity EasyDriver;
+
+architecture rtl of EasyDriver is
+begin
+
+	-- TODO: Auto-generated HDL template
+
+	step_readdata <= "00000000";
+
+	dir_readdata <= "00000000";
+
+	enable_readdata <= "00000000";
+
+	cycle_readdata <= "00000000";
+
+	freq_readdata <= "00000000";
+
+end architecture rtl; -- of EasyDriver

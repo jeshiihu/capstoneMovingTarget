@@ -1,5 +1,5 @@
 Info: Starting: Create block symbol file (.bsf)
-Info: qsys-generate C:\Users\jhuynh\Desktop\Capstone\MotorPwmWithReset\soc_system.qsys --block-symbol-file --output-directory=C:\Users\jhuynh\Desktop\Capstone\MotorPwmWithReset\soc_system --family="Cyclone V" --part=5CSEMA5F31C6
+Info: qsys-generate C:\Users\jhuynh\Documents\capstoneMovingTarget\MotorPwmWithReset\soc_system.qsys --block-symbol-file --output-directory=C:\Users\jhuynh\Documents\capstoneMovingTarget\MotorPwmWithReset\soc_system --family="Cyclone V" --part=5CSEMA5F31C6
 Progress: Loading MotorPwmWithReset/soc_system.qsys
 Progress: Reading input file
 Progress: Adding L298N_Pwm_0 [L298N_Pwm 1.0]
@@ -24,7 +24,7 @@ Info: qsys-generate succeeded.
 Info: Finished: Create block symbol file (.bsf)
 Info: 
 Info: Starting: Create HDL design files for synthesis
-Info: qsys-generate C:\Users\jhuynh\Desktop\Capstone\MotorPwmWithReset\soc_system.qsys --synthesis=VHDL --output-directory=C:\Users\jhuynh\Desktop\Capstone\MotorPwmWithReset\soc_system\synthesis --family="Cyclone V" --part=5CSEMA5F31C6
+Info: qsys-generate C:\Users\jhuynh\Documents\capstoneMovingTarget\MotorPwmWithReset\soc_system.qsys --synthesis=VHDL --output-directory=C:\Users\jhuynh\Documents\capstoneMovingTarget\MotorPwmWithReset\soc_system\synthesis --family="Cyclone V" --part=5CSEMA5F31C6
 Progress: Loading MotorPwmWithReset/soc_system.qsys
 Progress: Reading input file
 Progress: Adding L298N_Pwm_0 [L298N_Pwm 1.0]
@@ -73,18 +73,18 @@ Info: router_002: "mm_interconnect_0" instantiated altera_merlin_router "router_
 Info: router_003: "mm_interconnect_0" instantiated altera_merlin_router "router_003"
 Info: router_007: "mm_interconnect_0" instantiated altera_merlin_router "router_007"
 Info: hps_0_h2f_lw_axi_master_wr_limiter: "mm_interconnect_0" instantiated altera_merlin_traffic_limiter "hps_0_h2f_lw_axi_master_wr_limiter"
-Info: Reusing file C:/Users/jhuynh/Desktop/Capstone/MotorPwmWithReset/soc_system/synthesis/submodules/altera_avalon_sc_fifo.v
+Info: Reusing file C:/Users/jhuynh/Documents/capstoneMovingTarget/MotorPwmWithReset/soc_system/synthesis/submodules/altera_avalon_sc_fifo.v
 Info: Push_Button_0_avalon_slave_burst_adapter: "mm_interconnect_0" instantiated altera_merlin_burst_adapter "Push_Button_0_avalon_slave_burst_adapter"
-Info: Reusing file C:/Users/jhuynh/Desktop/Capstone/MotorPwmWithReset/soc_system/synthesis/submodules/altera_merlin_address_alignment.sv
-Info: Reusing file C:/Users/jhuynh/Desktop/Capstone/MotorPwmWithReset/soc_system/synthesis/submodules/altera_avalon_st_pipeline_base.v
+Info: Reusing file C:/Users/jhuynh/Documents/capstoneMovingTarget/MotorPwmWithReset/soc_system/synthesis/submodules/altera_merlin_address_alignment.sv
+Info: Reusing file C:/Users/jhuynh/Documents/capstoneMovingTarget/MotorPwmWithReset/soc_system/synthesis/submodules/altera_avalon_st_pipeline_base.v
 Info: cmd_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "cmd_demux"
 Info: cmd_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux"
 Info: rsp_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "rsp_demux"
 Info: rsp_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "rsp_mux"
-Info: Reusing file C:/Users/jhuynh/Desktop/Capstone/MotorPwmWithReset/soc_system/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: Reusing file C:/Users/jhuynh/Documents/capstoneMovingTarget/MotorPwmWithReset/soc_system/synthesis/submodules/altera_merlin_arbitrator.sv
 Info: Push_Button_0_avalon_slave_rsp_width_adapter: "mm_interconnect_0" instantiated altera_merlin_width_adapter "Push_Button_0_avalon_slave_rsp_width_adapter"
-Info: Reusing file C:/Users/jhuynh/Desktop/Capstone/MotorPwmWithReset/soc_system/synthesis/submodules/altera_merlin_address_alignment.sv
-Info: Reusing file C:/Users/jhuynh/Desktop/Capstone/MotorPwmWithReset/soc_system/synthesis/submodules/altera_merlin_burst_uncompressor.sv
+Info: Reusing file C:/Users/jhuynh/Documents/capstoneMovingTarget/MotorPwmWithReset/soc_system/synthesis/submodules/altera_merlin_address_alignment.sv
+Info: Reusing file C:/Users/jhuynh/Documents/capstoneMovingTarget/MotorPwmWithReset/soc_system/synthesis/submodules/altera_merlin_burst_uncompressor.sv
 Info: avalon_st_adapter: "mm_interconnect_0" instantiated altera_avalon_st_adapter "avalon_st_adapter"
 Info: avalon_st_adapter_001: "mm_interconnect_0" instantiated altera_avalon_st_adapter "avalon_st_adapter_001"
 Info: avalon_st_adapter_005: "mm_interconnect_0" instantiated altera_avalon_st_adapter "avalon_st_adapter_005"

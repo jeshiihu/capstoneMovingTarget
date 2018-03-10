@@ -192,8 +192,8 @@ begin
 							getHalfStep(currStep, four_coils => output_coils );
 						end if;
 						
-						en_a   <= output_coils(5);
-						en_b   <= output_coils(4);
+						en_a   <= '0';
+						en_b   <= '0';
 						a 		 <= output_coils(3);
 						a_comp <= output_coils(2);
 						b 		 <= output_coils(1);
