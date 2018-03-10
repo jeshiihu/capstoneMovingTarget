@@ -7,6 +7,7 @@ import time
 import sys
 import socket
 import numpy as np
+import datetime
 
 # CAMERA CONSTANTS
 # Focal length of camera in mm
@@ -42,6 +43,9 @@ class LeftPiCameraAnalysis(PiRGBAnalysis):
 
 # Run program with "python main.py (left/right)"
 def init():
+    global timeStart
+    timeStart = datetime.datetime.now()
+    
     cv2.namedWindow("video")
     program = programStatus['idle']
 
@@ -55,13 +59,23 @@ def init():
     print "TCP init: ", data
     conn.sendall("Hello back from left Pi")
 
-    camera = PiCamera(resolution = videoSize, framerate = fps)
-    camera.exposure_mode = 'off'
-    camera.awb_mode = 'off'
-    camera.vflip = True
-    analysis = LeftPiCameraAnalysis(camera)
-    camera.start_recording(analysis, format='bgr')
-    time.sleep(2)
+##    camera = PiCamera(resolution = videoSize, framerate = fps)
+##    camera.exposure_mode = 'off'
+##    camera.awb_mode = 'off'
+##    camera.vflip = True
+##    analysis = LeftPiCameraAnalysis(camera)
+##    camera.start_recording(analysis, format='bgr')
+##    time.sleep(2)
+    
+def ntpHandshake():
+    data = conn.recv(BUFFER_SIZE)
+    conn.sendall(str(getMicroseconds()))
+    data2 = conn.recv(BUFFER_SIZE)
+    print "Sync time is: " , getMicroseconds()
+    
+def getMicroseconds():
+    time = datetime.datetime.now() - timeStart
+    return (time.seconds*1000000) + time.microseconds
 
 def processLeft(frame):
     global frame1, frame2
@@ -179,12 +193,16 @@ def projectileMotion(x1, x2, y1, y2, timedelta, xGoal):
 
 def main():
     init()
-
+    for i in range(0, 10):
+        ntpHandshake()
+        time.sleep(1)
     while 1:
+        
         key = cv2.waitKey(5) & 0xFF
         if key == 27:
-            camera.close()
+##            camera.close()
             break
+    conn.close()
 
 
 main()
