@@ -1,0 +1,309 @@
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd failed with 2 errors.
+# 2 compiles, 1 failed with 2 errors.
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd failed with 1 errors.
+# 2 compiles, 1 failed with 1 error.
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd failed with 1 errors.
+# 2 compiles, 1 failed with 1 error.
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd failed with 2 errors.
+# 2 compiles, 1 failed with 2 errors.
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd was successful.
+# 2 compiles, 0 failed with no errors.
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd was successful.
+# 2 compiles, 0 failed with no errors.
+vsim -gui work.l298n_pwm_tb
+# vsim -gui work.l298n_pwm_tb 
+# Start time: 15:13:58 on Feb 27,2018
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading work.l298n_pwm_tb(behave)
+# Loading ieee.numeric_std(body)
+# Loading work.l298n_pwm(rtl)
+add wave -position insertpoint sim:/l298n_pwm_tb/*
+restart
+run
+add wave -position insertpoint sim:/l298n_pwm_tb/*
+add wave -position end  sim:/l298n_pwm_tb/rst
+restart
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd failed with 2 errors.
+# 2 compiles, 1 failed with 2 errors.
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd failed with 2 errors.
+# 2 compiles, 1 failed with 2 errors.
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd was successful.
+# 2 compiles, 0 failed with no errors.
+restart
+# Loading work.l298n_pwm_tb(behave)
+# Loading work.l298n_pwm(rtl)
+run
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd was successful.
+# 2 compiles, 0 failed with no errors.
+restart
+# Loading work.l298n_pwm_tb(behave)
+# Loading work.l298n_pwm(rtl)
+# Warning in wave window restart: (vish-4014) No objects found matching '/l298n_pwm_tb/rst'. 
+add wave -position insertpoint sim:/l298n_pwm_tb/*
+run
+restart
+run
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd failed with 4 errors.
+# 2 compiles, 1 failed with 4 errors.
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd was successful.
+# 2 compiles, 0 failed with no errors.
+add wave -position insertpoint sim:/l298n_pwm_tb/*
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd was successful.
+# 2 compiles, 0 failed with no errors.
+add wave -position insertpoint sim:/l298n_pwm_tb/*
+restart
+# Loading work.l298n_pwm_tb(behave)
+# Loading work.l298n_pwm(rtl)
+add wave -position insertpoint sim:/l298n_pwm_tb/*
+run
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd was successful.
+# 2 compiles, 0 failed with no errors.
+restart
+# Loading work.l298n_pwm_tb(behave)
+# Loading work.l298n_pwm(rtl)
+run
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd was successful.
+# 2 compiles, 0 failed with no errors.
+restart
+# Loading work.l298n_pwm_tb(behave)
+# Loading work.l298n_pwm(rtl)
+run
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd was successful.
+# 2 compiles, 0 failed with no errors.
+restart
+# Loading work.l298n_pwm_tb(behave)
+# Loading work.l298n_pwm(rtl)
+run
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd was successful.
+# 2 compiles, 0 failed with no errors.
+restart
+# Loading work.l298n_pwm_tb(behave)
+# Loading work.l298n_pwm(rtl)
+run
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd failed with 2 errors.
+# 2 compiles, 1 failed with 2 errors.
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd failed with 2 errors.
+# 2 compiles, 1 failed with 2 errors.
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd was successful.
+# 2 compiles, 0 failed with no errors.
+restart
+# Loading work.l298n_pwm_tb(behave)
+# Loading work.l298n_pwm(rtl)
+add wave -position insertpoint sim:/l298n_pwm_tb/*
+add wave -position insertpoint sim:/l298n_pwm_tb/*
+run
+restart
+run
+restart
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd was successful.
+# 2 compiles, 0 failed with no errors.
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd was successful.
+# 2 compiles, 0 failed with no errors.
+restart
+# Loading work.l298n_pwm_tb(behave)
+# Loading work.l298n_pwm(rtl)
+run
+restart
+run
+# Break in Process write_to_hBridge at C:/Users/jhuynh/Desktop/Capstone/MotorPwmAccel/pwmModelSim/pwm.vhd line 84
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+# Next activity is in 50 ns.
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+# Next activity is in 50 ns.
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+# Next activity is in 50 ns.
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+restart
+# Compile of pwm.vhd failed with 7 errors.
+# Compile of pwm_tb.vhd was successful.
+# 2 compiles, 1 failed with 7 errors.
+# Compile of pwm.vhd failed with 3 errors.
+# Compile of pwm_tb.vhd was successful.
+# 2 compiles, 1 failed with 3 errors.
+# Compile of pwm.vhd failed with 2 errors.
+# Compile of pwm_tb.vhd was successful.
+# 2 compiles, 1 failed with 2 errors.
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd was successful.
+# 2 compiles, 0 failed with no errors.
+restart
+# Loading work.l298n_pwm_tb(behave)
+# Loading work.l298n_pwm(rtl)
+run
+# Break in Process write_to_hBridge at C:/Users/jhuynh/Desktop/Capstone/MotorPwmAccel/pwmModelSim/pwm.vhd line 117
+restart
+# Break in Process write_to_hBridge at C:/Users/jhuynh/Desktop/Capstone/MotorPwmAccel/pwmModelSim/pwm.vhd line 117
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+# Next activity is in 50 ns.
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+# Next activity is in 50 ns.
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+restart
+add wave -position insertpoint sim:/l298n_pwm_tb/*
+run
+restart
+run
+restart
+run
+restart
+run
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd was successful.
+# 2 compiles, 0 failed with no errors.
+restart
+# Loading work.l298n_pwm_tb(behave)
+# Loading work.l298n_pwm(rtl)
+run
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd was successful.
+# 2 compiles, 0 failed with no errors.
+restart
+# Loading work.l298n_pwm_tb(behave)
+# Loading work.l298n_pwm(rtl)
+run
+# Break in Process write_to_hBridge at C:/Users/jhuynh/Desktop/Capstone/MotorPwmAccel/pwmModelSim/pwm.vhd line 141
+run
+restart
+restart
+run
+# Compile of pwm.vhd was successful.
+# Compile of pwm_tb.vhd was successful.
+# 2 compiles, 0 failed with no errors.
+# Load canceled
+restart
+# Loading work.l298n_pwm_tb(behave)
+# Loading work.l298n_pwm(rtl)
+run
+write format wave -window .main_pane.wave.interior.cs.body.pw.wf C:/Users/jhuynh/Desktop/Capstone/MotorPwmAccel/pwmModelSim/wave.do
+# End time: 16:38:55 on Feb 27,2018, Elapsed time: 1:24:57
+# Errors: 2, Warnings: 0
