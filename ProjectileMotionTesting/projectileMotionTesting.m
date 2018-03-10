@@ -1,4 +1,7 @@
-%%% ECE 492 - Group 3 Projectile Motion Testing 
+%%% ECE 492 - Group 3 Projectile Motion Testing
+%%% Created by: Tyler Mathieu
+%%% Last Edited: March 5, 2018
+%%% Based on code from https://www.mathworks.com/help/matlab/ref/quiver3.html
 
 function [] = projectileMotionTesting(xPos, yPos, zPos, xVel, yVel, zVel)
 %This function takes our data from the raspberryPi and plots those 
