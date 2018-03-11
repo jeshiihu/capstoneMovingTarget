@@ -17,7 +17,7 @@ lowerHSVBound = np.array([60, 0, 100])
 upperHSVBound = np.array([80, 255, 255])
 displayColors = {'yellow':(0, 255, 255), 'black':(0,0,0)}
 
-programStatus = { 'idle' : 0 , 'seek' : 1 , 'track' : 2 , 'reset' : 3}
+programStatus = { 'idle' : 0 , 'track' : 1 , 'send' : 2}
 
 HOST = '169.254.48.206'
 PORT = 5005
@@ -26,8 +26,24 @@ BUFFER_SIZE = 1024
 class RightPiCameraAnalysis(PiRGBAnalysis):
     
     def analyze(self, frame):
-        # Can be threaded to pipeline frames if needed
-        processFrame(frame)
+        global program
+
+        if program == programStatus['idle']:
+            return
+
+        if program == programStatus['track']:
+            if not frame1Left:
+                # Begin thread here
+                getFirstFrame(frame)
+                return
+            
+            if not frame2Left:
+                # Begin thread here
+                getSecondFrame(frame)
+                return
+
+            program = programStatus['send']
+            return
 
 
 # Run program with "python main.py (left/right)"
@@ -44,36 +60,18 @@ def init():
     data = tcpConnection.recv(BUFFER_SIZE)
     print "TCP init: ", data
 
-##    camera = PiCamera(resolution = videoSize, framerate = fps)
-##    camera.exposure_mode = 'off'
-##    camera.awb_mode = 'off'
-##    camera.vflip = True
-##    analysis = RightPiCameraAnalysis(camera)
-##    camera.start_recording(analysis, format='bgr')
-##    time.sleep(2)
-
-def processFrame(frame):
-    global frame1, frame2
-    if program == programStatus['idle']:
-        return
-
-    elif program == programStatus['track']:
-        if frame1 is None:
-            (frame1, x1, y1, time1) = getTrackedFrame(frame)
-            return
-        if frame2 is None:
-            (frame2, x2, y2, time2) = getTrackedFrame(frame)
-            return
-        
-              
-        program = programStatus['reset']
-        
-
-    elif program == programStatus['reset']:
-        programStatus['idle']
+    camera = PiCamera(resolution = videoSize, framerate = fps)
+    camera.exposure_mode = 'off'
+    camera.awb_mode = 'off'
+    camera.vflip = True
+    analysis = RightPiCameraAnalysis(camera)
+    camera.start_recording(analysis, format='bgr')
+    time.sleep(2)
 
    
 def trackObject(frame):
+
+    time = getMilliseconds()
     
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     
@@ -94,17 +92,12 @@ def trackObject(frame):
         
     cv2.circle(frame, (int(x), int(y)), 1, colors['yellow'], 3)
     cv2.circle(frame, (int(x), int(y)), int(radius), colors['yellow'], 2)
-    cv2.putText(frame, 'x: ' + str(x), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
-    cv2.putText(frame, 'y: ' + str(y), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
-    cv2.putText(frame, 'radius: ' + str(radius), (20,100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
+    cv2.putText(frame, 'X: ' + str(x), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
+    cv2.putText(frame, 'Y: ' + str(y), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
+    cv2.putText(frame, 'Radius: ' + str(radius), (20,100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
+    cv2.putText(frame, 'Time: ' + str(time), (20,140), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
 
-    return frame, int(x), int(y)
-
-def getTrackedFrame(frame):
-    (tracked, x, y) = trackObject(frame)
-    if x != -1:
-        return True, tracked, x, y, time
-    return False
+    return frame, int(x), int(y), time
 
 def cameraOriginToCenterX(x):
     return 320-x
@@ -112,40 +105,56 @@ def cameraOriginToCenterX(x):
 def cameraOriginToCenterY(y):
     return 240-y
 
-def ntpHandshake():
-    global timeStart
-    print "timestart is: ", timeStart
-    t0 = getMicroseconds()
-    tcpConnection.sendall(str(t0))
-    data = tcpConnection.recv(BUFFER_SIZE)
-    t3 = getMicroseconds()
-    t1 = int(data)
-    transmissionTime = (t3 - t0)/2
-    timeOffset = ((t1-t0)+(t1-t3))/2
-    timeStart = timeStart + datetime.timedelta(microseconds=timeOffset)
-    tcpConnection.sendall(str(timeStart))
-    time.sleep(transmissionTime/1000000)
-    print "Time offset is: ", timeOffset
-    print "Sync time is: ",getMicroseconds()
-    
 def getMicroseconds():
     time = datetime.datetime.now() - timeStart
     return (time.seconds*1000000) + time.microseconds
 
+def getMilliseconds():
+    return getMilliseconds()/1000
+
+def getFirstFrame(frame):
+    tmp = trackObject(frame)
+    if x not -1:
+        global frame1, videoFrame1
+        videoFrame1 = tmp[0]
+        frame1Left = (tmp[1], tmp[2], tmp[3])
+
+def getSecondFrame(frame):
+    tmp = trackObject(frame)
+    if x not -1:
+        global frame2, videoFrame2
+        videoFrame2 = tmp[0]
+        frame2 = (tmp[1], tmp[2], tmp[3])
+
+def sendCoorToLeftPi():
+    msg = {"frame1" : frame1, "frame2": frame2}
+    json = json.dumps(msg)
+    tcpConnection.sendall(json)
+
 
 def main():
+    global program
     init()
-    for i in range(0,10):
-        ntpHandshake()
-        time.sleep(1)
     while 1:
+
+        if program = programStatus['idle']:
+            data = tcpConnection.recv(BUFFER_SIZE)
+            if data == "track":
+                program = programStatus['track']
+
+        if program = programStatus['send']:
+            sendCoorToLeftPi()
+            program = programStatus['idle']
+
         key = cv2.waitKey(5) & 0xFF
         if key == 27:
-##            camera.close()
+            camera.close()
             break
-        
-        
+        elif key == 32:
+            program = programStatus['seek']
+
     tcpConnection.close()
+
 
 
 main()

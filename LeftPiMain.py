@@ -26,18 +26,62 @@ lowerHSVBound = np.array([60, 0, 100])
 upperHSVBound = np.array([80, 255, 255])
 displayColors = {'yellow':(0, 255, 255), 'black':(0,0,0)}
 
-programStatus = { 'idle' : 0 , 'seek' : 1 , 'track' : 2 , 'reset' : 3}
+programStatus = { 'idle' : 0 , 'seek' : 1 , 'track' : 2 , 'analyze': 3}
 
 HOST = '0.0.0.0'
 PORT = 5005
 BUFFER_SIZE = 1024
 
+delayFrames = 5
+
+
+videoFrame1 = None
+videoFrame2 = None
+frame1Left = None
+frame2Left = None
+frame1Right = None
+frame2Right = None
+
 
 class LeftPiCameraAnalysis(PiRGBAnalysis):
 
     def analyze(self, frame):
-        # Can be threaded to pipeline frames if needed
-        processFrame(frame)
+        global program
+
+        if program == programStatus['idle']:
+            return
+        
+        if program == programStatus['seek']:
+            if ballInFrame(frame):
+                program = programStatus['track']
+                global frame1Left, frame2Left
+                frame1Left = None
+                frame2Left = None
+                delayCounter = 0
+            return
+
+        if program == programStatus['track']:
+            if delayCounter < delayFrames:
+                delayCounter += 1
+                return
+
+            if delayCounter == delayFrames:
+                delayCounter +=1
+                conn.sendall("track")
+
+
+            if not frame1Left:
+                # Begin thread here
+                getFirstFrame(frame)
+                return
+            
+            if not frame2Left:
+                # Begin thread here
+                getSecondFrame(frame)
+                return
+
+            program = programStatus['analyze']
+            return
 
 
 
@@ -59,66 +103,51 @@ def init():
     print "TCP init: ", data
     conn.sendall("Hello back from left Pi")
 
-##    camera = PiCamera(resolution = videoSize, framerate = fps)
-##    camera.exposure_mode = 'off'
-##    camera.awb_mode = 'off'
-##    camera.vflip = True
-##    analysis = LeftPiCameraAnalysis(camera)
-##    camera.start_recording(analysis, format='bgr')
-##    time.sleep(2)
-    
-def ntpHandshake():
-    data = conn.recv(BUFFER_SIZE)
-    conn.sendall(str(getMicroseconds()))
-    data2 = conn.recv(BUFFER_SIZE)
-    print "Sync time is: " , getMicroseconds()
+    camera = PiCamera(resolution = videoSize, framerate = fps)
+    camera.exposure_mode = 'off'
+    camera.awb_mode = 'off'
+    camera.vflip = True
+    analysis = LeftPiCameraAnalysis(camera)
+    camera.start_recording(analysis, format='bgr')
+    time.sleep(2)
     
 def getMicroseconds():
     time = datetime.datetime.now() - timeStart
     return (time.seconds*1000000) + time.microseconds
 
-def processLeft(frame):
-    global frame1, frame2
-    if program == programStatus['idle']:
-        return
-    
-    elif program == programStatus['seek']:
-        (tracked, x, y, _) = getTrackedFrame(frame)
-        if x != -1:
-            program = programStatus['track']
-            frameCount = 0
-            frame1 = None
-            frame2 = None
+def getMilliseconds():
+    return getMilliseconds()/1000
 
-    elif program == programStatus['track']:
-        if frame1 is None:
-            (frame1, x1, y1, time1) = getTrackedFrame(frame)
-            return
-        if frame2 is None:
-            (frame2, x2, y2, time2) = getTrackedFrame(frame)
-            return
+def getFirstFrame(frame):
+    tmp = trackObject(frame)
+    if x not -1:
+        global frame1Left, videoFrame1
+        videoFrame1 = tmp[0]
+        frame1Left = (tmp[1], tmp[2], tmp[3])
 
-        if thisPi == piSide['left']:
-            (xRight1, yRight1, timeRight1) = getRightPiCoor(1)
-            (xRight2, yRight2, timeRight2) = getRightPiCoor(2)
+def getSecondFrame(frame):
+    tmp = trackObject(frame)
+    if x not -1:
+        global frame2Left, videoFrame2
+        videoFrame2 = tmp[0]
+        frame2Left = (tmp[1], tmp[2], tmp[3])
 
-            (xCart1, yCart1, zCart1) = getCartesianCoordinates(x1, y1, xRight1, yRight1)
-            (xCart2, yCart2, zCart2) = getCartesianCoordinates(x2, y2, xRight2, yRight2)
+def ballInFrame(frame):
+    tracked, x, y, time = trackObject(frame)
+    if x not -1:
+        return True
+    return False
 
-            yGoal = projectileMotion(xCart1, xCart2, yCart1, yCart2, time2-time1, 100)
-
-            print(yGoal)
-        elif thisPi == piSide['right']:
-            giveLeftPiCoor()
-                
-        program = programStatus['reset']
-        
-
-    elif program == programStatus['reset']:
-        programStatus['idle']
-
+def getCoorFromRightPi():
+    tmp = conn.recv(BUFFER_SIZE)
+    data = json.loads(tmp)
+    global frame1Right, frame2Right
+    frame1Right = data['frame1']
+    frame2Right = data['frame2']
    
 def trackObject(frame):
+
+    time = getMilliseconds()
     
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     
@@ -139,17 +168,12 @@ def trackObject(frame):
         
     cv2.circle(frame, (int(x), int(y)), 1, colors['yellow'], 3)
     cv2.circle(frame, (int(x), int(y)), int(radius), colors['yellow'], 2)
-    cv2.putText(frame, 'x: ' + str(x), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
-    cv2.putText(frame, 'y: ' + str(y), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
-    cv2.putText(frame, 'radius: ' + str(radius), (20,100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
+    cv2.putText(frame, 'X: ' + str(x), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
+    cv2.putText(frame, 'Y: ' + str(y), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
+    cv2.putText(frame, 'Radius: ' + str(radius), (20,100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
+    cv2.putText(frame, 'Time: ' + str(time), (20,140), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
 
-    return frame, int(x), int(y)
-
-def getTrackedFrame(frame):
-    (tracked, x, y) = trackObject(frame)
-    if x != -1:
-        return True, tracked, x, y, time
-    return False
+    return frame, int(x), int(y), time
 
 def cameraOriginToCenterX(x):
     return 320-x
@@ -192,16 +216,25 @@ def projectileMotion(x1, x2, y1, y2, timedelta, xGoal):
     return yGoal
 
 def main():
+    global program
     init()
-    for i in range(0, 10):
-        ntpHandshake()
-        time.sleep(1)
     while 1:
-        
+
+        if program = programStatus['analyze']:
+            getCoorFromRightPi()
+            print "Frame 1 Left: ", frame1Left
+            print "Frame 1 Right: ", frame1Right
+            print "Frame 2 Left: ", frame2Left
+            print "Frame 2 Right: ", frame2Right
+            program = programStatus['idle']
+
         key = cv2.waitKey(5) & 0xFF
         if key == 27:
-##            camera.close()
+            camera.close()
             break
+        elif key == 32:
+            program = programStatus['seek']
+
     conn.close()
 
 
