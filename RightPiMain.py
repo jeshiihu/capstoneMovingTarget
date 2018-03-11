@@ -29,6 +29,7 @@ class RightPiCameraAnalysis(PiRGBAnalysis):
         global program
 
         if program == programStatus['idle']:
+            cv2.imshow("video", frame)
             return
 
         if program == programStatus['track']:
@@ -51,6 +52,8 @@ def init():
     global timeStart
     timeStart = datetime.datetime.now()
     cv2.namedWindow("video")
+    
+    global program
     program = programStatus['idle']
 
     global tcpConnection
@@ -60,6 +63,7 @@ def init():
     data = tcpConnection.recv(BUFFER_SIZE)
     print "TCP init: ", data
 
+    global camera
     camera = PiCamera(resolution = videoSize, framerate = fps)
     camera.exposure_mode = 'off'
     camera.awb_mode = 'off'
@@ -114,14 +118,14 @@ def getMilliseconds():
 
 def getFirstFrame(frame):
     tmp = trackObject(frame)
-    if x not -1:
+    if x != -1:
         global frame1, videoFrame1
         videoFrame1 = tmp[0]
         frame1Left = (tmp[1], tmp[2], tmp[3])
 
 def getSecondFrame(frame):
     tmp = trackObject(frame)
-    if x not -1:
+    if x != -1:
         global frame2, videoFrame2
         videoFrame2 = tmp[0]
         frame2 = (tmp[1], tmp[2], tmp[3])
@@ -137,12 +141,12 @@ def main():
     init()
     while 1:
 
-        if program = programStatus['idle']:
+        if program == programStatus['idle']:
             data = tcpConnection.recv(BUFFER_SIZE)
             if data == "track":
                 program = programStatus['track']
 
-        if program = programStatus['send']:
+        if program == programStatus['send']:
             sendCoorToLeftPi()
             program = programStatus['idle']
 
