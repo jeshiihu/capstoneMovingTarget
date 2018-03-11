@@ -49,18 +49,21 @@ class LeftPiCameraAnalysis(PiRGBAnalysis):
         global program
 
         if program == programStatus['idle']:
+            cv2.imshow("video",frame)
             return
         
         if program == programStatus['seek']:
-            if ballInFrame(frame):
-                program = programStatus['track']
-                global frame1Left, frame2Left
-                frame1Left = None
-                frame2Left = None
-                delayCounter = 0
+            print ballInFrame(frame)
+##            if ballInFrame(frame):
+##                program = programStatus['track']
+##                global frame1Left, frame2Left
+##                frame1Left = None
+##                frame2Left = None
+##                delayCounter = 0
             return
 
         if program == programStatus['track']:
+            print "track"
             if delayCounter < delayFrames:
                 delayCounter += 1
                 return
@@ -91,6 +94,7 @@ def init():
     timeStart = datetime.datetime.now()
     
     cv2.namedWindow("video")
+    global program
     program = programStatus['idle']
 
     tcpConnection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -103,6 +107,7 @@ def init():
     print "TCP init: ", data
     conn.sendall("Hello back from left Pi")
 
+    global camera
     camera = PiCamera(resolution = videoSize, framerate = fps)
     camera.exposure_mode = 'off'
     camera.awb_mode = 'off'
@@ -120,21 +125,21 @@ def getMilliseconds():
 
 def getFirstFrame(frame):
     tmp = trackObject(frame)
-    if x not -1:
+    if x != -1:
         global frame1Left, videoFrame1
         videoFrame1 = tmp[0]
         frame1Left = (tmp[1], tmp[2], tmp[3])
 
 def getSecondFrame(frame):
     tmp = trackObject(frame)
-    if x not -1:
+    if x != -1:
         global frame2Left, videoFrame2
         videoFrame2 = tmp[0]
         frame2Left = (tmp[1], tmp[2], tmp[3])
 
 def ballInFrame(frame):
     tracked, x, y, time = trackObject(frame)
-    if x not -1:
+    if x != -1:
         return True
     return False
 
@@ -220,7 +225,8 @@ def main():
     init()
     while 1:
 
-        if program = programStatus['analyze']:
+        if program == programStatus['analyze']:
+            print "analyze"
             getCoorFromRightPi()
             print "Frame 1 Left: ", frame1Left
             print "Frame 1 Right: ", frame1Right
@@ -230,7 +236,8 @@ def main():
 
         key = cv2.waitKey(5) & 0xFF
         if key == 27:
-            camera.close()
+            conn.close()
+##            camera.close()
             break
         elif key == 32:
             program = programStatus['seek']
