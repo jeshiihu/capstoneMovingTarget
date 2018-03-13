@@ -3,20 +3,70 @@ import cv2
 from picamera import PiCamera
 from picamera.array import PiRGBAnalysis
 from picamera.streams import PiCameraCircularIO
-import time
+import datetime
 import sys
 import socket
 import numpy as np
 
+# CAMERA CONSTANTS
+# Focal length of camera in mm
+cameraFocalLength = 3.29
+# Distance between cameras in mm
+cameraBaseLine = 200
+# Size of pixel on sensor in mm
+cameraPixelSize = 1.4 / 1000
 
 # Camera Settings
-fps = 30
-videoSize = (300, 300)
+fps = 90
+videoSize = (640, 480)
 
 # Mask Settings
 lowerHSVBound = np.array([60, 0, 100])
 upperHSVBound = np.array([80, 255, 255])
 displayColors = {'yellow':(0, 255, 255), 'black':(0,0,0)}
+
+programStatus = { 'idle' : 0 , 'seek' : 1 , 'track' : 2 , 'analyze': 3}
+
+HOST = '0.0.0.0'
+PORT = 5005
+BUFFER_SIZE = 1024
+
+def getMicroseconds():
+    time = datetime.datetime.now() - timeStart
+    time = (time.seconds*1000000) + time.microseconds
+    return time
+
+def getMilliseconds():
+    time = getMicroseconds()/1000
+    return time
+
+def trackObject(frame):
+    
+    time = getMilliseconds()
+    
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    mask = cv2.inRange(hsv, lowerHSVBound, upperHSVBound)
+    mask = cv2.erode(mask, None, iterations = 1)
+    mask = cv2.dilate(mask, None, iterations = 1)
+    cnts = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+    
+    if len(cnts) <= 0:
+        return frame, -1, -1, time
+    
+    c = max(cnts, key=cv2.contourArea)
+    ((x, y), radius) = cv2.minEnclosingCircle(c)
+
+    if radius < 6:
+        return frame, -1, -1, time
+        
+##    cv2.circle(frame, (int(x), int(y)), 1, colors['yellow'], 3)
+##    cv2.circle(frame, (int(x), int(y)), int(radius), colors['yellow'], 2)
+##    cv2.putText(frame, 'X: ' + str(x), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
+##    cv2.putText(frame, 'Y: ' + str(y), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
+##    cv2.putText(frame, 'Radius: ' + str(radius), (20,100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
+##    cv2.putText(frame, 'Time: ' + str(time), (20,140), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
+
+    return frame, int(x), int(y), time
 
 class LeftPiCameraAnalysis(PiRGBAnalysis):
     
@@ -24,56 +74,63 @@ class LeftPiCameraAnalysis(PiRGBAnalysis):
         super(LeftPiCameraAnalysis, self).__init__(camera)
 
     def analyze(self, frame):
-        cv2.imshow("frame", frame)
-
-def getMicroseconds():
-    time = datetime.datetime.now() - timeStart
-    return (time.seconds*1000000) + time.microseconds
-
-def getMilliseconds():
-    return getMilliseconds()/1000
-
-def trackObject(frame):
-
-    time = getMilliseconds()
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    mask = cv2.inRange(hsv, lowerHSVBound, upperHSVBound)
-    mask = cv2.erode(mask, None, iterations = 1)
-    mask = cv2.dilate(mask, None, iterations = 1)
-    cnts = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
-    if len(cnts) <= 0:
-        return frame, -1, -1, time
-    c = max(cnts, key=cv2.contourArea)
-    ((x, y), radius) = cv2.minEnclosingCircle(c)
-
-    if radius < 6:
-        return frame, -1, -1, time
-        
-    cv2.circle(frame, (int(x), int(y)), 1, colors['yellow'], 3)
-    cv2.circle(frame, (int(x), int(y)), int(radius), colors['yellow'], 2)
-    cv2.putText(frame, 'X: ' + str(x), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
-    cv2.putText(frame, 'Y: ' + str(y), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
-    cv2.putText(frame, 'Radius: ' + str(radius), (20,100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
-    cv2.putText(frame, 'Time: ' + str(time), (20,140), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
-
-    return frame, int(x), int(y), time
-        
-with PiCamera(resolution = videoSize, framerate = fps) as camera:
-    camera.awb_mode = 'off'
-    camera.awb_gains = (1.4, 1.5)
+        frame, x, y, time = trackObject(frame)
+        print (x, y, time)
+    
+    
+def startTCP():
+    global conn
+    tcpConnection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    tcpConnection.bind((HOST, PORT))
+    tcpConnection.listen(1)
+    conn, addr = tcpConnection.accept()
+    data = conn.recv(BUFFER_SIZE)
+    print "TCP init: ", data
+    conn.sendall("Hello back from left Pi")
+    
+def startCamera():
+    global camera, timeStart
+    camera = PiCamera(resolution = videoSize, framerate = fps)
+##    camera.exposure_mode = 'off'
+##    camera.awb_mode = 'off'
+##    camera.awb_gains = (1.4, 1.5)
     camera.vflip = True
+    camera.start_preview(alpha=128)
+    analyzer = LeftPiCameraAnalysis(camera)
+    camera.start_recording(analyzer, 'bgr')
+    timeStart = datetime.datetime.now()
     
-##    camera.start_preview(alpha=128)
-##    camera.stop_preview()
+def stopCamera():
+    camera.stop_recording()
+    camera.stop_preview()
     
-    with LeftPiCameraAnalysis(camera) as analyzer:
-        camera.start_recording(analyzer, 'bgr')
-        timeStart = datetime.datetime.now()
+def closeTCP():
+    conn.close()
+    
+def init():
+    global program
+    cv2.namedWindow("video")
+    program = programStatus['idle']
+    
+##    startTCP()
+    startCamera()
+    
+def shutdown():
+    stopCamera()
+##    closeTCP()
+    
+def main():
+    init()
+    while True:
+        camera.wait_recording(1)
+        key = cv2.waitKey(5) & 0xFF
+        if key == 27:
+            break
+        
+    shutdown()
+    
+main()
 
-        while True:
-            key = cv2.waitKey(5) & 0xFF
-            if key == 27:
-                break
-            
-        camera.stop_recording()
+    
+
        
