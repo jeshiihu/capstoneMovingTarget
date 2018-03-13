@@ -1,9 +1,10 @@
 
 import cv2
+from picamera import Color
 from picamera import PiCamera
 from picamera.array import PiRGBAnalysis
-from picamera.streams import PiCameraCircularIO
 import datetime
+import time
 import sys
 import socket
 import numpy as np
@@ -25,7 +26,7 @@ lowerHSVBound = np.array([60, 0, 100])
 upperHSVBound = np.array([80, 255, 255])
 displayColors = {'yellow':(0, 255, 255), 'black':(0,0,0)}
 
-programStatus = { 'idle' : 0 , 'seek' : 1 , 'track' : 2 , 'analyze': 3}
+programStatus = { 'idle' : 0 , 'seek' : 1 , 'track' : 2 , 'recieve' : 3 'analyze': 4}
 
 HOST = '0.0.0.0'
 PORT = 5005
@@ -74,8 +75,34 @@ class LeftPiCameraAnalysis(PiRGBAnalysis):
         super(LeftPiCameraAnalysis, self).__init__(camera)
 
     def analyze(self, frame):
-        frame, x, y, time = trackObject(frame)
-        print (x, y, time)
+        global trackedFrames
+        
+        if checkProgram('idle'):
+            return
+        
+        if checkProgram('seek'):
+            frame, x, y, time = trackObject(frame)
+            if x!= -1:
+                changeProgram('track')
+                trackedFrames = {}
+            print "Out of Frame" if x == -1 else (x, y, time)
+            return
+            
+        if checkProgram('track'):
+            frame, x, y, time = trackObject(frame)
+            if x == -1:
+                return
+            
+            if not trackedFrames.has_key("frame1L"):
+                trackedFrames["frame1L"] = (x, y, time)
+                return
+                
+            if not trackedFrames.has_key("frame2L"):
+                trackedFrames["frame2L"] = (x, y, time)
+                return
+            
+            changeProgram('recieve')
+            return
     
     
 def startTCP():
@@ -91,11 +118,17 @@ def startTCP():
 def startCamera():
     global camera, timeStart
     camera = PiCamera(resolution = videoSize, framerate = fps)
-##    camera.exposure_mode = 'off'
-##    camera.awb_mode = 'off'
-##    camera.awb_gains = (1.4, 1.5)
+    time.sleep(2)
+    
+    camera.shutter_speed = camera.exposure_speed
+    camera.exposure_mode = 'off'
+    g = camera.awb_gains
+    camera.awb_mode = 'off'
+    camera.awb_gains = g
     camera.vflip = True
-    camera.start_preview(alpha=128)
+    camera.annotate_background = Color('black')
+    
+    camera.start_preview(alpha=200)
     analyzer = LeftPiCameraAnalysis(camera)
     camera.start_recording(analyzer, 'bgr')
     timeStart = datetime.datetime.now()
@@ -108,24 +141,51 @@ def closeTCP():
     conn.close()
     
 def init():
-    global program
     cv2.namedWindow("video")
-    program = programStatus['idle']
     
-##    startTCP()
+    startTCP()
     startCamera()
+    changeProgram('idle')
     
 def shutdown():
     stopCamera()
-##    closeTCP()
+    closeTCP()
+    
+def changeProgram(status):
+    global program
+    program = programStatus[status]
+    camera.annotate_text = status
+    
+def checkProgram(status):
+    return program == programStatus[status]
+
+def recieve():
+    global trackedFrames
+    if checkProgram('recieve'):
+        tmp = conn.recv(BUFFER_SIZE)
+        data = json.loads(tmp)
+        trackedFrames["frame1R"] = data['frame1']
+        trackedFrames["frame2R"] = data['frame2']
+        print trackedFrames
+        
+def analyze():
+    if checkProgram('analyze'):
+        return
     
 def main():
     init()
     while True:
-        camera.wait_recording(1)
+        
+        recieve()
+        analyze()
+        
         key = cv2.waitKey(5) & 0xFF
         if key == 27:
             break
+        elif key == ord('s'):
+            changeProgram('seek')
+        elif key == ord('i'):
+            changeProgram('idle')
         
     shutdown()
     
