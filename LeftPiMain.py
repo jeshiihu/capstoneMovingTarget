@@ -6,6 +6,7 @@ from picamera.array import PiRGBAnalysis
 import datetime
 import time
 import sys
+import json
 import socket
 import numpy as np
 
@@ -30,7 +31,7 @@ programStatus = { 'idle' : 0 , 'seek' : 1 , 'track' : 2 , 'recieve' : 3 'analyze
 
 HOST = '0.0.0.0'
 PORT = 5005
-BUFFER_SIZE = 1024
+BUFFER_SIZE = 128
 
 def getMicroseconds():
     time = datetime.datetime.now() - timeStart
@@ -83,7 +84,7 @@ class LeftPiCameraAnalysis(PiRGBAnalysis):
         if checkProgram('seek'):
             frame, x, y, time = trackObject(frame)
             if x!= -1:
-                changeProgram('track')
+                setProgram('track')
                 trackedFrames = {}
             print "Out of Frame" if x == -1 else (x, y, time)
             return
@@ -101,7 +102,7 @@ class LeftPiCameraAnalysis(PiRGBAnalysis):
                 trackedFrames["frame2L"] = (x, y, time)
                 return
             
-            changeProgram('recieve')
+            setProgram('recieve')
             return
     
     
@@ -145,13 +146,13 @@ def init():
     
     startTCP()
     startCamera()
-    changeProgram('idle')
+    setProgram('idle')
     
 def shutdown():
     stopCamera()
     closeTCP()
     
-def changeProgram(status):
+def setProgram(status):
     global program
     program = programStatus[status]
     camera.annotate_text = status
@@ -159,7 +160,7 @@ def changeProgram(status):
 def checkProgram(status):
     return program == programStatus[status]
 
-def recieve():
+def recieveFrames():
     global trackedFrames
     if checkProgram('recieve'):
         tmp = conn.recv(BUFFER_SIZE)
@@ -168,7 +169,7 @@ def recieve():
         trackedFrames["frame2R"] = data['frame2']
         print trackedFrames
         
-def analyze():
+def analyzeFrames():
     if checkProgram('analyze'):
         return
     
@@ -176,16 +177,16 @@ def main():
     init()
     while True:
         
-        recieve()
-        analyze()
+        recieveFrames()
+        analyzeFrames()
         
         key = cv2.waitKey(5) & 0xFF
         if key == 27:
             break
         elif key == ord('s'):
-            changeProgram('seek')
+            setProgram('seek')
         elif key == ord('i'):
-            changeProgram('idle')
+            setProgram('idle')
         
     shutdown()
     

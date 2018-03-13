@@ -1,13 +1,14 @@
 
 import cv2
+from picamera import Color
 from picamera import PiCamera
 from picamera.array import PiRGBAnalysis
+import datetime
 import time
 import sys
-import socket
 import json
+import socket
 import numpy as np
-import datetime
 # Camera Settings
 fps = 90
 videoSize = (640, 480)
@@ -21,41 +22,73 @@ programStatus = { 'idle' : 0 , 'track' : 1 , 'send' : 2}
 
 HOST = '169.254.48.206'
 PORT = 5005
-BUFFER_SIZE = 1024
+BUFFER_SIZE = 128
+
+def getMicroseconds():
+    time = datetime.datetime.now() - timeStart
+    time = (time.seconds*1000000) + time.microseconds
+    return time
+
+def getMilliseconds():
+    time = getMicroseconds()/1000
+    return time
+
+def trackObject(frame):
+    
+    time = getMilliseconds()
+    
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    mask = cv2.inRange(hsv, lowerHSVBound, upperHSVBound)
+    mask = cv2.erode(mask, None, iterations = 1)
+    mask = cv2.dilate(mask, None, iterations = 1)
+    cnts = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+    
+    if len(cnts) <= 0:
+        return frame, -1, -1, time
+    
+    c = max(cnts, key=cv2.contourArea)
+    ((x, y), radius) = cv2.minEnclosingCircle(c)
+
+    if radius < 6:
+        return frame, -1, -1, time
+        
+##    cv2.circle(frame, (int(x), int(y)), 1, colors['yellow'], 3)
+##    cv2.circle(frame, (int(x), int(y)), int(radius), colors['yellow'], 2)
+##    cv2.putText(frame, 'X: ' + str(x), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
+##    cv2.putText(frame, 'Y: ' + str(y), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
+##    cv2.putText(frame, 'Radius: ' + str(radius), (20,100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
+##    cv2.putText(frame, 'Time: ' + str(time), (20,140), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
+
+    return frame, int(x), int(y), time
 
 class RightPiCameraAnalysis(PiRGBAnalysis):
     
-    def analyze(self, frame):
-        global program
+    def __init__(self, camera):
+        super(RightPiCameraAnalysis, self).__init__(camera)
 
-        if program == programStatus['idle']:
-            cv2.imshow("video", frame)
+    def analyze(self, frame):
+        global trackedFrames
+
+        if checkProgram('idle'):
             return
 
-        if program == programStatus['track']:
-            if not frame1Left:
-                # Begin thread here
-                getFirstFrame(frame)
+        if checkProgram('track'):
+            frame, x, y, time = trackObject(frame)
+            if x == -1:
                 return
             
-            if not frame2Left:
-                # Begin thread here
-                getSecondFrame(frame)
+            if not trackedFrames.has_key("frame1L"):
+                trackedFrames["frame1R"] = (x, y, time)
                 return
-
-            program = programStatus['send']
+                
+            if not trackedFrames.has_key("frame2L"):
+                trackedFrames["frame2R"] = (x, y, time)
+                return
+            
+            setProgram('send')
             return
 
-
-# Run program with "python main.py (left/right)"
-def init():
-    global timeStart
-    timeStart = datetime.datetime.now()
-    cv2.namedWindow("video")
-    
-    global program
-    program = programStatus['idle']
-
+def startTCP():
     global tcpConnection
     tcpConnection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     tcpConnection.connect((HOST, PORT))
@@ -63,101 +96,76 @@ def init():
     data = tcpConnection.recv(BUFFER_SIZE)
     print "TCP init: ", data
 
-    global camera
+def startCamera():
+    global camera, timeStart
     camera = PiCamera(resolution = videoSize, framerate = fps)
-    camera.exposure_mode = 'off'
-    camera.awb_mode = 'off'
-    camera.vflip = True
-    analysis = RightPiCameraAnalysis(camera)
-    camera.start_recording(analysis, format='bgr')
     time.sleep(2)
-
-   
-def trackObject(frame):
-
-    time = getMilliseconds()
     
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    camera.shutter_speed = camera.exposure_speed
+    camera.exposure_mode = 'off'
+    g = camera.awb_gains
+    camera.awb_mode = 'off'
+    camera.awb_gains = g
+    camera.vflip = True
+    camera.annotate_background = Color('black')
     
-    mask = cv2.inRange(hsv, lowerHSVBound, upperHSVBound)
-    mask = cv2.erode(mask, None, iterations = 1)
-    mask = cv2.dilate(mask, None, iterations = 1)
+    camera.start_preview(alpha=200)
+    analyzer = RightPiCameraAnalysis(camera)
+    camera.start_recording(analyzer, 'bgr')
+    timeStart = datetime.datetime.now()
+
+def stopCamera():
+    camera.stop_recording()
+    camera.stop_preview()
+
+def closeTCP():
+    tcpConnection.close()
+
+def init():
+    cv2.namedWindow("video")
     
-    cnts = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
+    startTCP()
+    startCamera()
+    setProgram('idle')
+
+def shutdown():
+    stopCamera()
+    closeTCP()
+
+def setProgram(status):
+    global program
+    program = programStatus[status]
+    camera.annotate_text = status
     
-    if len(cnts) <= 0:
-        return frame, -1, -1
+def checkProgram(status):
+    return program == programStatus[status]
 
-    c = max(cnts, key=cv2.contourArea)
-    ((x, y), radius) = cv2.minEnclosingCircle(c)
+def sendFrames():
+    if checkProgram('send'):
+        json = json.dumps(trackedFrames)
+        tcpConnection.sendall(json)
+        setProgram('idle')
 
-    if radius < 6:
-        return frame, -1, -1
-        
-    cv2.circle(frame, (int(x), int(y)), 1, colors['yellow'], 3)
-    cv2.circle(frame, (int(x), int(y)), int(radius), colors['yellow'], 2)
-    cv2.putText(frame, 'X: ' + str(x), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
-    cv2.putText(frame, 'Y: ' + str(y), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
-    cv2.putText(frame, 'Radius: ' + str(radius), (20,100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
-    cv2.putText(frame, 'Time: ' + str(time), (20,140), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
 
-    return frame, int(x), int(y), time
-
-def cameraOriginToCenterX(x):
-    return 320-x
-
-def cameraOriginToCenterY(y):
-    return 240-y
-
-def getMicroseconds():
-    time = datetime.datetime.now() - timeStart
-    return (time.seconds*1000000) + time.microseconds
-
-def getMilliseconds():
-    return getMilliseconds()/1000
-
-def getFirstFrame(frame):
-    tmp = trackObject(frame)
-    if x != -1:
-        global frame1, videoFrame1
-        videoFrame1 = tmp[0]
-        frame1Left = (tmp[1], tmp[2], tmp[3])
-
-def getSecondFrame(frame):
-    tmp = trackObject(frame)
-    if x != -1:
-        global frame2, videoFrame2
-        videoFrame2 = tmp[0]
-        frame2 = (tmp[1], tmp[2], tmp[3])
-
-def sendCoorToLeftPi():
-    msg = {"frame1" : frame1, "frame2": frame2}
-    json = json.dumps(msg)
-    tcpConnection.sendall(json)
-
+def listenForCommand():
+    if checkProgram('idle')
+        data = tcpConnection.recv(BUFFER_SIZE)
+        if data == 'track':
+            setProgram('track')
 
 def main():
-    global program
     init()
-    while 1:
+    while True:
 
-        if program == programStatus['idle']:
-            data = tcpConnection.recv(BUFFER_SIZE)
-            if data == "track":
-                program = programStatus['track']
+        listenForCommand()
+        sendFrames()
 
-        if program == programStatus['send']:
-            sendCoorToLeftPi()
-            program = programStatus['idle']
 
         key = cv2.waitKey(5) & 0xFF
         if key == 27:
-            camera.close()
             break
-        elif key == 32:
-            program = programStatus['seek']
 
-    tcpConnection.close()
+    shutdown()
 
 
 
