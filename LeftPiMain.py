@@ -19,15 +19,15 @@ cameraBaseLine = 200
 cameraPixelSize = 1.4 / 1000
 
 # Camera Settings
-fps = 90
-videoSize = (640, 480)
+fps = 20
+videoSize = (800, 800)
 
 # Mask Settings
 lowerHSVBound = np.array([60, 0, 100])
 upperHSVBound = np.array([80, 255, 255])
 displayColors = {'yellow':(0, 255, 255), 'black':(0,0,0)}
 
-programStatus = { 'idle' : 0 , 'seek' : 1 , 'track' : 2 , 'recieve' : 3 'analyze': 4}
+programStatus = { 'idle' : 0 , 'seek' : 1 , 'track' : 2 , 'recieve' : 3, 'analyze': 4}
 
 HOST = '0.0.0.0'
 PORT = 5005
@@ -86,13 +86,14 @@ class LeftPiCameraAnalysis(PiRGBAnalysis):
             if x!= -1:
                 setProgram('track')
                 trackedFrames = {}
+                conn.sendall('track')
             print "Out of Frame" if x == -1 else (x, y, time)
             return
             
         if checkProgram('track'):
             frame, x, y, time = trackObject(frame)
-            if x == -1:
-                return
+##            if x == -1:
+##                return
             
             if not trackedFrames.has_key("frame1L"):
                 trackedFrames["frame1L"] = (x, y, time)
@@ -165,8 +166,9 @@ def recieveFrames():
     if checkProgram('recieve'):
         tmp = conn.recv(BUFFER_SIZE)
         data = json.loads(tmp)
-        trackedFrames["frame1R"] = data['frame1']
-        trackedFrames["frame2R"] = data['frame2']
+        trackedFrames["frame1R"] = data['frame1R']
+        trackedFrames["frame2R"] = data['frame2R']
+        setProgram('idle')
         print trackedFrames
         
 def analyzeFrames():
