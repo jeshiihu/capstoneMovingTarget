@@ -10,8 +10,8 @@ import json
 import socket
 import numpy as np
 # Camera Settings
-fps = 90
-videoSize = (640, 480)
+fps = 20
+videoSize = (800, 800)
 
 # Mask Settings
 lowerHSVBound = np.array([60, 0, 100])
@@ -74,14 +74,16 @@ class RightPiCameraAnalysis(PiRGBAnalysis):
 
         if checkProgram('track'):
             frame, x, y, time = trackObject(frame)
-            if x == -1:
-                return
+##            if x == -1:
+##                return
             
-            if not trackedFrames.has_key("frame1L"):
+            if not trackedFrames.has_key("frame1R"):
+                print(x, y, time)
                 trackedFrames["frame1R"] = (x, y, time)
                 return
                 
-            if not trackedFrames.has_key("frame2L"):
+            if not trackedFrames.has_key("frame2R"):
+                print(x, y, time)
                 trackedFrames["frame2R"] = (x, y, time)
                 return
             
@@ -142,16 +144,19 @@ def checkProgram(status):
 
 def sendFrames():
     if checkProgram('send'):
-        json = json.dumps(trackedFrames)
-        tcpConnection.sendall(json)
+        jsonFrames = json.dumps(trackedFrames)
+        tcpConnection.sendall(jsonFrames)
         setProgram('idle')
 
 
 def listenForCommand():
-    if checkProgram('idle')
+    global trackedFrames
+    if checkProgram('idle'):
         data = tcpConnection.recv(BUFFER_SIZE)
         if data == 'track':
             setProgram('track')
+            trackedFrames = {}
+            
 
 def main():
     init()
