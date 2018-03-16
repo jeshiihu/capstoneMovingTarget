@@ -1,0 +1,66 @@
+/*
+ * stepper.h
+ *
+ *  Created on: Feb 22, 2018
+ *      Author: kgchin
+ */
+
+#ifndef HWLIBS_STEPPER_H_
+#define HWLIBS_STEPPER_H_
+
+#define FPGA_TO_HPS_LW_ADDR(base)  ((void *) (((char *)  (ALT_LWFPGASLVS_ADDR))+ (base)))
+
+/*-----------Y Addresses-----------*/
+
+#define STEP_ADDR_Y 0x00000700
+#define STEP_BASE_Y FPGA_TO_HPS_LW_ADDR(STEP_ADDR_Y)
+
+#define CYCLE_ADDR_Y 0x00000800
+#define CYCLE_BASE_Y FPGA_TO_HPS_LW_ADDR(CYCLE_ADDR_Y)
+
+#define DUTY_ADDR_Y 0x00000900
+#define DUTY_BASE_Y FPGA_TO_HPS_LW_ADDR(DUTY_ADDR_Y)
+
+#define DIR_ADDR_Y 0x00001000
+#define DIR_BASE_Y FPGA_TO_HPS_LW_ADDR(DIR_ADDR_Y)
+
+#define STEPMODE_ADDR_Y 0x00001100
+#define STEPMODE_BASE_Y FPGA_TO_HPS_LW_ADDR(STEPMODE_ADDR_Y)
+
+/*-----------X Addresses-----------*/
+
+#define FPGA_CLK_FREQ_HZ 50000000
+#define DUTY_CYCLE 0.9;
+
+#define FULL_STEP 200
+#define HALF_STEP 400
+
+// Specifies CW (clockwise) and CCW counter clockwise direction
+enum Direction { cw = 0, ccw = 1 };
+enum StepMode { full = 0, half = 1 };
+
+//////////////////////////////////////////////////////////////////
+//Control the motor and helpers
+void InitMotor(INT32U freq);
+INT32U Freq2NumCycle(INT32U freq);
+
+void StepMotor(INT16U step);
+
+//////////////////////////////////////////////////////////////////
+// Getters and Setters
+void SetDirection(enum Direction dir);
+enum Direction GetDirection(void);
+
+void SetStepMode(enum StepMode mode);
+enum StepMode GetStepMode(void);
+
+void SetFrequency(INT32U freq);
+INT32U GetFrequency(void);
+
+INT32U GetDutyCycle(void);
+INT16U GetReqSteps(void);
+
+INT16U Coord2Steps(int a);
+enum Direction YCoord2Dir(int y);
+
+#endif /* HWLIBS_STEPPER_H_ */

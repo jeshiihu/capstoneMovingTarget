@@ -1,0 +1,41 @@
+/*
+ * motorConstants.c
+ *
+ *  Created on: Mar 10, 2018
+ *      Author: jhuynh
+ */
+
+#include "motorConstants.h"
+
+void* GetMotorStepBaseAddr(enum Motor motor)
+{
+	if(motor == motorX)
+		return STEP_ADDR_X;
+
+	return STEP_ADDR_Y;
+}
+
+void* GetMotorDirBaseAddr(enum Motor motor)
+{
+	if(motor == motorX)
+		return DIR_ADDR_X;
+
+	return DIR_ADDR_Y;
+}
+
+void* GetMotorPeriodBaseAddr(enum Motor motor)
+{
+	if(motor == motorX)
+		return PERIOD_ADDR_X;
+
+	return PERIOD_ADDR_Y;
+}
+
+void* GetMotorDutyBaseAddr(enum Motor motor)
+{
+	if(motor == motorX)
+		return DUTY_ADDR_X;
+
+	return DUTY_ADDR_Y;
+}
+

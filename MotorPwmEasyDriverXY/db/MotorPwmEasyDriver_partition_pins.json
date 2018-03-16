@@ -1,0 +1,41 @@
+{
+	"partitions" : [
+		{
+			"name" : "Top",
+			"pins" : [
+				{
+					"name" : "GPIO_0_0",
+					"strict" : false
+				},
+				{
+					"name" : "GPIO_0_2",
+					"strict" : false
+				},
+				{
+					"name" : "GPIO_0_1",
+					"strict" : false
+				},
+				{
+					"name" : "GPIO_0_32",
+					"strict" : false
+				},
+				{
+					"name" : "GPIO_0_34",
+					"strict" : false
+				},
+				{
+					"name" : "GPIO_0_33",
+					"strict" : false
+				},
+				{
+					"name" : "CLOCK_50",
+					"strict" : false
+				},
+				{
+					"name" : "KEY_N_0",
+					"strict" : false
+				}
+			]
+		}
+	]
+}
