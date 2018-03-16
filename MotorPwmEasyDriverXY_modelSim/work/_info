@@ -9,7 +9,7 @@ z2
 cModel Technology
 dC:/intelFPGA/17.0
 Eeasy_driver
-Z0 w1521217845
+Z0 w1521219211
 Z1 DPx4 ieee 11 numeric_std 0 22 :ASDNFgHXf_ih3J@9F3Ze1
 Z2 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
 Z3 DPx4 ieee 14 std_logic_1164 0 22 eNV`TJ_GofJTzYa?f<@Oe1
@@ -22,9 +22,9 @@ VO^0ho<c]eEFzh]ThYbVKz0
 !s100 Liz1L>o0MBVk4REG_fF]20
 Z7 OV;C;10.5b;63
 32
-Z8 !s110 1521219099
+Z8 !s110 1521221203
 !i10b 1
-Z9 !s108 1521219099.000000
+Z9 !s108 1521221203.000000
 Z10 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:\Users\jhuynh\Documents\capstoneMovingTarget\MotorPwmEasyDriverXY_modelSim\easyDriver.vhd|
 Z11 !s107 C:\Users\jhuynh\Documents\capstoneMovingTarget\MotorPwmEasyDriverXY_modelSim\easyDriver.vhd|
 !i113 1
@@ -50,12 +50,12 @@ R11
 R12
 R13
 Eeasy_driver_tb
-Z14 w1521218823
+R0
 R2
 R3
 R4
-Z15 8C:\Users\jhuynh\Documents\capstoneMovingTarget\MotorPwmEasyDriverXY_modelSim\easy_driver_variousStep_tb.vhd
-Z16 FC:\Users\jhuynh\Documents\capstoneMovingTarget\MotorPwmEasyDriverXY_modelSim\easy_driver_variousStep_tb.vhd
+Z14 8C:\Users\jhuynh\Documents\capstoneMovingTarget\MotorPwmEasyDriverXY_modelSim\easyDriver_tb.vhd
+Z15 FC:\Users\jhuynh\Documents\capstoneMovingTarget\MotorPwmEasyDriverXY_modelSim\easyDriver_tb.vhd
 l0
 L10
 VK=OD:F==JYZX8ZX_aVHY`0
@@ -65,26 +65,65 @@ R7
 R8
 !i10b 1
 R9
-Z17 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:\Users\jhuynh\Documents\capstoneMovingTarget\MotorPwmEasyDriverXY_modelSim\easy_driver_variousStep_tb.vhd|
-Z18 !s107 C:\Users\jhuynh\Documents\capstoneMovingTarget\MotorPwmEasyDriverXY_modelSim\easy_driver_variousStep_tb.vhd|
+Z16 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:\Users\jhuynh\Documents\capstoneMovingTarget\MotorPwmEasyDriverXY_modelSim\easyDriver_tb.vhd|
+Z17 !s107 C:\Users\jhuynh\Documents\capstoneMovingTarget\MotorPwmEasyDriverXY_modelSim\easyDriver_tb.vhd|
 !i113 1
 R12
 R13
 Abehave
 R2
 R3
-Z19 DEx4 work 14 easy_driver_tb 0 22 K=OD:F==JYZX8ZX_aVHY`0
+DEx4 work 14 easy_driver_tb 0 22 K=OD:F==JYZX8ZX_aVHY`0
 l59
 L13
-Vb=VR@B^2C53:3__^5kjGe2
-!s100 f^6aB3O@^Xj_m34;BaVVF1
+V]YTboG7gOMO_`>4=7aQXT2
+!s100 2H:MNAVf_8DSknSKlnlob0
 R7
 32
 R8
 !i10b 1
 R9
+R16
 R17
-R18
+!i113 1
+R12
+R13
+Eeasy_driver_var_tb
+Z18 w1521221182
+R2
+R3
+R4
+Z19 8C:\Users\jhuynh\Documents\capstoneMovingTarget\MotorPwmEasyDriverXY_modelSim\easy_driver_variousStep_tb.vhd
+Z20 FC:\Users\jhuynh\Documents\capstoneMovingTarget\MotorPwmEasyDriverXY_modelSim\easy_driver_variousStep_tb.vhd
+l0
+L10
+Vc4GJhH<zeb0<XGcC78D722
+!s100 Sf0CEnbdLC_HOTAG]Qo;P2
+R7
+32
+R8
+!i10b 1
+R9
+Z21 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:\Users\jhuynh\Documents\capstoneMovingTarget\MotorPwmEasyDriverXY_modelSim\easy_driver_variousStep_tb.vhd|
+Z22 !s107 C:\Users\jhuynh\Documents\capstoneMovingTarget\MotorPwmEasyDriverXY_modelSim\easy_driver_variousStep_tb.vhd|
+!i113 1
+R12
+R13
+Abehave
+R2
+R3
+Z23 DEx4 work 18 easy_driver_var_tb 0 22 c4GJhH<zeb0<XGcC78D722
+l59
+L13
+V0C]bf?N[g`0TkL]FIJ<@01
+!s100 kkE=OegfcH0>:<=A@h?;=3
+R7
+32
+R8
+!i10b 1
+R9
+R21
+R22
 !i113 1
 R12
 R13

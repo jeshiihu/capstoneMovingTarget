@@ -7,10 +7,10 @@
 library ieee;
 use ieee.std_logic_1164.all;
  
-entity Easy_Driver_tb is
-end Easy_Driver_tb;
+entity Easy_Driver_var_tb is
+end Easy_Driver_var_tb;
  
-architecture behave of Easy_Driver_tb is
+architecture behave of Easy_Driver_var_tb is
   signal sig_clk : std_logic := '0';
   signal sig_rst : std_logic := '1';
 
@@ -110,11 +110,17 @@ process is
 
 	sig_dir_write <= '0';
 	sig_dir <= "00000001"; -- cw
-	wait for 50 ns;
+	wait for 10 ns;
 
-	-- set 35 steps
+	sig_step_write <= '1';
+	sig_period_write <= '1';
+	sig_duty_write <= '1';
+	sig_dir_write <= '1';
+ 	wait for 20 ms;
+
+	-- set 40 steps
 	sig_step_write <= '0';
-	sig_step <= "0000000000100011";
+	sig_step <= "0000000000101000";
 
         -- 25000 = 50MHz/2000Hz
 	sig_period_write <= '0';
@@ -127,7 +133,7 @@ process is
 
 	sig_dir_write <= '0';
 	sig_dir <= "00000000"; -- cw
-	wait for 50 ns;
+	wait for 30 ns;
 
 	sig_step_write <= '1';
 	sig_period_write <= '1';
