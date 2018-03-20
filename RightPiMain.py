@@ -11,11 +11,11 @@ import socket
 import numpy as np
 # Camera Settings
 fps = 20
-videoSize = (800, 800)
+videoSize = (1920, 1088)
 
 # Mask Settings
-lowerHSVBound = np.array([60, 0, 100])
-upperHSVBound = np.array([80, 255, 255])
+lowerHSVBound = np.array([55, 100, 50])
+upperHSVBound = np.array([69, 255, 255])
 displayColors = {'yellow':(0, 255, 255), 'black':(0,0,0)}
 
 programStatus = { 'idle' : 0 , 'track' : 1 , 'send' : 2}
@@ -43,6 +43,9 @@ def trackObject(frame):
     mask = cv2.dilate(mask, None, iterations = 1)
     cnts = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
     
+##    cv2.imshow("mask", mask)
+    
+    
     if len(cnts) <= 0:
         return frame, -1, -1, time
     
@@ -51,13 +54,17 @@ def trackObject(frame):
 
     if radius < 6:
         return frame, -1, -1, time
-        
-##    cv2.circle(frame, (int(x), int(y)), 1, colors['yellow'], 3)
-##    cv2.circle(frame, (int(x), int(y)), int(radius), colors['yellow'], 2)
-##    cv2.putText(frame, 'X: ' + str(x), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
-##    cv2.putText(frame, 'Y: ' + str(y), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
-##    cv2.putText(frame, 'Radius: ' + str(radius), (20,100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
-##    cv2.putText(frame, 'Time: ' + str(time), (20,140), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors['black'], 2)
+    
+##    if checkProgram('track'):
+##        
+##        cv2.circle(frame, (int(x), int(y)), 1, displayColors['yellow'], 3)
+##        cv2.circle(frame, (int(x), int(y)), int(radius), displayColors['yellow'], 2)
+##        cv2.putText(frame, 'X: ' + str(x), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
+##        cv2.putText(frame, 'Y: ' + str(y), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
+##        cv2.putText(frame, 'Radius: ' + str(radius), (20,100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
+##        cv2.putText(frame, 'Time: ' + str(time), (20,140), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
+##        cv2.imwrite("throw/frame.jpg", frame)
+##        cv2.imwrite("throw/mask.jpg", mask)
 
     return frame, int(x), int(y), time
 
@@ -78,12 +85,12 @@ class RightPiCameraAnalysis(PiRGBAnalysis):
 ##                return
             
             if not trackedFrames.has_key("frame1R"):
-                print(x, y, time)
+##                print(x, y, time)
                 trackedFrames["frame1R"] = (x, y, time)
                 return
                 
             if not trackedFrames.has_key("frame2R"):
-                print(x, y, time)
+##                print(x, y, time)
                 trackedFrames["frame2R"] = (x, y, time)
                 return
             
@@ -103,12 +110,12 @@ def startCamera():
     camera = PiCamera(resolution = videoSize, framerate = fps)
     time.sleep(2)
     
-    camera.shutter_speed = camera.exposure_speed
-    camera.exposure_mode = 'off'
-    g = camera.awb_gains
-    camera.awb_mode = 'off'
-    camera.awb_gains = g
-    camera.vflip = True
+##    camera.shutter_speed = camera.exposure_speed
+##    camera.exposure_mode = 'off'
+##    g = camera.awb_gains
+##    camera.awb_mode = 'off'
+##    camera.awb_gains = g
+##    camera.vflip = False
     camera.annotate_background = Color('black')
     
     camera.start_preview(alpha=200)
@@ -121,6 +128,7 @@ def stopCamera():
     camera.stop_preview()
 
 def closeTCP():
+    tcpConnection.shutdown(socket.SHUT_RDWR)
     tcpConnection.close()
 
 def init():
