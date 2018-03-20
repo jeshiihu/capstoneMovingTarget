@@ -18,6 +18,7 @@ lowerHSVBound = np.array([55, 100, 50])
 upperHSVBound = np.array([69, 255, 255])
 displayColors = {'yellow':(0, 255, 255), 'black':(0,0,0)}
 
+# programStatus = { 'idle' : 0 , 'track' : 1 , 'send' : 2, 'test' : 3}
 programStatus = { 'idle' : 0 , 'track' : 1 , 'send' : 2}
 
 HOST = '169.254.48.206'
@@ -78,6 +79,18 @@ class RightPiCameraAnalysis(PiRGBAnalysis):
 
         if checkProgram('idle'):
             return
+
+
+        # if checkProgram('test'):
+        # 	frame x, y, time = trackObject(frame)
+        # 	trackedFrames = {}
+        # 	if not trackedFrames.has_key("frame1R")
+        # 		return
+        # 	else
+        # 		jsonFrames = json.dumps(trackedFrames)
+       	# 		tcpConnection.sendall(jsonFrames)
+       	# 		return
+
 
         if checkProgram('track'):
             frame, x, y, time = trackObject(frame)
@@ -164,6 +177,13 @@ def listenForCommand():
         if data == 'track':
             setProgram('track')
             trackedFrames = {}
+        # if data == 'test':
+        	# setProgram('test')
+        	# trackedFrames = {}
+    # if checkProgram('test'):
+    	# data = tcpConnection.recv(BUFFER_SIZE)
+        # if data == 'endTest':
+        	# setProgram('idle')
             
 
 def main():
