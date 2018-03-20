@@ -14,20 +14,23 @@ import numpy as np
 # Focal length of camera in mm
 cameraFocalLength = 3.29
 # Distance between cameras in mm
-cameraBaseLine = 200
+cameraBaseLine = 130.5
 # Size of pixel on sensor in mm
 cameraPixelSize = (1.4 / 1000) / 4
+# Camera distortion factor (leaving as 0 for now)
+cameraDistortion = 0
 
 # Camera Settings
 fps = 20
 videoSize = (1920, 1080)
+videoCenter = (videoSize[0]/2, videoSize[1]/2)
 
 # Mask Settings
 lowerHSVBound = np.array([55, 100, 50])
 upperHSVBound = np.array([69, 255, 255])
 displayColors = {'yellow':(0, 255, 255), 'black':(0,0,0)}
 
-programStatus = { 'idle' : 0 , 'seek' : 1 , 'track' : 2 , 'recieve' : 3, 'analyze': 4}
+programStatus = { 'idle' : 0 , 'seek' : 1 , 'track' : 2 , 'recieve' : 3, 'analyze': 4, 'test': 5}
 
 HOST = '0.0.0.0'
 PORT = 5005
@@ -176,12 +179,47 @@ def recieveFrames():
         data = json.loads(tmp)
         trackedFrames["frame1R"] = data['frame1R']
         trackedFrames["frame2R"] = data['frame2R']
-        setProgram('idle')
-        print trackedFrames
+        setProgram('analyze')
         
 def analyzeFrames():
     if checkProgram('analyze'):
-        return
+        leftFrame = trackedFrames["frame1L"]
+        rightFrame = trackedFrames["frame1R"]
+        (x, y, z) = getCoordinates(leftFrame[0], leftFrame[1], rightFrame[0], rightFrame[1])
+        print leftFrame, rightFrame
+        print x, y, z
+        print ""
+        setProgram('idle')
+
+def getCoordinates(leftI, leftJ, rightI, rightJ):
+    (leftX, leftY) = reverseDistortion(leftI, leftJ)
+    (rightX, rightY) = reverseDistortion(rightI, rightJ)
+
+    z = ((cameraBaseLine * cameraFocalLength) / (leftX - rightX))
+    x = leftX * (z / cameraFocalLength)
+    y = leftY * (z / cameraFocalLength)
+    
+    return x, y, z
+
+def reverseDistortion(i, j):
+    xDistorted = (i - videoCenter[0]) * cameraPixelSize
+    yDistorted = (j - videoCenter[1]) * cameraPixelSize
+    rDSquared = (xDistorted * xDistorted) + (yDistorted * yDistorted)
+    x = xDistorted * (1 + (cameraDistortion * rDSquared))
+    y = yDistorted * (1 + (cameraDistortion * rDSquared))
+    return x, y
+
+
+def test():
+    if checkProgram('test'):
+        conn.sendall('test')
+        while True:
+            
+            key = cv2.waitKey(5) & 0xFF
+            if key == ord('e'):
+                conn.sendall('idle')
+
+
     
 def main():
     init()
@@ -189,6 +227,7 @@ def main():
         
         recieveFrames()
         analyzeFrames()
+        test()
         
         key = cv2.waitKey(5) & 0xFF
         if key == 27:
@@ -197,6 +236,8 @@ def main():
             setProgram('seek')
         elif key == ord('i'):
             setProgram('idle')
+        elif key == ord('t'):
+            setProgram('test')
         
     shutdown()
     
