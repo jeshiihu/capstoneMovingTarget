@@ -1,8 +1,9 @@
 /*
- * stepper.c
- *
- *  Created on: Feb 22, 2018
- *      Author: kgchin
+ * Filename      : stepper.c
+ * Created on: Feb 22, 2018
+ * Author: kgchin & jhuynh
+ * Stepper driver that can read and write to the addresses set by avalon mm slave
+ * Addresses and constants held in header file
  */
 
 #include <os.h>
@@ -129,10 +130,7 @@ INT16U XYCoord2Steps(int y)
     	return 0;
 
     if(y < 0) y = y*-1;
-//    if(GetStepMode() == full)
-    	return y/0.02;
-//    else
-//    	return y/0.01;
+    return y/0.02;
 }
 
 /* This function determines the correct direction given a y.

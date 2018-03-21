@@ -3,6 +3,7 @@
  *
  *  Created on: Mar 10, 2018
  *      Author: jhuynh
+ *      Contains the motor constants and addresses assigned for our components
  */
 
 #ifndef HWLIBS_MOTORCONSTANTS_H_

@@ -251,7 +251,7 @@ static  void  RunMotorYTask(void *p_arg)
 
     INT32U currFreq = 900;
     InitMotor(motorY, currFreq);
-    StepMotor(motorY, 0);
+    StepMotor(motorY, 200);
 
     OSTimeDlyHMSM(0, 0, 0, 500);
 

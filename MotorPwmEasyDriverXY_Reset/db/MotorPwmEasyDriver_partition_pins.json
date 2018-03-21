@@ -1,0 +1,85 @@
+{
+	"partitions" : [
+		{
+			"name" : "Top",
+			"pins" : [
+				{
+					"name" : "GPIO_0_0",
+					"strict" : false
+				},
+				{
+					"name" : "GPIO_0_2",
+					"strict" : false
+				},
+				{
+					"name" : "GPIO_0_1",
+					"strict" : false
+				},
+				{
+					"name" : "GPIO_0_32",
+					"strict" : false
+				},
+				{
+					"name" : "GPIO_0_34",
+					"strict" : false
+				},
+				{
+					"name" : "GPIO_0_33",
+					"strict" : false
+				},
+				{
+					"name" : "LEDR[0]",
+					"strict" : false
+				},
+				{
+					"name" : "LEDR[1]",
+					"strict" : false
+				},
+				{
+					"name" : "LEDR[2]",
+					"strict" : false
+				},
+				{
+					"name" : "LEDR[3]",
+					"strict" : false
+				},
+				{
+					"name" : "LEDR[4]",
+					"strict" : false
+				},
+				{
+					"name" : "LEDR[5]",
+					"strict" : false
+				},
+				{
+					"name" : "LEDR[6]",
+					"strict" : false
+				},
+				{
+					"name" : "LEDR[7]",
+					"strict" : false
+				},
+				{
+					"name" : "LEDR[8]",
+					"strict" : false
+				},
+				{
+					"name" : "LEDR[9]",
+					"strict" : false
+				},
+				{
+					"name" : "CLOCK_50",
+					"strict" : false
+				},
+				{
+					"name" : "KEY_N_0",
+					"strict" : false
+				},
+				{
+					"name" : "KEY_N_3",
+					"strict" : false
+				}
+			]
+		}
+	]
+}

@@ -1,8 +1,9 @@
 /*
- * stepper.h
- *
- *  Created on: Feb 22, 2018
- *      Author: kgchin
+ * Filename      : stepper.h
+ * Created on: Feb 22, 2018
+ * Author: kgchin & jhuynh
+ * Stepper driver header: all address definitions, constants, and enums
+ * function descriptions are in the stepper.c file
  */
 
 #ifndef HWLIBS_STEPPER_H_
