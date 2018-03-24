@@ -30,11 +30,13 @@ lowerHSVBound = np.array([50, 100, 50])
 upperHSVBound = np.array([75, 255, 255])
 displayColors = {'yellow':(0, 255, 255), 'black':(0,0,0)}
 
-programStatus = { 'idle' : 0 , 'seek' : 1 , 'track' : 2 , 'recieve' : 3, 'analyze': 4, 'test': 5}
+programStatus = { 'idle' : 0 , 'seek' : 1 , 'track' : 2 , 'recieve' : 3, 'analyze': 4, 'test': 5, 'topLeft' : 6, 'bottomRight' : 7}
 
 HOST = '0.0.0.0'
 PORT = 5005
 BUFFER_SIZE = 128
+
+goalArea = {}
 
 def getMicroseconds():
     time = datetime.datetime.now() - timeStart
@@ -115,6 +117,12 @@ class LeftPiCameraAnalysis(PiRGBAnalysis):
             setProgram('recieve')
 ##            setProgram('idle')
             return
+
+        if checkProgram('topLeft'):
+            getTopLeft(frame)
+
+        if checkProgram('bottomRight'):
+            getBottomRight(frame)
     
     
 def startTCP():
@@ -180,16 +188,37 @@ def recieveFrames():
         trackedFrames["frame1R"] = data['frame1R']
         trackedFrames["frame2R"] = data['frame2R']
         setProgram('analyze')
-        
+
+def getTopLeft(frame):
+    conn.sendall("topLeft")
+    (_, x, y, time) = trackObject(frame)
+    leftFrame = (x, y, time)
+    tmp = conn.recv()
+    data = json.loads(tmp)
+    rightFrame = data['rightFrame']
+    (x, y, z) = getMMCoor(leftFrame, rightFrame)
+    goalArea['topLeft'] = (x, y, z)
+
+def getBottomRight(frame):
+    conn.sendall("bottomRight")
+    (_, x, y, time) = trackObject(frame)
+    leftFrame = (x, y, time)
+    tmp = conn.recv()
+    data = json.loads(tmp)
+    rightFrame = data['rightFrame']
+    (x, y, z) = getMMCoor(leftFrame, rightFrame)
+    goalArea['bottomRight'] = (x, y, z)
+    print goalArea
+
+def getMMCoor(leftFrame, rightFrame):
+    (xMM, yMM, zMM) = getCoordinates(leftFrame[0], leftFrame[1], rightFrame[0], rightFrame[1])
+    (x, y, z) = mmToIn(xMM, yMM, zMM)
+    return x, y, z
+
 def analyzeFrames():
     if checkProgram('analyze'):
-        leftFrame = trackedFrames["frame1L"]
-        rightFrame = trackedFrames["frame1R"]
-        (xMM, yMM, zMM) = getCoordinates(leftFrame[0], leftFrame[1], rightFrame[0], rightFrame[1])
-        (x, y, z) = mmToIn(xMM, yMM, zMM)
-        print leftFrame, rightFrame
-        print x, y, z
-        print ""
+        (x1, y1, z1) = getMMCoor(trackedFrames["frame1L"], trackedFrames["frame1R"])
+        (x2, y2, z2) = getMMCoor(trackedFrames["frame2L"], trackedFrames["frame2R"])
         setProgram('idle')
 
 def getCoordinates(leftI, leftJ, rightI, rightJ):
@@ -240,6 +269,10 @@ def main():
             setProgram('seek')
         elif key == ord('i'):
             setProgram('idle')
+        elif key == ord('t'):
+            setProgram('topLeft')
+        elif key == ord('b'):
+            setProgram('bottomRight')
 ##        elif key == ord('t'):
 ##            setProgram('test')
         

@@ -94,21 +94,24 @@ class RightPiCameraAnalysis(PiRGBAnalysis):
 
         if checkProgram('track'):
             frame, x, y, time = trackObject(frame)
-##            if x == -1:
-##                return
             
             if not trackedFrames.has_key("frame1R"):
-##                print(x, y, time)
                 trackedFrames["frame1R"] = (x, y, time)
                 return
                 
             if not trackedFrames.has_key("frame2R"):
-##                print(x, y, time)
                 trackedFrames["frame2R"] = (x, y, time)
                 return
             
             setProgram('send')
             return
+
+        if checkProgram('topLeft') or checkProgram('bottomRight'):
+            frame, x, y, time = trackObject(frame)
+            trackedFrames[program] = (x, y, time)
+            setProgram('send')
+            return
+
 
 def startTCP():
     global tcpConnection
@@ -150,6 +153,8 @@ def init():
     startTCP()
     startCamera()
     setProgram('idle')
+    global trackedFrames
+    trackedFrames = {}
 
 def shutdown():
     stopCamera()
@@ -167,16 +172,17 @@ def sendFrames():
     if checkProgram('send'):
         jsonFrames = json.dumps(trackedFrames)
         tcpConnection.sendall(jsonFrames)
+        global trackedFrames
+        trackedFrames = {}
         setProgram('idle')
 
 
 def listenForCommand():
-    global trackedFrames
     if checkProgram('idle'):
         data = tcpConnection.recv(BUFFER_SIZE)
+        setProgram(data)
         if data == 'track':
             setProgram('track')
-            trackedFrames = {}
         # if data == 'test':
         	# setProgram('test')
         	# trackedFrames = {}
