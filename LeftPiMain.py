@@ -16,18 +16,18 @@ cameraFocalLength = 3.29
 # Distance between cameras in mm
 cameraBaseLine = 130.5
 # Size of pixel on sensor in mm
-cameraPixelSize = (1.4 / 1000) / 4
+cameraPixelSize = (1.4 / 1000) * 4
 # Camera distortion factor (leaving as 0 for now)
 cameraDistortion = 0
 
 # Camera Settings
-fps = 20
-videoSize = (1920, 1080)
+fps = 60
+videoSize = (640, 480)
 videoCenter = (videoSize[0]/2, videoSize[1]/2)
 
 # Mask Settings
-lowerHSVBound = np.array([55, 100, 50])
-upperHSVBound = np.array([69, 255, 255])
+lowerHSVBound = np.array([50, 100, 50])
+upperHSVBound = np.array([75, 255, 255])
 displayColors = {'yellow':(0, 255, 255), 'black':(0,0,0)}
 
 programStatus = { 'idle' : 0 , 'seek' : 1 , 'track' : 2 , 'recieve' : 3, 'analyze': 4, 'test': 5}
@@ -66,15 +66,15 @@ def trackObject(frame):
         return frame, -1, -1, time
     
     
-##    if checkProgram('track'):
-##        cv2.circle(frame, (int(x), int(y)), 1, displayColors['yellow'], 3)
-##        cv2.circle(frame, (int(x), int(y)), int(radius), displayColors['yellow'], 2)
-##        cv2.putText(frame, 'X: ' + str(x), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
-##        cv2.putText(frame, 'Y: ' + str(y), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
-##        cv2.putText(frame, 'Radius: ' + str(radius), (20,100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
-##        cv2.putText(frame, 'Time: ' + str(time), (20,140), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
-##        cv2.imwrite("throw/frame.jpg", frame)
-##        cv2.imwrite("throw/mask.jpg", mask)
+    if checkProgram('track'):
+        cv2.circle(frame, (int(x), int(y)), 1, displayColors['yellow'], 3)
+        cv2.circle(frame, (int(x), int(y)), int(radius), displayColors['yellow'], 2)
+        cv2.putText(frame, 'X: ' + str(x), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
+        cv2.putText(frame, 'Y: ' + str(y), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
+        cv2.putText(frame, 'Radius: ' + str(radius), (20,100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
+        cv2.putText(frame, 'Time: ' + str(time), (20,140), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
+        cv2.imwrite("throw/frame.jpg", frame)
+        cv2.imwrite("throw/mask.jpg", mask)
                     
 
     return frame, int(x), int(y), time
@@ -185,7 +185,8 @@ def analyzeFrames():
     if checkProgram('analyze'):
         leftFrame = trackedFrames["frame1L"]
         rightFrame = trackedFrames["frame1R"]
-        (x, y, z) = getCoordinates(leftFrame[0], leftFrame[1], rightFrame[0], rightFrame[1])
+        (xMM, yMM, zMM) = getCoordinates(leftFrame[0], leftFrame[1], rightFrame[0], rightFrame[1])
+        (x, y, z) = mmToIn(xMM, yMM, zMM)
         print leftFrame, rightFrame
         print x, y, z
         print ""
@@ -196,10 +197,13 @@ def getCoordinates(leftI, leftJ, rightI, rightJ):
     (rightX, rightY) = reverseDistortion(rightI, rightJ)
 
     z = ((cameraBaseLine * cameraFocalLength) / (leftX - rightX))
-    x = leftX * (z / cameraFocalLength)
+    x = leftX * (z / cameraFocalLength) 
     y = leftY * (z / cameraFocalLength)
     
     return x, y, z
+
+def mmToIn(x, y, z):
+    return x/25.4, y/25.4, z/25.4
 
 def reverseDistortion(i, j):
     xDistorted = (i - videoCenter[0]) * cameraPixelSize
@@ -210,14 +214,14 @@ def reverseDistortion(i, j):
     return x, y
 
 
-def test():
-    if checkProgram('test'):
-        conn.sendall('test')
-        while True:
-            
-            key = cv2.waitKey(5) & 0xFF
-            if key == ord('e'):
-                conn.sendall('idle')
+##def test():
+##    if checkProgram('test'):
+##        conn.sendall('test')
+##        while True:
+##            
+##            key = cv2.waitKey(5) & 0xFF
+##            if key == ord('e'):
+##                conn.sendall('idle')
 
 
     
@@ -227,7 +231,7 @@ def main():
         
         recieveFrames()
         analyzeFrames()
-        test()
+##        test()
         
         key = cv2.waitKey(5) & 0xFF
         if key == 27:
@@ -236,8 +240,8 @@ def main():
             setProgram('seek')
         elif key == ord('i'):
             setProgram('idle')
-        elif key == ord('t'):
-            setProgram('test')
+##        elif key == ord('t'):
+##            setProgram('test')
         
     shutdown()
     
