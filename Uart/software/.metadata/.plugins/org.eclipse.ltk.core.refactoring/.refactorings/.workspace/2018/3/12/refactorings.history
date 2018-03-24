@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;uC_Template_Project&apos; to &apos;interfaceDriver&apos;" description="Rename resource &apos;uC_Template_Project&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="/uC_Template_Project" name="interfaceDriver" stamp="1521494359127" updateReferences="true"/>
+</session>
