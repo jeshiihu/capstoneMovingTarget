@@ -9,6 +9,7 @@ import sys
 import json
 import socket
 import numpy as np
+import serial
 
 # CAMERA CONSTANTS
 # Focal length of camera in mm
@@ -37,6 +38,26 @@ PORT = 5005
 BUFFER_SIZE = 128
 
 goalArea = {}
+
+ser = serial.Serial(
+	port='/dev/ttyUSB0',
+	baudrate=115200,
+	parity=serial.PARITY_NONE,
+	stopbits=serial.STOPBITS_ONE,
+	bytesize=serial.EIGHTBITS
+)
+
+if ser.isOpen():
+	while 1:
+		input = raw_input(">> ")
+		if input == 'exit':
+			ser.close()
+			exit()
+		else:
+			ser.write(input + '\n')
+			out = ''
+			time.sleep(0.5)
+
 
 def getMicroseconds():
     time = datetime.datetime.now() - timeStart
