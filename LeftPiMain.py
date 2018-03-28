@@ -185,9 +185,24 @@ def recieveFrames():
     if checkProgram('recieve'):
         tmp = conn.recv(BUFFER_SIZE)
         data = json.loads(tmp)
-        trackedFrames["frame1R"] = data['frame1R']
-        trackedFrames["frame2R"] = data['frame2R']
+        normalizeRightFrames(data['frame1R'], data['frame2R'])
         setProgram('analyze')
+
+def normalizeRightFrames(frame1R, frame2R):
+    global trackedFrames
+    frame1L = trackedFrames["frame1L"]
+    frame2L = trackedFrames["frame2L"]
+
+    slope = frame2R[1]-frame1R[1] / frame2R[0]-frame1R[0]
+
+    x1R = (frame1L[1]-frame1R[1] / slope) + frame1R[0]
+    x2R = (frame2L[1]-frame2R[1] / slope) + frame2R[0]
+
+    frame1RFixed = (x1R, frame1L[1], frame1L[2])
+    frame2RFixed = (x2R, frame2L[1], frame2L[2])
+
+    trackedFrames["frame1R"] = frame1RFixed
+    trackedFrames["frame2R"] = frame2RFixed
 
 def getTopLeft(frame):
     conn.sendall("topLeft")
@@ -217,9 +232,10 @@ def getMMCoor(leftFrame, rightFrame):
 
 def analyzeFrames():
     if checkProgram('analyze'):
-        (x1, y1, z1) = getMMCoor(trackedFrames["frame1L"], trackedFrames["frame1R"])
-        (x2, y2, z2) = getMMCoor(trackedFrames["frame2L"], trackedFrames["frame2R"])
-        print x1, y1, z1
+        pos1 = getMMCoor(trackedFrames["frame1L"], trackedFrames["frame1R"])
+        pos2 = getMMCoor(trackedFrames["frame2L"], trackedFrames["frame2R"])
+        velocities = getVelocities(pos1, pos2, trackedFrames["frame1L"][2], trackedFrames["frame2L"][2])
+        print velocities
         setProgram('idle')
 
 def getCoordinates(leftI, leftJ, rightI, rightJ):
@@ -242,6 +258,17 @@ def reverseDistortion(i, j):
     x = xDistorted * (1 + (cameraDistortion * rDSquared))
     y = yDistorted * (1 + (cameraDistortion * rDSquared))
     return x, y
+
+def velocity(pos1, pos2, timedelta):
+    return ((pos2-pos1)/float(timedelta))
+
+def getVelocities(pos1, pos2, time1, time2):
+    timedelta = time2-time1
+    xVel = velocity(pos1[0], pos2[0], timedelta)
+    yVel = velocity(pos1[1], pos2[1], timedelta)
+    zVel = velocity(pos1[2], pos2[2], timedelta)
+    return xVel, yVel, zVel
+    
 
 
 ##def test():
