@@ -10,12 +10,12 @@ import json
 import socket
 import numpy as np
 # Camera Settings
-fps = 20
-videoSize = (1920, 1088)
+fps = 60
+videoSize = (640, 480)
 
 # Mask Settings
-lowerHSVBound = np.array([55, 100, 50])
-upperHSVBound = np.array([69, 255, 255])
+lowerHSVBound = np.array([160, 175, 120])
+upperHSVBound = np.array([180, 255, 255])
 displayColors = {'yellow':(0, 255, 255), 'black':(0,0,0)}
 
 # programStatus = { 'idle' : 0 , 'track' : 1 , 'send' : 2, 'test' : 3}
@@ -94,24 +94,21 @@ class RightPiCameraAnalysis(PiRGBAnalysis):
 
         if checkProgram('track'):
             frame, x, y, time = trackObject(frame)
+##            if x == -1:
+##                return
             
             if not trackedFrames.has_key("frame1R"):
+##                print(x, y, time)
                 trackedFrames["frame1R"] = (x, y, time)
                 return
                 
             if not trackedFrames.has_key("frame2R"):
+##                print(x, y, time)
                 trackedFrames["frame2R"] = (x, y, time)
                 return
             
             setProgram('send')
             return
-
-        if checkProgram('topLeft') or checkProgram('bottomRight'):
-            frame, x, y, time = trackObject(frame)
-            trackedFrames[program] = (x, y, time)
-            setProgram('send')
-            return
-
 
 def startTCP():
     global tcpConnection
@@ -120,6 +117,7 @@ def startTCP():
     tcpConnection.sendall("Hello from right Pi")
     data = tcpConnection.recv(BUFFER_SIZE)
     print "TCP init: ", data
+
 
 def startCamera():
     global camera, timeStart
@@ -153,8 +151,6 @@ def init():
     startTCP()
     startCamera()
     setProgram('idle')
-    global trackedFrames
-    trackedFrames = {}
 
 def shutdown():
     stopCamera()
@@ -172,17 +168,16 @@ def sendFrames():
     if checkProgram('send'):
         jsonFrames = json.dumps(trackedFrames)
         tcpConnection.sendall(jsonFrames)
-        global trackedFrames
-        trackedFrames = {}
         setProgram('idle')
 
 
 def listenForCommand():
+    global trackedFrames
     if checkProgram('idle'):
         data = tcpConnection.recv(BUFFER_SIZE)
-        setProgram(data)
         if data == 'track':
             setProgram('track')
+            trackedFrames = {}
         # if data == 'test':
         	# setProgram('test')
         	# trackedFrames = {}
