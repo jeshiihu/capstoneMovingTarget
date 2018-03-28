@@ -26,8 +26,8 @@ videoSize = (640, 480)
 videoCenter = (videoSize[0]/2, videoSize[1]/2)
 
 # Mask Settings
-lowerHSVBound = np.array([50, 100, 50])
-upperHSVBound = np.array([75, 255, 255])
+lowerHSVBound = np.array([160, 175, 120])
+upperHSVBound = np.array([180, 255, 255])
 displayColors = {'yellow':(0, 255, 255), 'black':(0,0,0)}
 
 programStatus = { 'idle' : 0 , 'seek' : 1 , 'track' : 2 , 'recieve' : 3, 'analyze': 4, 'test': 5, 'topLeft' : 6, 'bottomRight' : 7}
@@ -219,6 +219,7 @@ def analyzeFrames():
     if checkProgram('analyze'):
         (x1, y1, z1) = getMMCoor(trackedFrames["frame1L"], trackedFrames["frame1R"])
         (x2, y2, z2) = getMMCoor(trackedFrames["frame2L"], trackedFrames["frame2R"])
+        print x1, y1, z1
         setProgram('idle')
 
 def getCoordinates(leftI, leftJ, rightI, rightJ):
