@@ -1,0 +1,18 @@
+/*
+ * uartComm.h
+ *
+ *  Created on: Mar 24, 2018
+ *      Author: kgchin & twmathie
+ */
+
+#ifndef HWLIBS_UARTCOMM_H_
+#define HWLIBS_UARTCOMM_H_
+
+#include "os_cpu.h"
+
+void initUART(void);
+void EnableInterruptGic(void);
+
+void readFIFO(char* buffer);
+
+#endif /* HWLIBS_UARTCOMM_H_ */

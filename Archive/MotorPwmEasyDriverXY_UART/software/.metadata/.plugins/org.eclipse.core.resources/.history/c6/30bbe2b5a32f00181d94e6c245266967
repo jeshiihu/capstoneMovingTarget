@@ -1,0 +1,13 @@
+/*
+ * uartComm.h
+ *
+ *  Created on: Mar 24, 2018
+ *      Author: jhuynh
+ */
+
+#ifndef HWLIBS_UARTCOMM_H_
+#define HWLIBS_UARTCOMM_H_
+
+
+
+#endif /* HWLIBS_UARTCOMM_H_ */
