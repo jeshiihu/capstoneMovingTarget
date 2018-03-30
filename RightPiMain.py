@@ -4,14 +4,15 @@ from picamera import Color
 from picamera import PiCamera
 from picamera.array import PiRGBAnalysis
 import datetime
-import time
+import time as t
 import sys
 import json
 import socket
 import numpy as np
 # Camera Settings
-fps = 60
+fps = 90
 videoSize = (640, 480)
+videoCenter = (videoSize[0]/2, videoSize[1]/2)
 
 # Mask Settings
 lowerHSVBound = np.array([160, 175, 120])
@@ -34,9 +35,9 @@ def getMilliseconds():
     time = getMicroseconds()/1000
     return time
 
-def trackObject(frame):
-    
-    time = getMilliseconds()
+def trackObject(frame, time):
+   
+##    time = getMilliseconds()
     
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(hsv, lowerHSVBound, upperHSVBound)
@@ -58,14 +59,14 @@ def trackObject(frame):
     
 ##    if checkProgram('track'):
 ##        
-##        cv2.circle(frame, (int(x), int(y)), 1, displayColors['yellow'], 3)
-##        cv2.circle(frame, (int(x), int(y)), int(radius), displayColors['yellow'], 2)
-##        cv2.putText(frame, 'X: ' + str(x), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
-##        cv2.putText(frame, 'Y: ' + str(y), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
-##        cv2.putText(frame, 'Radius: ' + str(radius), (20,100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
-##        cv2.putText(frame, 'Time: ' + str(time), (20,140), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
-##        cv2.imwrite("throw/frame.jpg", frame)
-##        cv2.imwrite("throw/mask.jpg", mask)
+    cv2.circle(frame, (int(x), int(y)), 1, displayColors['yellow'], 3)
+    cv2.circle(frame, (int(x), int(y)), int(radius), displayColors['yellow'], 2)
+##    cv2.putText(frame, 'X: ' + str(x), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
+##    cv2.putText(frame, 'Y: ' + str(y), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
+    cv2.putText(frame, 'Radius: ' + str(radius), (20,100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['yellow'], 2)
+    cv2.putText(frame, 'Time: ' + str(time), (20,140), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['yellow'], 2)
+##    cv2.imwrite("throw/frame.jpg", frame)
+##    cv2.imwrite("throw/mask.jpg", mask)
 
     return frame, int(x), int(y), time
 
@@ -76,7 +77,8 @@ class RightPiCameraAnalysis(PiRGBAnalysis):
 
     def analyze(self, frame):
         global trackedFrames
-
+        time = getMilliseconds()
+        
         if checkProgram('idle'):
             return
 
@@ -93,18 +95,28 @@ class RightPiCameraAnalysis(PiRGBAnalysis):
 
 
         if checkProgram('track'):
-            frame, x, y, time = trackObject(frame)
+            if not trackedFrames:
+                trackedFrames["throwaway"] = -1
+                return
+            tracked, xTopLeft, yTopLeft, time = trackObject(frame, time)
+            
 ##            if x == -1:
 ##                return
+            x = videoCenter[0]-xTopLeft
+            y = videoCenter[1] - yTopLeft
+            cv2.putText(frame, 'X: ' + str(x), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['yellow'], 2)
+            cv2.putText(frame, 'Y: ' + str(y), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['yellow'], 2)
             
             if not trackedFrames.has_key("frame1R"):
+                cv2.imwrite("throw/frame1.jpg", tracked)
 ##                print(x, y, time)
-                trackedFrames["frame1R"] = (x, y, time)
+                t.sleep(0.1)
                 return
                 
             if not trackedFrames.has_key("frame2R"):
+                cv2.imwrite("throw/frame2.jpg", tracked)
 ##                print(x, y, time)
-                trackedFrames["frame2R"] = (x, y, time)
+                trackedFrames["frame2R"] = (x, y, trashTime)
                 return
             
             setProgram('send')
@@ -122,7 +134,7 @@ def startTCP():
 def startCamera():
     global camera, timeStart
     camera = PiCamera(resolution = videoSize, framerate = fps)
-    time.sleep(2)
+    t.sleep(2)
     
 ##    camera.shutter_speed = camera.exposure_speed
 ##    camera.exposure_mode = 'off'
@@ -175,9 +187,11 @@ def listenForCommand():
     global trackedFrames
     if checkProgram('idle'):
         data = tcpConnection.recv(BUFFER_SIZE)
-        if data == 'track':
-            setProgram('track')
-            trackedFrames = {}
+##        if data == 'track':
+##            setProgram('track')
+##            trackedFrames = {}
+        trackedFrames = {}
+        setProgram(data)
         # if data == 'test':
         	# setProgram('test')
         	# trackedFrames = {}
