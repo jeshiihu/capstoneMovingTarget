@@ -9,6 +9,7 @@ import sys
 import json
 import socket
 import numpy as np
+import math
 
 # CAMERA CONSTANTS
 # Focal length of camera in mm
@@ -21,7 +22,7 @@ cameraPixelSize = (1.4 / 1000) * 4
 cameraDistortion = 0
 
 # Camera Settings
-fps = 60
+fps = 90
 videoSize = (640, 480)
 videoCenter = (videoSize[0]/2, videoSize[1]/2)
 
@@ -30,7 +31,7 @@ lowerHSVBound = np.array([160, 175, 120])
 upperHSVBound = np.array([180, 255, 255])
 displayColors = {'yellow':(0, 255, 255), 'black':(0,0,0)}
 
-programStatus = { 'idle' : 0 , 'seek' : 1 , 'track' : 2 , 'recieve' : 3, 'analyze': 4, 'test': 5, 'topLeft' : 6, 'bottomRight' : 7}
+programStatus = { 'idle' : 0 , 'seek' : 1 , 'track' : 2 , 'receive' : 3, 'analyze': 4, 'test': 5, 'topLeft' : 6, 'bottomRight' : 7}
 
 HOST = '0.0.0.0'
 PORT = 5005
@@ -47,9 +48,9 @@ def getMilliseconds():
     time = getMicroseconds()/1000
     return time
 
-def trackObject(frame):
+def trackObject(frame, time):
     
-    time = getMilliseconds()
+##    time = getMilliseconds()
     
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(hsv, lowerHSVBound, upperHSVBound)
@@ -68,15 +69,15 @@ def trackObject(frame):
         return frame, -1, -1, time
     
     
-    if checkProgram('track'):
-        cv2.circle(frame, (int(x), int(y)), 1, displayColors['yellow'], 3)
-        cv2.circle(frame, (int(x), int(y)), int(radius), displayColors['yellow'], 2)
-        cv2.putText(frame, 'X: ' + str(x), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
-        cv2.putText(frame, 'Y: ' + str(y), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
-        cv2.putText(frame, 'Radius: ' + str(radius), (20,100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
-        cv2.putText(frame, 'Time: ' + str(time), (20,140), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
-        cv2.imwrite("throw/frame.jpg", frame)
-        cv2.imwrite("throw/mask.jpg", mask)
+##    if checkProgram('track'):
+    cv2.circle(frame, (int(x), int(y)), 1, displayColors['yellow'], 3)
+    cv2.circle(frame, (int(x), int(y)), int(radius), displayColors['yellow'], 2)
+##    cv2.putText(frame, 'X: ' + str(x), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
+##    cv2.putText(frame, 'Y: ' + str(y), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
+    cv2.putText(frame, 'Radius: ' + str(radius), (20,100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
+    cv2.putText(frame, 'Time: ' + str(time), (20,140), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
+##        cv2.imwrite("throw/frame.jpg", frame)
+##        cv2.imwrite("throw/mask.jpg", mask)
                     
 
     return frame, int(x), int(y), time
@@ -88,12 +89,13 @@ class LeftPiCameraAnalysis(PiRGBAnalysis):
 
     def analyze(self, frame):
         global trackedFrames
+        time = getMilliseconds()
         
         if checkProgram('idle'):
             return
         
         if checkProgram('seek'):
-            frame, x, y, time = trackObject(frame)
+            tracked, x, y, time = trackObject(frame, time)
             if x!= -1:
                 setProgram('track')
                 trackedFrames = {}
@@ -102,19 +104,27 @@ class LeftPiCameraAnalysis(PiRGBAnalysis):
             return
             
         if checkProgram('track'):
-            frame, x, y, time = trackObject(frame)
+            tracked, xTopLeft, yTopLeft, time = trackObject(frame, time)
+            x = videoCenter[0] - xTopLeft
+            y = videoCenter[1] - yTopLeft
+            
+            cv2.putText(frame, 'X: ' + str(x), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['yellow'], 2)
+            cv2.putText(frame, 'Y: ' + str(y), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['yellow'], 2)
+            
 ##            if x == -1:
 ##                return
             
             if not trackedFrames.has_key("frame1L"):
+                cv2.imwrite("throw/frame1.jpeg", tracked)
                 trackedFrames["frame1L"] = (x, y, time)
                 return
                 
             if not trackedFrames.has_key("frame2L"):
+                cv2.imwrite("throw/frame2.jpeg", tracked)
                 trackedFrames["frame2L"] = (x, y, time)
                 return
             
-            setProgram('recieve')
+            setProgram('receive')
 ##            setProgram('idle')
             return
 
@@ -180,14 +190,44 @@ def setProgram(status):
 def checkProgram(status):
     return program == programStatus[status]
 
-def recieveFrames():
+def receiveFrames():
     global trackedFrames
-    if checkProgram('recieve'):
+    if checkProgram('receive'):
         tmp = conn.recv(BUFFER_SIZE)
         data = json.loads(tmp)
-        trackedFrames["frame1R"] = data['frame1R']
-        trackedFrames["frame2R"] = data['frame2R']
+        normalizeRightFrames(data['frame1R'], data['frame2R'])
         setProgram('analyze')
+
+def normalizeRightFrames(frame1R, frame2R):
+    global trackedFrames
+    frame1L = trackedFrames["frame1L"]
+    frame2L = trackedFrames["frame2L"]
+
+    print('original right frame1: x: ', frame1R[0], 'y: ', frame1R[1], 'time: ', frame1R[2])
+    print('original right frame2: x: ', frame2R[0], 'y: ', frame2R[1], 'time: ', frame2R[2])
+    
+    print('left frame1: x: ', frame1L[0], 'y: ', frame1L[1], 'time: ', frame1L[2])
+    print('left frame2: x: ', frame2L[0], 'y: ', frame2L[1], 'time: ', frame2L[2])
+    
+    slope = (float(frame2R[1])-float(frame1R[1])) / (float(frame2R[0])-float(frame1R[0]))
+    print('slope: ', slope)
+
+    if (slope != 0):
+        x1R = round(((frame1L[1]-frame1R[1]) / slope) + frame1R[0])
+        x2R = round(((frame2L[1]-frame2R[1]) / slope) + frame2R[0])
+    else:
+        xSpeed = (frame2R[0] - frame1R[0]) / (frame2R[2]-frame1R[2])
+        x1R = (xSpeed * (frame1R[2]-frame1L[2])) + frame1R[0]
+        x2R = (xSpeed * (frame2R[2]-frame2L[2])) + frame2R[0]
+
+    frame1RFixed = (x1R, frame1L[1], frame1L[2])
+    frame2RFixed = (x2R, frame2L[1], frame2L[2])
+
+    print('fixed right frame1: x: ', frame1RFixed[0], 'y: ', frame1RFixed[1], 'time: ', frame1RFixed[2])
+    print('fixed right frame2: x: ', frame2RFixed[0], 'y: ', frame2RFixed[1], 'time: ', frame2RFixed[2])
+   
+    trackedFrames["frame1R"] = frame1RFixed
+    trackedFrames["frame2R"] = frame2RFixed
 
 def getTopLeft(frame):
     conn.sendall("topLeft")
@@ -211,16 +251,21 @@ def getBottomRight(frame):
     print goalArea
 
 def getMMCoor(leftFrame, rightFrame):
-    (xMM, yMM, zMM) = getCoordinates(leftFrame[0], leftFrame[1], rightFrame[0], rightFrame[1])
-    (x, y, z) = mmToIn(xMM, yMM, zMM)
+    (x, y, z) = getCoordinates(leftFrame[0], leftFrame[1], rightFrame[0], rightFrame[1])
     return x, y, z
 
 def analyzeFrames():
     if checkProgram('analyze'):
-        (x1, y1, z1) = getMMCoor(trackedFrames["frame1L"], trackedFrames["frame1R"])
-        (x2, y2, z2) = getMMCoor(trackedFrames["frame2L"], trackedFrames["frame2R"])
-        print x1, y1, z1
+        pos1 = getMMCoor(trackedFrames["frame1L"], trackedFrames["frame1R"])
+        pos2 = getMMCoor(trackedFrames["frame2L"], trackedFrames["frame2R"])
+        velocities = getVelocities(pos1, pos2, trackedFrames["frame1L"][2], trackedFrames["frame2L"][2])
+        print('Position 1: ', pos1, 'Position 2: ', pos2, 'Frame 1 time: ', trackedFrames["frame1L"][2], 'Frame 2 time: ', trackedFrames["frame2L"][2])
+        print ('Total velocity in m/s: ', sumOfSquares(velocities[0], velocities[1], velocities[2]))
+        print ('xVel: ', velocities[0], 'yVel: ', velocities[1], 'zVel: ', velocities[2])
         setProgram('idle')
+        
+def sumOfSquares(a, b, c):
+    return math.sqrt((a**2)+(b**2)+(c**2))
 
 def getCoordinates(leftI, leftJ, rightI, rightJ):
     (leftX, leftY) = reverseDistortion(leftI, leftJ)
@@ -243,6 +288,17 @@ def reverseDistortion(i, j):
     y = yDistorted * (1 + (cameraDistortion * rDSquared))
     return x, y
 
+def velocity(pos1, pos2, timedelta):
+    return ((pos2-pos1)/float(timedelta))
+
+def getVelocities(pos1, pos2, time1, time2):
+    timedelta = time2-time1
+    xVel = velocity(pos1[0], pos2[0], timedelta)
+    yVel = velocity(pos1[1], pos2[1], timedelta)
+    zVel = velocity(pos1[2], pos2[2], timedelta)
+    return xVel, yVel, zVel
+    
+
 
 ##def test():
 ##    if checkProgram('test'):
@@ -259,7 +315,7 @@ def main():
     init()
     while True:
         
-        recieveFrames()
+        receiveFrames()
         analyzeFrames()
 ##        test()
         
