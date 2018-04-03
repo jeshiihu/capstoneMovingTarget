@@ -48,9 +48,7 @@ def getMilliseconds():
     time = getMicroseconds()/1000
     return time
 
-def trackObject(frame, time):
-    
-##    time = getMilliseconds()
+def trackObject(frame):
     
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(hsv, lowerHSVBound, upperHSVBound)
@@ -58,29 +56,30 @@ def trackObject(frame, time):
     mask = cv2.dilate(mask, None, iterations = 1)
     cnts = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
     
+    ##    cv2.imshow("mask", mask)
+    
     
     if len(cnts) <= 0:
-        return frame, -1, -1, time
+        return frame, -1, -1
     
     c = max(cnts, key=cv2.contourArea)
     ((x, y), radius) = cv2.minEnclosingCircle(c)
 
-    if radius < 6:
-        return frame, -1, -1, time
+if radius < 6:
+    return frame, -1, -1
     
-    
-##    if checkProgram('track'):
+    ##    if checkProgram('track'):
+    ##
     cv2.circle(frame, (int(x), int(y)), 1, displayColors['yellow'], 3)
     cv2.circle(frame, (int(x), int(y)), int(radius), displayColors['yellow'], 2)
-##    cv2.putText(frame, 'X: ' + str(x), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
-##    cv2.putText(frame, 'Y: ' + str(y), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
-    cv2.putText(frame, 'Radius: ' + str(radius), (20,100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
-    cv2.putText(frame, 'Time: ' + str(time), (20,140), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
-##        cv2.imwrite("throw/frame.jpg", frame)
-##        cv2.imwrite("throw/mask.jpg", mask)
-                    
+    ##    cv2.putText(frame, 'X: ' + str(x), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
+    ##    cv2.putText(frame, 'Y: ' + str(y), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
+    cv2.putText(frame, 'Radius: ' + str(radius), (20,100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['yellow'], 2)
+    ##    cv2.imwrite("throw/frame.jpg", frame)
+    ##    cv2.imwrite("throw/mask.jpg", mask)
+    
+    return frame, int(x), int(y)
 
-    return frame, int(x), int(y), time
 
 class ImageProcessor(threading.Thread):
     def __init__(self, owner):
@@ -96,9 +95,10 @@ class ImageProcessor(threading.Thread):
         while not self.terminated:
             # Wait for an image to be written to the stream
             if self.event.wait(1):
+                time = getMilliseconds()
                 try:
                     self.stream.seek(0)
-                    self.analyze(bytes_to_rgb(self.stream, owner.camera.resolution))
+                    self.analyze(bytes_to_rgb(self.stream, owner.camera.resolution), time)
                     self.owner.done = True
                     # Read the image and do some processing on it
                     #Image.open(self.stream)
@@ -116,9 +116,8 @@ class ImageProcessor(threading.Thread):
                     with self.owner.lock:
                         self.owner.pool.append(self)
 
-    def analyze(self, frame):
+    def analyze(self, frame, time):
         global trackedFrames
-        time = getMilliseconds()
         
         if checkProgram('idle'):
             return
@@ -139,6 +138,7 @@ class ImageProcessor(threading.Thread):
             
             cv2.putText(frame, 'X: ' + str(x), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['yellow'], 2)
             cv2.putText(frame, 'Y: ' + str(y), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['yellow'], 2)
+            cv2.putText(frame, 'Time: ' + str(time), (20,140), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['yellow'], 2)
             
 ##            if x == -1:
 ##                return
@@ -222,6 +222,7 @@ def startCamera():
     global camera, timeStart
     camera = PiCamera(resolution = videoSize, framerate = fps)
     time.sleep(2)
+    timeStart = datetime.datetime.now()
     
 ##    camera.shutter_speed = camera.exposure_speed
 ##    camera.exposure_mode = 'off'
@@ -234,7 +235,6 @@ def startCamera():
     camera.start_preview(alpha=200)
     output = ProcessOutput(camera)
     camera.start_recording(output, 'bgr')
-    timeStart = datetime.datetime.now()
     
 def stopCamera():
     camera.stop_recording()
