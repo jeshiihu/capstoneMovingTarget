@@ -1,0 +1,13 @@
+/*
+ * switches.h
+ *
+ *  Created on: Mar 29, 2018
+ *      Author: jhuynh
+ */
+
+#ifndef HWLIBS_SWITCHES_H_
+#define HWLIBS_SWITCHES_H_
+
+int GetPosNegSwitch(void)
+
+#endif /* HWLIBS_SWITCHES_H_ */
