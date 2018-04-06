@@ -69,7 +69,7 @@
 
 #include <alt_bridge_manager.h>
 
-#include "lcd.h"
+//#include "lcd.h"
 #include "uartComm.h"
 #include "red_leds.h"
 #include "switches.h"
@@ -92,9 +92,18 @@
 #define MANUAL_X_TASK_PRIO 9
 #define MANUAL_Y_TASK_PRIO 10
 #define UART_TASK_PRIO 	   11
-#define LCD_TASK_PRIO      12
+//#define LCD_TASK_PRIO      12
 
 #define TASK_STACK_SIZE 4096
+
+#define MOTOR_Y_PPS 800
+#define MOTOR_X_PPS 1000
+#define MOTOR_MANUAL_PPS 500
+#define MOTOR_REVERSE_PPS 150
+
+#define DIST_CENTRE2EDGE_POS 16
+#define DIST_CENTRE2EDGE_NEG -16
+#define DIST_MANUAL		 2
 
 /*
  *********************************************************************************************************
@@ -109,7 +118,7 @@ CPU_STK UartListenerTaskStk[TASK_STACK_SIZE];
 CPU_STK ResetTaskStk[TASK_STACK_SIZE];
 CPU_STK ManualXTaskStk[TASK_STACK_SIZE];
 CPU_STK ManualYTaskStk[TASK_STACK_SIZE];
-CPU_STK LcdWriteTaskStk[TASK_STACK_SIZE];
+//CPU_STK LcdWriteTaskStk[TASK_STACK_SIZE];
 
 /*
  *********************************************************************************************************
@@ -127,7 +136,7 @@ static  void  UartListenerTask 			(void 		 *p_arg);
 static  void  RunMotorXTask       		(void        *p_arg);
 static  void  RunMotorYTask       		(void        *p_arg);
 
-static  void  LcdWriteTask       		(void        *p_arg);
+//static  void  LcdWriteTask       		(void        *p_arg);
 
 /*
  *********************************************************************************************************
@@ -153,8 +162,8 @@ OS_EVENT *UartYQueue; // from parsed to motor Y
 void *MsgStorageX[MAX_NBR_MSGS];
 void *MsgStorageY[MAX_NBR_MSGS];
 
-OS_EVENT *LcdMsgQueue;
-void *MsgStorageLcd[MAX_NBR_MSGS];
+//OS_EVENT *LcdMsgQueue;
+//void *MsgStorageLcd[MAX_NBR_MSGS];
 
 /*********************************************************************************************************
  *                                               main()
@@ -181,7 +190,10 @@ int main ()
     Mem_Init();
     BSP_Init();
     OSInit();
-    InitLCD();
+//    InitLCD();
+
+    InitMotor(motorX, MOTOR_X_PPS);
+    InitMotor(motorY, MOTOR_Y_PPS);
 
     /*Semaphore and Message Queue Creation*/
     SemaphoreReset 	 = OSSemCreate(0);
@@ -191,7 +203,7 @@ int main ()
     SemaphoreMotorX  = OSSemCreate(0);
     SemaphoreMotorY  = OSSemCreate(0);
 
-    LcdMsgQueue = OSQCreate(MsgStorageLcd, MAX_NBR_MSGS);
+//    LcdMsgQueue = OSQCreate(MsgStorageLcd, MAX_NBR_MSGS);
     UartQueue  = OSQCreate(MsgStorageUart, MAX_NBR_MSGS);
     UartXQueue = OSQCreate(MsgStorageX, MAX_NBR_MSGS);
     UartYQueue = OSQCreate(MsgStorageY, MAX_NBR_MSGS);
@@ -259,14 +271,14 @@ int main ()
                              (INT16U)(OS_TASK_OPT_STK_CLR | OS_TASK_OPT_STK_CHK));
     if (os_err != OS_ERR_NONE) {; /* Handle error. */}
 
-    /////////////////////////////////////////////////////////////////////////////////
-    // Create the LCD Task
-    os_err = OSTaskCreateExt((void (*)(void *)) LcdWriteTask,   /* Create the start task.                               */
-                             (void*) 0, (OS_STK* )&LcdWriteTaskStk[TASK_STACK_SIZE - 1],
-                             (INT8U) LCD_TASK_PRIO,(INT16U) LCD_TASK_PRIO,  // reuse prio for ID
-                             (OS_STK*)&LcdWriteTaskStk[0],(INT32U) TASK_STACK_SIZE,(void*)0,
-                             (INT16U)(OS_TASK_OPT_STK_CLR | OS_TASK_OPT_STK_CHK));
-    if (os_err != OS_ERR_NONE) {; /* Handle error. */}
+//    /////////////////////////////////////////////////////////////////////////////////
+//    // Create the LCD Task
+//    os_err = OSTaskCreateExt((void (*)(void *)) LcdWriteTask,   /* Create the start task.                               */
+//                             (void*) 0, (OS_STK* )&LcdWriteTaskStk[TASK_STACK_SIZE - 1],
+//                             (INT8U) LCD_TASK_PRIO,(INT16U) LCD_TASK_PRIO,  // reuse prio for ID
+//                             (OS_STK*)&LcdWriteTaskStk[0],(INT32U) TASK_STACK_SIZE,(void*)0,
+//                             (INT16U)(OS_TASK_OPT_STK_CLR | OS_TASK_OPT_STK_CHK));
+//    if (os_err != OS_ERR_NONE) {; /* Handle error. */}
 
     CPU_IntEn();
     OSStart();
@@ -308,14 +320,14 @@ static  void  AppTaskStart (void *p_arg)
 static void ResetTask(void *p_arg)
 {
     BSP_OS_TmrTickInit(OS_TICKS_PER_SEC);                       /* Configure and enable OS tick interrupt.              */
-    char lcdBuf[50] = "Please press Key 3 twice to begin\n";
-    INT8U err = OSQPost(LcdMsgQueue, (void*)lcdBuf);
-
+//    char lcdBuf[50] = "Please press Key 3 twice to begin\n";
+//    INT8U err = OSQPost(LcdMsgQueue, (void*)lcdBuf);
+    INT8U err;
     for(;;) {
         BSP_WatchDog_Reset();                                   /* Reset the watchdog.                                  */
         OSSemPend(SemaphoreReset, 0, &err);
-        char lcd[50] = "State: In Reset\n";
-        INT8U err = OSQPost(LcdMsgQueue, (void*)lcd);
+//        char lcd[50] = "State: In Reset\n";
+//        INT8U err = OSQPost(LcdMsgQueue, (void*)lcd);
 
         // stop motors where they are
         MoveDistCm(motorX, 0);
@@ -344,6 +356,7 @@ static void ManualXTask(void *p_arg)
     for(;;) {
         BSP_WatchDog_Reset();                                   /* Reset the watchdog.                                  */
         OSSemPend(SemaphoreManualX, 0, &err);
+        SetFrequency(motorX, MOTOR_MANUAL_PPS);
         MoveDistCm(motorX, 2*GetPosNegSwitch());
     }
 }
@@ -356,6 +369,7 @@ static void ManualYTask(void *p_arg)
     for(;;) {
         BSP_WatchDog_Reset();                                   /* Reset the watchdog.                                  */
         OSSemPend(SemaphoreManualY, 0, &err);
+        SetFrequency(motorY, MOTOR_MANUAL_PPS);
         MoveDistCm(motorY, 2*GetPosNegSwitch());
     }
 }
@@ -385,9 +399,11 @@ static void UartListenerTask(void *p_arg)
 	for(;;)
 	{
 	    BSP_WatchDog_Reset();                   /* Reset the watchdog.                                  */
+	    BSP_LED_Off();
 	    OSSemPend(SemaphoreUartReset, 0, &err); //waits for reset to be done
-		char lcd[50] = "State: Waiting for Uart Coords\n";
-	    INT8U err = OSQPost(LcdMsgQueue, (void*)lcd);
+	    BSP_LED_On();
+//		char lcd[50] = "State: Waiting for Uart Coords\n";
+//	    INT8U err = OSQPost(LcdMsgQueue, (void*)lcd);
 
 	    void* buf = OSQPend(UartQueue, 0, &err);
 		char* msg = (char*)buf;
@@ -405,8 +421,9 @@ static void UartListenerTask(void *p_arg)
 
 		if(commaIndex == 0 || commaIndex == (strlen(msg) - 1))
 		{
-			char invalid[50] = "State: Invalid Message\n";
-		    INT8U err = OSQPost(LcdMsgQueue, (void*)invalid);
+			FPGA_LEDS_On();
+//			char invalid[50] = "State: Invalid Message\n";
+//		    INT8U err = OSQPost(LcdMsgQueue, (void*)invalid);
 			continue;
 		}
 
@@ -418,22 +435,24 @@ static void UartListenerTask(void *p_arg)
 		yCoord[strlen(msg) - commaIndex] = '\0';
 		int y = atoi(yCoord);
 
-		if(x > 16 || y > 16 || x < -16 || y < -16)
+		if(x > DIST_CENTRE2EDGE_POS || y > DIST_CENTRE2EDGE_POS ||
+		   x < DIST_CENTRE2EDGE_NEG || y < DIST_CENTRE2EDGE_NEG)
 		{
-			char inv[50] = "State: Out of Bounds\n";
-		    INT8U err = OSQPost(LcdMsgQueue, (void*)inv);
+//			char inv[50] = "State: Out of Bounds\n";
+//		    INT8U err = OSQPost(LcdMsgQueue, (void*)inv);
+			FPGA_LEDS_On();
 		    continue;
 		}
 
-		char lcdBuf[50] = "State: Moving motors";
-	    err = OSQPost(LcdMsgQueue, (void*)lcdBuf);
+		FPGA_LEDS_Off();
+//		char lcdBuf[50] = "State: Moving motors";
+//	    err = OSQPost(LcdMsgQueue, (void*)lcdBuf);
 
 		err = OSQPost(UartXQueue, (void *)x);
 		err = OSQPost(UartYQueue, (void *)y);
 
 		OSSemPend(SemaphoreMotorX, 0 , &err);
 		OSSemPend(SemaphoreMotorY, 0 , &err);
-    	BSP_LED_Off();
         OSTimeDlyHMSM(0, 0, 0, 500);
 	}
 }
@@ -452,24 +471,22 @@ static  void  RunMotorXTask(void *p_arg)
     BSP_OS_TmrTickInit(OS_TICKS_PER_SEC);                /* Configure and enable OS tick interrupt.              */
     BSP_WatchDog_Reset();                                /* Reset the watchdog.                                  */
 
-    INT32U currFreq = 1000;
-    InitMotor(motorX, currFreq);
-    MoveDistCm(motorX, 0);
-    OSTimeDlyHMSM(0, 0, 0, 500);
-    MoveDistCm(motorX, 16);
-    OSTimeDlyHMSM(0, 0, 0, 500);
+    MoveDistCm(motorX, DIST_CENTRE2EDGE_POS);
+    OSTimeDlyHMSM(0, 0, 0, 300);
+    MoveDistCm(motorY, DIST_CENTRE2EDGE_POS);
+
     OSSemPost(SemaphoreMotorX);
 
     INT8U err;
     for(;;)
     {
-        SetFrequency(motorX, currFreq);
+        SetFrequency(motorX, MOTOR_X_PPS);
 		void *xCoord = OSQPend(UartXQueue, 0, &err);
 		int dist = xCoord;
 		// Move that distance then return after timeout
     	MoveDistCm(motorX, dist);
         OSTimeDlyHMSM(0, 0, 5, 0);
-        SetFrequency(motorX, 150);
+        SetFrequency(motorX, MOTOR_REVERSE_PPS);
         MoveDistCm(motorX, dist*(-1));
         OSSemPost(SemaphoreMotorX);
     }
@@ -489,24 +506,18 @@ static  void  RunMotorYTask(void *p_arg)
     BSP_OS_TmrTickInit(OS_TICKS_PER_SEC);                /* Configure and enable OS tick interrupt.              */
     BSP_WatchDog_Reset();                                /* Reset the watchdog.                                  */
 
-    INT32U currFreq = 900;
-    InitMotor(motorY, currFreq);
-    MoveDistCm(motorY, 0);
-    OSTimeDlyHMSM(0, 0, 0, 500);
-    MoveDistCm(motorY, 16);
-    OSTimeDlyHMSM(0, 0, 0, 500);
     OSSemPost(SemaphoreMotorY);
 
     INT8U err;
     for(;;)
     {
-		SetFrequency(motorY, currFreq);
+		SetFrequency(motorY, MOTOR_Y_PPS);
     	void *yCoord = OSQPend(UartYQueue, 0, &err);
 		int dist = yCoord;
 		// Move that distance then return after timeout
     	MoveDistCm(motorY, dist);
         OSTimeDlyHMSM(0, 0, 5, 0);
-		SetFrequency(motorY, 150);
+		SetFrequency(motorY, MOTOR_REVERSE_PPS);
         MoveDistCm(motorY, dist*(-1));
         OSSemPost(SemaphoreMotorY);
     }
@@ -521,18 +532,18 @@ static  void  RunMotorYTask(void *p_arg)
  * Notes       : (1) The ticker MUST be initialised AFTER multitasking has started.
  *********************************************************************************************************
  */
-static void LcdWriteTask(void *p_arg)
-{
-    BSP_OS_TmrTickInit(OS_TICKS_PER_SEC);                       /* Configure and enable OS tick interrupt.              */
-    INT8U err;
-	ClearLCD();
-	PrintStringLCD("Initializing LCD\n");
-
-    for(;;) {
-        BSP_WatchDog_Reset();                                   /* Reset the watchdog.                                  */
-    	char *buf = OSQPend(LcdMsgQueue, 0, &err);
-    	ClearLCD();
-
-    	PrintStringLCD(buf);
-    }
-}
+//static void LcdWriteTask(void *p_arg)
+//{
+//    BSP_OS_TmrTickInit(OS_TICKS_PER_SEC);                       /* Configure and enable OS tick interrupt.              */
+//    INT8U err;
+//	ClearLCD();
+//	PrintStringLCD("Initializing LCD\n");
+//
+//    for(;;) {
+//        BSP_WatchDog_Reset();                                   /* Reset the watchdog.                                  */
+//    	char *buf = OSQPend(LcdMsgQueue, 0, &err);
+//    	ClearLCD();
+//
+//    	PrintStringLCD(buf);
+//    }
+//}

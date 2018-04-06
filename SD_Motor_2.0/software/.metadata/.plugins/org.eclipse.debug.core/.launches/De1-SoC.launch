@@ -1,50 +1,51 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="com.arm.debugger.launcher2">
 <mapAttribute key="AverageDurationTracker">
-<mapEntry key="*Fetching Data" value="2320472"/>
-<mapEntry key="*Fetching Data Model" value="1270953"/>
-<mapEntry key="*list global low level symbols" value="24317768"/>
+<mapEntry key="*Fetching Data" value="999348"/>
+<mapEntry key="*Fetching Data Model" value="692216"/>
+<mapEntry key="*list global low level symbols" value="1202698"/>
 <mapEntry key="*loading memory from target" value="13286071"/>
-<mapEntry key="*loading values from target" value="9336508"/>
-<mapEntry key="*updating local_variables" value="1508083"/>
+<mapEntry key="*loading values from target" value="2162709"/>
+<mapEntry key="*updating local_variables" value="835039"/>
 <mapEntry key="*updating variables" value="1081039"/>
-<mapEntry key="AddEventObserver" value="1136967"/>
+<mapEntry key="AddEventObserver" value="891059"/>
 <mapEntry key="Evaluate" value="13525033"/>
 <mapEntry key="ListRegimeWarningsCommand" value="423123"/>
 <mapEntry key="Retrieving globals list" value="7979062"/>
 <mapEntry key="areCachesAvailable" value="430707"/>
-<mapEntry key="backtrace" value="3353022"/>
-<mapEntry key="break" value="2918279"/>
-<mapEntry key="continue" value="34920436"/>
-<mapEntry key="core" value="3156404"/>
+<mapEntry key="backtrace" value="1375669"/>
+<mapEntry key="break" value="22189758"/>
+<mapEntry key="continue" value="37536427"/>
+<mapEntry key="core" value="3709682"/>
 <mapEntry key="disable" value="4695327"/>
 <mapEntry key="disassemble" value="73951921"/>
-<mapEntry key="file" value="36676166"/>
+<mapEntry key="file" value="55825123"/>
 <mapEntry key="get byte order" value="2980249"/>
-<mapEntry key="get capabilities" value="544942"/>
-<mapEntry key="get execution addresss" value="326688"/>
-<mapEntry key="get source lines" value="1062104"/>
+<mapEntry key="get capabilities" value="354439"/>
+<mapEntry key="get execution addresss" value="635486"/>
+<mapEntry key="get source lines" value="869192"/>
 <mapEntry key="getValidEncodings" value="371328"/>
-<mapEntry key="initialize command help" value="29409586"/>
-<mapEntry key="list breakpoints" value="2151521"/>
-<mapEntry key="list instruction sets" value="645192"/>
-<mapEntry key="list signals" value="5068028"/>
+<mapEntry key="initialize command help" value="24141903"/>
+<mapEntry key="interrupt" value="48015515"/>
+<mapEntry key="list breakpoints" value="4825656"/>
+<mapEntry key="list instruction sets" value="215617"/>
+<mapEntry key="list signals" value="37351397"/>
 <mapEntry key="list translations" value="508022"/>
-<mapEntry key="list watchpoints" value="4197820"/>
-<mapEntry key="loadfile" value="658304125"/>
-<mapEntry key="next" value="82637801"/>
-<mapEntry key="remove" value="12338064"/>
-<mapEntry key="set CWD" value="3367093"/>
-<mapEntry key="set breakpoint properties" value="1997221"/>
-<mapEntry key="set debug-from" value="818146"/>
-<mapEntry key="source altera_target_check.py" value="272594663"/>
-<mapEntry key="source preloader.ds" value="6689839466"/>
-<mapEntry key="start" value="106287769"/>
+<mapEntry key="list watchpoints" value="1369128"/>
+<mapEntry key="loadfile" value="819929095"/>
+<mapEntry key="next" value="89869339"/>
+<mapEntry key="remove" value="12259041"/>
+<mapEntry key="set CWD" value="854576"/>
+<mapEntry key="set breakpoint properties" value="29205425"/>
+<mapEntry key="set debug-from" value="1460157"/>
+<mapEntry key="source altera_target_check.py" value="212930600"/>
+<mapEntry key="source preloader.ds" value="8055101448"/>
+<mapEntry key="start" value="68311540"/>
 <mapEntry key="step" value="95269094"/>
-<mapEntry key="toggleBreakpoint" value="30148294"/>
+<mapEntry key="toggleBreakpoint" value="15793061"/>
 <mapEntry key="translate address" value="123538634"/>
 <mapEntry key="updating MMU tables" value="258256"/>
-<mapEntry key="waitForTargetToStop" value="509830486"/>
+<mapEntry key="waitForTargetToStop" value="287608269"/>
 </mapAttribute>
 <intAttribute key="DEBUG_TAB..RESOURCES.COUNT" value="0"/>
 <intAttribute key="FILES.CONNECT_TO_GDB_SERVER.RESOURCES.COUNT" value="0"/>

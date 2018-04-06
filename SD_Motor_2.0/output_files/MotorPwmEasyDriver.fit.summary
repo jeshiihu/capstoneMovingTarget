@@ -1,12 +1,12 @@
-Fitter Status : Successful - Sat Mar 31 12:47:38 2018
+Fitter Status : Successful - Fri Apr 06 10:27:11 2018
 Quartus Prime Version : 17.0.2 Build 602 07/19/2017 SJ Standard Edition
 Revision Name : MotorPwmEasyDriver
 Top-level Entity Name : MotorPwmEasyDriver
 Family : Cyclone V
 Device : 5CSEMA5F31C6
 Timing Models : Final
-Logic utilization (in ALMs) : 2,731 / 32,070 ( 9 % )
-Total registers : 3764
+Logic utilization (in ALMs) : 2,725 / 32,070 ( 8 % )
+Total registers : 3758
 Total pins : 154 / 457 ( 34 % )
 Total virtual pins : 0
 Total block memory bits : 0 / 4,065,280 ( 0 % )
