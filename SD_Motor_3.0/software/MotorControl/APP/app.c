@@ -94,7 +94,9 @@
 
 #define TASK_STACK_SIZE 4096
 
-#define MOTOR_Y_PPS 880
+// Current Limit: 900mA
+// Voltage: 22.0V
+#define MOTOR_Y_PPS 1100
 #define MOTOR_X_PPS 1100
 #define MOTOR_MANUAL_PPS 500
 #define MOTOR_REVERSE_PPS 150

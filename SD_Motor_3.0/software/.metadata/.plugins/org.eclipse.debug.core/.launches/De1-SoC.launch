@@ -1,51 +1,51 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="com.arm.debugger.launcher2">
 <mapAttribute key="AverageDurationTracker">
-<mapEntry key="*Fetching Data" value="603040"/>
-<mapEntry key="*Fetching Data Model" value="143328"/>
-<mapEntry key="*list global low level symbols" value="977006"/>
+<mapEntry key="*Fetching Data" value="730305"/>
+<mapEntry key="*Fetching Data Model" value="140996"/>
+<mapEntry key="*list global low level symbols" value="8453293"/>
 <mapEntry key="*loading memory from target" value="13286071"/>
 <mapEntry key="*loading values from target" value="2162709"/>
-<mapEntry key="*updating local_variables" value="709925"/>
+<mapEntry key="*updating local_variables" value="728774"/>
 <mapEntry key="*updating variables" value="1081039"/>
-<mapEntry key="AddEventObserver" value="205142"/>
+<mapEntry key="AddEventObserver" value="246204"/>
 <mapEntry key="Evaluate" value="13525033"/>
 <mapEntry key="ListRegimeWarningsCommand" value="423123"/>
 <mapEntry key="Retrieving globals list" value="7979062"/>
 <mapEntry key="areCachesAvailable" value="430707"/>
-<mapEntry key="backtrace" value="832145"/>
+<mapEntry key="backtrace" value="929645"/>
 <mapEntry key="break" value="22189758"/>
-<mapEntry key="continue" value="28135403"/>
-<mapEntry key="core" value="3709682"/>
+<mapEntry key="continue" value="31458954"/>
+<mapEntry key="core" value="8399454"/>
 <mapEntry key="disable" value="4695327"/>
 <mapEntry key="disassemble" value="73951921"/>
-<mapEntry key="file" value="78517083"/>
+<mapEntry key="file" value="27909533"/>
 <mapEntry key="get byte order" value="2980249"/>
-<mapEntry key="get capabilities" value="114438"/>
+<mapEntry key="get capabilities" value="77545"/>
 <mapEntry key="get execution addresss" value="452931"/>
-<mapEntry key="get source lines" value="454023"/>
+<mapEntry key="get source lines" value="506290"/>
 <mapEntry key="getValidEncodings" value="371328"/>
-<mapEntry key="initialize command help" value="20893722"/>
+<mapEntry key="initialize command help" value="19819969"/>
 <mapEntry key="interrupt" value="48015515"/>
-<mapEntry key="list breakpoints" value="287693"/>
-<mapEntry key="list instruction sets" value="102640"/>
-<mapEntry key="list signals" value="20935792"/>
+<mapEntry key="list breakpoints" value="1114112"/>
+<mapEntry key="list instruction sets" value="199884"/>
+<mapEntry key="list signals" value="13608467"/>
 <mapEntry key="list translations" value="508022"/>
-<mapEntry key="list watchpoints" value="253290"/>
-<mapEntry key="loadfile" value="787958720"/>
+<mapEntry key="list watchpoints" value="486402"/>
+<mapEntry key="loadfile" value="929576895"/>
 <mapEntry key="next" value="89869339"/>
 <mapEntry key="remove" value="12259041"/>
-<mapEntry key="set CWD" value="421170"/>
+<mapEntry key="set CWD" value="519965"/>
 <mapEntry key="set breakpoint properties" value="29205425"/>
-<mapEntry key="set debug-from" value="756446"/>
-<mapEntry key="source altera_target_check.py" value="279843707"/>
-<mapEntry key="source preloader.ds" value="7915956605"/>
-<mapEntry key="start" value="53213071"/>
+<mapEntry key="set debug-from" value="479999"/>
+<mapEntry key="source altera_target_check.py" value="209139747"/>
+<mapEntry key="source preloader.ds" value="6380455932"/>
+<mapEntry key="start" value="65870773"/>
 <mapEntry key="step" value="95269094"/>
 <mapEntry key="toggleBreakpoint" value="15793061"/>
 <mapEntry key="translate address" value="123538634"/>
 <mapEntry key="updating MMU tables" value="258256"/>
-<mapEntry key="waitForTargetToStop" value="278261206"/>
+<mapEntry key="waitForTargetToStop" value="262858405"/>
 </mapAttribute>
 <intAttribute key="DEBUG_TAB..RESOURCES.COUNT" value="0"/>
 <intAttribute key="FILES.CONNECT_TO_GDB_SERVER.RESOURCES.COUNT" value="0"/>
@@ -60,38 +60,32 @@
 <stringAttribute key="FILES.DEBUG_RESIDENT_APP.RESOURCES.1.TYPE" value="APPLICATION_ON_TARGET"/>
 <stringAttribute key="FILES.DEBUG_RESIDENT_APP.RESOURCES.1.VALUE" value=""/>
 <intAttribute key="FILES.DEBUG_RESIDENT_APP.RESOURCES.COUNT" value="2"/>
-<listAttribute key="FILES.DOWNLOAD_AND_DEBUG">
-<listEntry value="ON_DEMAND_LOAD"/>
-<listEntry value="ALSO_LOAD_SYMBOLS"/>
-</listAttribute>
+<listAttribute key="FILES.DOWNLOAD_AND_DEBUG"/>
 <stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.0.OPTION.ALSO_LOAD_SYMBOLS" value="true"/>
 <stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.0.OPTION.ON_DEMAND_LOAD" value="true"/>
-<stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.0.TYPE" value="TARGET_WORKING_DIR"/>
+<stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.0.TYPE" value="APP_ON_HOST_TO_DOWNLOAD"/>
 <stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.0.VALUE" value=""/>
 <stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.1.OPTION.ALSO_LOAD_SYMBOLS" value="true"/>
 <stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.1.OPTION.ON_DEMAND_LOAD" value="true"/>
-<stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.1.TYPE" value="TARGET_DOWNLOAD_DIR"/>
+<stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.1.TYPE" value="TARGET_WORKING_DIR"/>
 <stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.1.VALUE" value=""/>
 <stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.2.OPTION.ALSO_LOAD_SYMBOLS" value="true"/>
 <stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.2.OPTION.ON_DEMAND_LOAD" value="true"/>
-<stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.2.TYPE" value="APP_ON_HOST_TO_DOWNLOAD"/>
+<stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.2.TYPE" value="TARGET_DOWNLOAD_DIR"/>
 <stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.2.VALUE" value=""/>
 <intAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.COUNT" value="3"/>
-<listAttribute key="FILES.DOWNLOAD_DEBUG">
-<listEntry value="ON_DEMAND_LOAD"/>
-<listEntry value="ALSO_LOAD_SYMBOLS"/>
-</listAttribute>
+<listAttribute key="FILES.DOWNLOAD_DEBUG"/>
 <stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.0.OPTION.ALSO_LOAD_SYMBOLS" value="true"/>
 <stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.0.OPTION.ON_DEMAND_LOAD" value="true"/>
-<stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.0.TYPE" value="TARGET_WORKING_DIR"/>
+<stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.0.TYPE" value="APP_ON_HOST_TO_DOWNLOAD"/>
 <stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.0.VALUE" value=""/>
 <stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.1.OPTION.ALSO_LOAD_SYMBOLS" value="true"/>
 <stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.1.OPTION.ON_DEMAND_LOAD" value="true"/>
-<stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.1.TYPE" value="TARGET_DOWNLOAD_DIR"/>
+<stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.1.TYPE" value="TARGET_WORKING_DIR"/>
 <stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.1.VALUE" value=""/>
 <stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.2.OPTION.ALSO_LOAD_SYMBOLS" value="true"/>
 <stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.2.OPTION.ON_DEMAND_LOAD" value="true"/>
-<stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.2.TYPE" value="APP_ON_HOST_TO_DOWNLOAD"/>
+<stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.2.TYPE" value="TARGET_DOWNLOAD_DIR"/>
 <stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.2.VALUE" value=""/>
 <intAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.COUNT" value="3"/>
 <intAttribute key="FILES.DOWNLOAD_DEBUG_ANDROID.RESOURCES.COUNT" value="0"/>
