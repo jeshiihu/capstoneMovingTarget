@@ -1,7 +1,0 @@
-March 13 
-
-- MotorPWMAccel is backed up on github and the external HD
-- added x and y tasks
-- hooked up another h bridge to perf board
-- want to move to SD card
-- must research into easydriver its advantage over h bridge circuit
