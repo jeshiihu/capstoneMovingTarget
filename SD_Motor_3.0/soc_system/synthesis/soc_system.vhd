@@ -67,12 +67,6 @@ entity soc_system is
 		key1_y_external_connection_export     : in    std_logic                     := '0';             --     key1_y_external_connection.export
 		key2_x_external_connection_export     : in    std_logic                     := '0';             --     key2_x_external_connection.export
 		key3_reset_external_connection_export : in    std_logic                     := '0';             -- key3_reset_external_connection.export
-		lcd_external_interface_DATA           : inout std_logic_vector(7 downto 0)  := (others => '0'); --         lcd_external_interface.DATA
-		lcd_external_interface_ON             : out   std_logic;                                        --                               .ON
-		lcd_external_interface_BLON           : out   std_logic;                                        --                               .BLON
-		lcd_external_interface_EN             : out   std_logic;                                        --                               .EN
-		lcd_external_interface_RS             : out   std_logic;                                        --                               .RS
-		lcd_external_interface_RW             : out   std_logic;                                        --                               .RW
 		memory_mem_a                          : out   std_logic_vector(14 downto 0);                    --                         memory.mem_a
 		memory_mem_ba                         : out   std_logic_vector(2 downto 0);                     --                               .mem_ba
 		memory_mem_ck                         : out   std_logic;                                        --                               .mem_ck
@@ -260,26 +254,6 @@ architecture rtl of soc_system is
 		);
 	end component soc_system_hps_0;
 
-	component soc_system_lcd is
-		port (
-			clk         : in    std_logic                    := 'X';             -- clk
-			reset       : in    std_logic                    := 'X';             -- reset
-			address     : in    std_logic                    := 'X';             -- address
-			chipselect  : in    std_logic                    := 'X';             -- chipselect
-			read        : in    std_logic                    := 'X';             -- read
-			write       : in    std_logic                    := 'X';             -- write
-			writedata   : in    std_logic_vector(7 downto 0) := (others => 'X'); -- writedata
-			readdata    : out   std_logic_vector(7 downto 0);                    -- readdata
-			waitrequest : out   std_logic;                                       -- waitrequest
-			LCD_DATA    : inout std_logic_vector(7 downto 0) := (others => 'X'); -- export
-			LCD_ON      : out   std_logic;                                       -- export
-			LCD_BLON    : out   std_logic;                                       -- export
-			LCD_EN      : out   std_logic;                                       -- export
-			LCD_RS      : out   std_logic;                                       -- export
-			LCD_RW      : out   std_logic                                        -- export
-		);
-	end component soc_system_lcd;
-
 	component soc_system_red_leds is
 		port (
 			clk        : in  std_logic                     := 'X';             -- clk
@@ -341,8 +315,8 @@ architecture rtl of soc_system is
 			hps_0_h2f_lw_axi_master_rvalid                                      : out std_logic;                                        -- rvalid
 			hps_0_h2f_lw_axi_master_rready                                      : in  std_logic                     := 'X';             -- rready
 			clk_0_clk_clk                                                       : in  std_logic                     := 'X';             -- clk
+			Easy_Driver_Y_reset_reset_bridge_in_reset_reset                     : in  std_logic                     := 'X';             -- reset
 			hps_0_h2f_lw_axi_master_agent_clk_reset_reset_bridge_in_reset_reset : in  std_logic                     := 'X';             -- reset
-			lcd_reset_reset_bridge_in_reset_reset                               : in  std_logic                     := 'X';             -- reset
 			Easy_Driver_X_avalon_slave_dir_write                                : out std_logic;                                        -- write
 			Easy_Driver_X_avalon_slave_dir_read                                 : out std_logic;                                        -- read
 			Easy_Driver_X_avalon_slave_dir_readdata                             : in  std_logic_vector(7 downto 0)  := (others => 'X'); -- readdata
@@ -390,13 +364,6 @@ architecture rtl of soc_system is
 			Key3_Reset_s1_readdata                                              : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
 			Key3_Reset_s1_writedata                                             : out std_logic_vector(31 downto 0);                    -- writedata
 			Key3_Reset_s1_chipselect                                            : out std_logic;                                        -- chipselect
-			lcd_avalon_lcd_slave_address                                        : out std_logic_vector(0 downto 0);                     -- address
-			lcd_avalon_lcd_slave_write                                          : out std_logic;                                        -- write
-			lcd_avalon_lcd_slave_read                                           : out std_logic;                                        -- read
-			lcd_avalon_lcd_slave_readdata                                       : in  std_logic_vector(7 downto 0)  := (others => 'X'); -- readdata
-			lcd_avalon_lcd_slave_writedata                                      : out std_logic_vector(7 downto 0);                     -- writedata
-			lcd_avalon_lcd_slave_waitrequest                                    : in  std_logic                     := 'X';             -- waitrequest
-			lcd_avalon_lcd_slave_chipselect                                     : out std_logic;                                        -- chipselect
 			red_leds_s1_address                                                 : out std_logic_vector(1 downto 0);                     -- address
 			red_leds_s1_write                                                   : out std_logic;                                        -- write
 			red_leds_s1_readdata                                                : in  std_logic_vector(31 downto 0) := (others => 'X'); -- readdata
@@ -596,13 +563,6 @@ architecture rtl of soc_system is
 	signal hps_0_h2f_lw_axi_master_awsize                                      : std_logic_vector(2 downto 0);  -- hps_0:h2f_lw_AWSIZE -> mm_interconnect_0:hps_0_h2f_lw_axi_master_awsize
 	signal hps_0_h2f_lw_axi_master_awvalid                                     : std_logic;                     -- hps_0:h2f_lw_AWVALID -> mm_interconnect_0:hps_0_h2f_lw_axi_master_awvalid
 	signal hps_0_h2f_lw_axi_master_rvalid                                      : std_logic;                     -- mm_interconnect_0:hps_0_h2f_lw_axi_master_rvalid -> hps_0:h2f_lw_RVALID
-	signal mm_interconnect_0_lcd_avalon_lcd_slave_chipselect                   : std_logic;                     -- mm_interconnect_0:lcd_avalon_lcd_slave_chipselect -> lcd:chipselect
-	signal mm_interconnect_0_lcd_avalon_lcd_slave_readdata                     : std_logic_vector(7 downto 0);  -- lcd:readdata -> mm_interconnect_0:lcd_avalon_lcd_slave_readdata
-	signal mm_interconnect_0_lcd_avalon_lcd_slave_waitrequest                  : std_logic;                     -- lcd:waitrequest -> mm_interconnect_0:lcd_avalon_lcd_slave_waitrequest
-	signal mm_interconnect_0_lcd_avalon_lcd_slave_address                      : std_logic_vector(0 downto 0);  -- mm_interconnect_0:lcd_avalon_lcd_slave_address -> lcd:address
-	signal mm_interconnect_0_lcd_avalon_lcd_slave_read                         : std_logic;                     -- mm_interconnect_0:lcd_avalon_lcd_slave_read -> lcd:read
-	signal mm_interconnect_0_lcd_avalon_lcd_slave_write                        : std_logic;                     -- mm_interconnect_0:lcd_avalon_lcd_slave_write -> lcd:write
-	signal mm_interconnect_0_lcd_avalon_lcd_slave_writedata                    : std_logic_vector(7 downto 0);  -- mm_interconnect_0:lcd_avalon_lcd_slave_writedata -> lcd:writedata
 	signal mm_interconnect_0_easy_driver_y_avalon_slave_dir_readdata           : std_logic_vector(7 downto 0);  -- Easy_Driver_Y:dir_readdata -> mm_interconnect_0:Easy_Driver_Y_avalon_slave_dir_readdata
 	signal mm_interconnect_0_easy_driver_y_avalon_slave_dir_read               : std_logic;                     -- mm_interconnect_0:Easy_Driver_Y_avalon_slave_dir_read -> mm_interconnect_0_easy_driver_y_avalon_slave_dir_read:in
 	signal mm_interconnect_0_easy_driver_y_avalon_slave_dir_write              : std_logic;                     -- mm_interconnect_0:Easy_Driver_Y_avalon_slave_dir_write -> mm_interconnect_0_easy_driver_y_avalon_slave_dir_write:in
@@ -664,7 +624,7 @@ architecture rtl of soc_system is
 	signal irq_mapper_receiver2_irq                                            : std_logic;                     -- Key1_Y:irq -> irq_mapper:receiver2_irq
 	signal hps_0_f2h_irq0_irq                                                  : std_logic_vector(31 downto 0); -- irq_mapper:sender_irq -> hps_0:f2h_irq_p0
 	signal hps_0_f2h_irq1_irq                                                  : std_logic_vector(31 downto 0); -- irq_mapper_001:sender_irq -> hps_0:f2h_irq_p1
-	signal rst_controller_reset_out_reset                                      : std_logic;                     -- rst_controller:reset_out -> [lcd:reset, mm_interconnect_0:lcd_reset_reset_bridge_in_reset_reset, rst_controller_reset_out_reset:in]
+	signal rst_controller_reset_out_reset                                      : std_logic;                     -- rst_controller:reset_out -> [mm_interconnect_0:Easy_Driver_Y_reset_reset_bridge_in_reset_reset, rst_controller_reset_out_reset:in]
 	signal hps_0_h2f_reset_reset                                               : std_logic;                     -- hps_0:h2f_rst_n -> hps_0_h2f_reset_reset:in
 	signal rst_controller_001_reset_out_reset                                  : std_logic;                     -- rst_controller_001:reset_out -> mm_interconnect_0:hps_0_h2f_lw_axi_master_agent_clk_reset_reset_bridge_in_reset_reset
 	signal reset_reset_n_ports_inv                                             : std_logic;                     -- reset_reset_n:inv -> rst_controller:reset_in0
@@ -904,25 +864,6 @@ begin
 			f2h_irq_p1               => hps_0_f2h_irq1_irq               --          f2h_irq1.irq
 		);
 
-	lcd : component soc_system_lcd
-		port map (
-			clk         => clk_clk,                                            --                clk.clk
-			reset       => rst_controller_reset_out_reset,                     --              reset.reset
-			address     => mm_interconnect_0_lcd_avalon_lcd_slave_address(0),  --   avalon_lcd_slave.address
-			chipselect  => mm_interconnect_0_lcd_avalon_lcd_slave_chipselect,  --                   .chipselect
-			read        => mm_interconnect_0_lcd_avalon_lcd_slave_read,        --                   .read
-			write       => mm_interconnect_0_lcd_avalon_lcd_slave_write,       --                   .write
-			writedata   => mm_interconnect_0_lcd_avalon_lcd_slave_writedata,   --                   .writedata
-			readdata    => mm_interconnect_0_lcd_avalon_lcd_slave_readdata,    --                   .readdata
-			waitrequest => mm_interconnect_0_lcd_avalon_lcd_slave_waitrequest, --                   .waitrequest
-			LCD_DATA    => lcd_external_interface_DATA,                        -- external_interface.export
-			LCD_ON      => lcd_external_interface_ON,                          --                   .export
-			LCD_BLON    => lcd_external_interface_BLON,                        --                   .export
-			LCD_EN      => lcd_external_interface_EN,                          --                   .export
-			LCD_RS      => lcd_external_interface_RS,                          --                   .export
-			LCD_RW      => lcd_external_interface_RW                           --                   .export
-		);
-
 	red_leds : component soc_system_red_leds
 		port map (
 			clk        => clk_clk,                                       --                 clk.clk
@@ -982,8 +923,8 @@ begin
 			hps_0_h2f_lw_axi_master_rvalid                                      => hps_0_h2f_lw_axi_master_rvalid,                                --                                                              .rvalid
 			hps_0_h2f_lw_axi_master_rready                                      => hps_0_h2f_lw_axi_master_rready,                                --                                                              .rready
 			clk_0_clk_clk                                                       => clk_clk,                                                       --                                                     clk_0_clk.clk
+			Easy_Driver_Y_reset_reset_bridge_in_reset_reset                     => rst_controller_reset_out_reset,                                --                     Easy_Driver_Y_reset_reset_bridge_in_reset.reset
 			hps_0_h2f_lw_axi_master_agent_clk_reset_reset_bridge_in_reset_reset => rst_controller_001_reset_out_reset,                            -- hps_0_h2f_lw_axi_master_agent_clk_reset_reset_bridge_in_reset.reset
-			lcd_reset_reset_bridge_in_reset_reset                               => rst_controller_reset_out_reset,                                --                               lcd_reset_reset_bridge_in_reset.reset
 			Easy_Driver_X_avalon_slave_dir_write                                => mm_interconnect_0_easy_driver_x_avalon_slave_dir_write,        --                                Easy_Driver_X_avalon_slave_dir.write
 			Easy_Driver_X_avalon_slave_dir_read                                 => mm_interconnect_0_easy_driver_x_avalon_slave_dir_read,         --                                                              .read
 			Easy_Driver_X_avalon_slave_dir_readdata                             => mm_interconnect_0_easy_driver_x_avalon_slave_dir_readdata,     --                                                              .readdata
@@ -1031,13 +972,6 @@ begin
 			Key3_Reset_s1_readdata                                              => mm_interconnect_0_key3_reset_s1_readdata,                      --                                                              .readdata
 			Key3_Reset_s1_writedata                                             => mm_interconnect_0_key3_reset_s1_writedata,                     --                                                              .writedata
 			Key3_Reset_s1_chipselect                                            => mm_interconnect_0_key3_reset_s1_chipselect,                    --                                                              .chipselect
-			lcd_avalon_lcd_slave_address                                        => mm_interconnect_0_lcd_avalon_lcd_slave_address,                --                                          lcd_avalon_lcd_slave.address
-			lcd_avalon_lcd_slave_write                                          => mm_interconnect_0_lcd_avalon_lcd_slave_write,                  --                                                              .write
-			lcd_avalon_lcd_slave_read                                           => mm_interconnect_0_lcd_avalon_lcd_slave_read,                   --                                                              .read
-			lcd_avalon_lcd_slave_readdata                                       => mm_interconnect_0_lcd_avalon_lcd_slave_readdata,               --                                                              .readdata
-			lcd_avalon_lcd_slave_writedata                                      => mm_interconnect_0_lcd_avalon_lcd_slave_writedata,              --                                                              .writedata
-			lcd_avalon_lcd_slave_waitrequest                                    => mm_interconnect_0_lcd_avalon_lcd_slave_waitrequest,            --                                                              .waitrequest
-			lcd_avalon_lcd_slave_chipselect                                     => mm_interconnect_0_lcd_avalon_lcd_slave_chipselect,             --                                                              .chipselect
 			red_leds_s1_address                                                 => mm_interconnect_0_red_leds_s1_address,                         --                                                   red_leds_s1.address
 			red_leds_s1_write                                                   => mm_interconnect_0_red_leds_s1_write,                           --                                                              .write
 			red_leds_s1_readdata                                                => mm_interconnect_0_red_leds_s1_readdata,                        --                                                              .readdata

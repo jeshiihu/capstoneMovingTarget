@@ -59,12 +59,6 @@
 			key1_y_external_connection_export     : in    std_logic                     := 'X';             -- export
 			key2_x_external_connection_export     : in    std_logic                     := 'X';             -- export
 			key3_reset_external_connection_export : in    std_logic                     := 'X';             -- export
-			lcd_external_interface_DATA           : inout std_logic_vector(7 downto 0)  := (others => 'X'); -- DATA
-			lcd_external_interface_ON             : out   std_logic;                                        -- ON
-			lcd_external_interface_BLON           : out   std_logic;                                        -- BLON
-			lcd_external_interface_EN             : out   std_logic;                                        -- EN
-			lcd_external_interface_RS             : out   std_logic;                                        -- RS
-			lcd_external_interface_RW             : out   std_logic;                                        -- RW
 			memory_mem_a                          : out   std_logic_vector(14 downto 0);                    -- mem_a
 			memory_mem_ba                         : out   std_logic_vector(2 downto 0);                     -- mem_ba
 			memory_mem_ck                         : out   std_logic;                                        -- mem_ck

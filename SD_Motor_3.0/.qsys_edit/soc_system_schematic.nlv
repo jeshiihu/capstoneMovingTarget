@@ -62,21 +62,21 @@ preplace inst soc_system.lcd -pg 1 -lvl 3 -y 810
 preplace inst soc_system.hps_0.f2s_periph_ref_clk -pg 1
 preplace inst soc_system.hps_0.fpga_interfaces -pg 1
 preplace inst soc_system.hps_0.axi_sdram -pg 1
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)clk_0.clk_in_reset,(SLAVE)soc_system.reset) 1 0 1 NJ
 preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.easy_driver_x_conduit_end,(SLAVE)Easy_Driver_X.conduit_end) 1 0 3 NJ 140 NJ 140 NJ
+preplace netloc FAN_OUT<net_container>soc_system</net_container>(SLAVE)sysid_qsys_0.control_slave,(SLAVE)Easy_Driver_X.avalon_slave_duty,(SLAVE)Easy_Driver_X.avalon_slave_step,(SLAVE)Easy_Driver_X.avalon_slave_dir,(SLAVE)Easy_Driver_Y.avalon_slave_duty,(SLAVE)Key2_X.s1,(MASTER)hps_0.h2f_lw_axi_master,(SLAVE)Key1_Y.s1,(SLAVE)Easy_Driver_Y.avalon_slave_dir,(SLAVE)Easy_Driver_Y.avalon_slave_step,(SLAVE)red_leds.s1,(SLAVE)Key3_Reset.s1,(SLAVE)lcd.avalon_lcd_slave,(SLAVE)Switch0.s1,(SLAVE)Easy_Driver_Y.avalon_slave_period,(SLAVE)Easy_Driver_X.avalon_slave_period) 1 2 1 820
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)lcd.external_interface,(SLAVE)soc_system.lcd_external_interface) 1 0 3 NJ 860 NJ 860 NJ
 preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)hps_0.memory,(SLAVE)soc_system.memory) 1 0 2 NJ 530 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.lcd_external_interface,(SLAVE)lcd.external_interface) 1 0 3 NJ 860 NJ 860 NJ
 preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)hps_0.hps_io,(SLAVE)soc_system.hps_io) 1 0 2 NJ 510 NJ
-preplace netloc INTERCONNECT<net_container>soc_system</net_container>(SLAVE)sysid_qsys_0.reset,(MASTER)clk_0.clk_reset,(MASTER)hps_0.h2f_reset,(SLAVE)Key3_Reset.reset,(SLAVE)lcd.reset,(SLAVE)Key2_X.reset,(SLAVE)Key1_Y.reset,(SLAVE)red_leds.reset,(SLAVE)Switch0.reset,(SLAVE)Easy_Driver_Y.reset,(SLAVE)Easy_Driver_X.reset) 1 1 2 N 460 820
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.key3_reset_external_connection,(SLAVE)Key3_Reset.external_connection) 1 0 3 NJ 420 NJ 420 NJ
 preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)Switch0.external_connection,(SLAVE)soc_system.switch0_external_connection) 1 0 3 NJ 1020 NJ 1020 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)Key1_Y.external_connection,(SLAVE)soc_system.key1_y_external_connection) 1 0 3 NJ 640 NJ 640 NJ
-preplace netloc FAN_OUT<net_container>soc_system</net_container>(SLAVE)Key1_Y.irq,(SLAVE)Key2_X.irq,(MASTER)hps_0.f2h_irq0,(SLAVE)Key3_Reset.irq) 1 2 1 760
-preplace netloc FAN_OUT<net_container>soc_system</net_container>(SLAVE)sysid_qsys_0.clk,(SLAVE)red_leds.clk,(SLAVE)hps_0.h2f_lw_axi_clock,(SLAVE)Key1_Y.clk,(SLAVE)Switch0.clk,(SLAVE)Easy_Driver_Y.clock,(SLAVE)Key3_Reset.clk,(MASTER)clk_0.clk,(SLAVE)Key2_X.clk,(SLAVE)Easy_Driver_X.clock,(SLAVE)lcd.clk) 1 1 2 450 480 840
-preplace netloc FAN_OUT<net_container>soc_system</net_container>(MASTER)hps_0.h2f_lw_axi_master,(SLAVE)Easy_Driver_Y.avalon_slave_period,(SLAVE)Easy_Driver_Y.avalon_slave_dir,(SLAVE)Easy_Driver_X.avalon_slave_duty,(SLAVE)Key2_X.s1,(SLAVE)red_leds.s1,(SLAVE)Easy_Driver_X.avalon_slave_step,(SLAVE)Easy_Driver_X.avalon_slave_period,(SLAVE)Key3_Reset.s1,(SLAVE)Easy_Driver_Y.avalon_slave_step,(SLAVE)Key1_Y.s1,(SLAVE)Switch0.s1,(SLAVE)lcd.avalon_lcd_slave,(SLAVE)Easy_Driver_Y.avalon_slave_duty,(SLAVE)Easy_Driver_X.avalon_slave_dir,(SLAVE)sysid_qsys_0.control_slave) 1 2 1 780
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.reset,(SLAVE)clk_0.clk_in_reset) 1 0 1 NJ
+preplace netloc INTERCONNECT<net_container>soc_system</net_container>(SLAVE)sysid_qsys_0.reset,(SLAVE)Easy_Driver_X.reset,(SLAVE)Key2_X.reset,(SLAVE)Key1_Y.reset,(SLAVE)Easy_Driver_Y.reset,(SLAVE)lcd.reset,(SLAVE)Switch0.reset,(MASTER)hps_0.h2f_reset,(SLAVE)Key3_Reset.reset,(SLAVE)red_leds.reset,(MASTER)clk_0.clk_reset) 1 1 2 470 480 840
 preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)clk_0.clk_in,(SLAVE)soc_system.clk) 1 0 1 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)Easy_Driver_Y.conduit_end,(SLAVE)soc_system.easy_driver_y_conduit_end) 1 0 3 NJ 400 NJ 400 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)red_leds.external_connection,(SLAVE)soc_system.red_leds_external_connection) 1 0 3 NJ 220 NJ 220 NJ
 preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.key2_x_external_connection,(SLAVE)Key2_X.external_connection) 1 0 3 NJ 720 NJ 720 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.red_leds_external_connection,(SLAVE)red_leds.external_connection) 1 0 3 NJ 220 NJ 220 NJ
-levelinfo -pg 1 0 200 1050
-levelinfo -hier soc_system 210 240 570 890 1040
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.key1_y_external_connection,(SLAVE)Key1_Y.external_connection) 1 0 3 NJ 640 NJ 640 NJ
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.easy_driver_y_conduit_end,(SLAVE)Easy_Driver_Y.conduit_end) 1 0 3 NJ 400 NJ 400 NJ
+preplace netloc FAN_OUT<net_container>soc_system</net_container>(SLAVE)Key3_Reset.irq,(SLAVE)Key1_Y.irq,(MASTER)hps_0.f2h_irq0,(SLAVE)Key2_X.irq) 1 2 1 800
+preplace netloc FAN_OUT<net_container>soc_system</net_container>(SLAVE)sysid_qsys_0.clk,(SLAVE)Key2_X.clk,(SLAVE)lcd.clk,(SLAVE)Key1_Y.clk,(SLAVE)Switch0.clk,(SLAVE)Easy_Driver_Y.clock,(SLAVE)Key3_Reset.clk,(SLAVE)hps_0.h2f_lw_axi_clock,(SLAVE)red_leds.clk,(SLAVE)Easy_Driver_X.clock,(MASTER)clk_0.clk) 1 1 2 450 880 880
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)Key3_Reset.external_connection,(SLAVE)soc_system.key3_reset_external_connection) 1 0 3 NJ 420 NJ 460 NJ
+levelinfo -pg 1 0 200 1090
+levelinfo -hier soc_system 210 240 610 930 1080

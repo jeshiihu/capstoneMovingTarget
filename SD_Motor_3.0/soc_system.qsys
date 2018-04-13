@@ -229,27 +229,6 @@
          type = "int";
       }
    }
-   element lcd
-   {
-      datum _sortIndex
-      {
-         value = "10";
-         type = "int";
-      }
-   }
-   element lcd.avalon_lcd_slave
-   {
-      datum _lockedAddress
-      {
-         value = "1";
-         type = "boolean";
-      }
-      datum baseAddress
-      {
-         value = "5376";
-         type = "String";
-      }
-   }
    element red_leds
    {
       datum _sortIndex
@@ -346,11 +325,6 @@
  <interface
    name="key3_reset_external_connection"
    internal="Key3_Reset.external_connection"
-   type="conduit"
-   dir="end" />
- <interface
-   name="lcd_external_interface"
-   internal="lcd.external_interface"
    type="conduit"
    dir="end" />
  <interface name="memory" internal="hps_0.memory" type="conduit" dir="end" />
@@ -959,15 +933,6 @@
   <parameter name="usb_mp_clk_div" value="0" />
   <parameter name="use_default_mpu_clk" value="false" />
  </module>
- <module
-   name="lcd"
-   kind="altera_up_avalon_character_lcd"
-   version="17.0"
-   enabled="1">
-  <parameter name="AUTO_CLK_CLOCK_RATE" value="50000000" />
-  <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
-  <parameter name="cursor" value="Normal" />
- </module>
  <module name="red_leds" kind="altera_avalon_pio" version="17.0" enabled="1">
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
@@ -989,15 +954,6 @@
    enabled="1">
   <parameter name="id" value="0" />
  </module>
- <connection
-   kind="avalon"
-   version="17.0"
-   start="hps_0.h2f_lw_axi_master"
-   end="lcd.avalon_lcd_slave">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x1500" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
  <connection
    kind="avalon"
    version="17.0"
@@ -1130,7 +1086,6 @@
  <connection kind="clock" version="17.0" start="clk_0.clk" end="Key2_X.clk" />
  <connection kind="clock" version="17.0" start="clk_0.clk" end="Key1_Y.clk" />
  <connection kind="clock" version="17.0" start="clk_0.clk" end="Switch0.clk" />
- <connection kind="clock" version="17.0" start="clk_0.clk" end="lcd.clk" />
  <connection
    kind="clock"
    version="17.0"
@@ -1207,7 +1162,6 @@
    version="17.0"
    start="clk_0.clk_reset"
    end="Switch0.reset" />
- <connection kind="reset" version="17.0" start="clk_0.clk_reset" end="lcd.reset" />
  <connection
    kind="reset"
    version="17.0"
@@ -1248,7 +1202,6 @@
    version="17.0"
    start="hps_0.h2f_reset"
    end="Switch0.reset" />
- <connection kind="reset" version="17.0" start="hps_0.h2f_reset" end="lcd.reset" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
  <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />
