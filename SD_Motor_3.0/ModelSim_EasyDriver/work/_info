@@ -1,0 +1,129 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+dC:/intelFPGA/17.0
+Eeasy_driver
+Z0 w1523644636
+Z1 DPx4 ieee 11 numeric_std 0 22 :ASDNFgHXf_ih3J@9F3Ze1
+Z2 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
+Z3 DPx4 ieee 14 std_logic_1164 0 22 eNV`TJ_GofJTzYa?f<@Oe1
+Z4 dC:/Users/jhuynh/Documents/capstoneMovingTarget/SD_Motor_3.0/ModelSim_EasyDriver
+Z5 8C:/Users/jhuynh/Documents/capstoneMovingTarget/SD_Motor_3.0/ModelSim_EasyDriver/Easy_Driver.vhd
+Z6 FC:/Users/jhuynh/Documents/capstoneMovingTarget/SD_Motor_3.0/ModelSim_EasyDriver/Easy_Driver.vhd
+l0
+L15
+VO^0ho<c]eEFzh]ThYbVKz0
+!s100 Liz1L>o0MBVk4REG_fF]20
+Z7 OV;C;10.5b;63
+32
+Z8 !s110 1523651714
+!i10b 1
+Z9 !s108 1523651714.000000
+Z10 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/jhuynh/Documents/capstoneMovingTarget/SD_Motor_3.0/ModelSim_EasyDriver/Easy_Driver.vhd|
+Z11 !s107 C:/Users/jhuynh/Documents/capstoneMovingTarget/SD_Motor_3.0/ModelSim_EasyDriver/Easy_Driver.vhd|
+!i113 1
+Z12 o-work work -2002 -explicit
+Z13 tExplicit 1 CvgOpt 0
+Artl
+R1
+R2
+R3
+DEx4 work 11 easy_driver 0 22 O^0ho<c]eEFzh]ThYbVKz0
+l47
+L41
+VeOg<lfazPOERfm2eYY8hM2
+!s100 4ZC6XEgK5]C^clA93Q1R=0
+R7
+32
+R8
+!i10b 1
+R9
+R10
+R11
+!i113 1
+R12
+R13
+Eeasydriver_tb
+Z14 w1523650971
+R2
+R3
+R4
+Z15 8C:\Users\jhuynh\Documents\capstoneMovingTarget\SD_Motor_3.0\ModelSim_EasyDriver\tb_400steps_2000Hz_90duty.vhd
+Z16 FC:\Users\jhuynh\Documents\capstoneMovingTarget\SD_Motor_3.0\ModelSim_EasyDriver\tb_400steps_2000Hz_90duty.vhd
+l0
+L4
+VA1<zHYglH7I;0G@m^N7NF1
+!s100 ]D0@S;SMO>n?Wdd77?_PW0
+R7
+32
+R8
+!i10b 1
+R9
+Z17 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:\Users\jhuynh\Documents\capstoneMovingTarget\SD_Motor_3.0\ModelSim_EasyDriver\tb_400steps_2000Hz_90duty.vhd|
+Z18 !s107 C:\Users\jhuynh\Documents\capstoneMovingTarget\SD_Motor_3.0\ModelSim_EasyDriver\tb_400steps_2000Hz_90duty.vhd|
+!i113 1
+R12
+R13
+Abehave
+R2
+R3
+DEx4 work 13 easydriver_tb 0 22 A1<zHYglH7I;0G@m^N7NF1
+l58
+L7
+VSQiYkCK:D<5X_BigmVYSJ2
+!s100 ii=2Gf?OMl;EZN1f:M6Ej0
+R7
+32
+R8
+!i10b 1
+R9
+R17
+R18
+!i113 1
+R12
+R13
+Eeasydriver_tb_2
+Z19 w1523651709
+R2
+R3
+R4
+Z20 8C:\Users\jhuynh\Documents\capstoneMovingTarget\SD_Motor_3.0\ModelSim_EasyDriver\tb_5steps_100Hz_50duty.vhd
+Z21 FC:\Users\jhuynh\Documents\capstoneMovingTarget\SD_Motor_3.0\ModelSim_EasyDriver\tb_5steps_100Hz_50duty.vhd
+l0
+L4
+V>>a8ORcVHBQ73_GImGIRW1
+!s100 K1B3EU[`nIC0G4OiV0Qb63
+R7
+32
+Z22 !s110 1523651715
+!i10b 1
+Z23 !s108 1523651715.000000
+Z24 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:\Users\jhuynh\Documents\capstoneMovingTarget\SD_Motor_3.0\ModelSim_EasyDriver\tb_5steps_100Hz_50duty.vhd|
+Z25 !s107 C:\Users\jhuynh\Documents\capstoneMovingTarget\SD_Motor_3.0\ModelSim_EasyDriver\tb_5steps_100Hz_50duty.vhd|
+!i113 1
+R12
+R13
+Abehave
+R2
+R3
+DEx4 work 15 easydriver_tb_2 0 22 >>a8ORcVHBQ73_GImGIRW1
+l58
+L7
+VJPd17f9[L9DU7[LL4jlS^2
+!s100 hL8a:nDSBbRcmPnSR1G]H0
+R7
+32
+R22
+!i10b 1
+R23
+R24
+R25
+!i113 1
+R12
+R13
