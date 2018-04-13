@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ip>
+ <presets version="12.1">
+  <preset
+     name="ECE492_PushButton"
+     kind="altera_avalon_pio"
+     version="All"
+     description="">
+   <parameter name="bitModifyingOutReg" value="false" />
+   <parameter name="simDrivenValue" value="0" />
+   <parameter name="irqType" value="EDGE" />
+   <parameter name="edgeType" value="FALLING" />
+   <parameter name="width" value="1" />
+   <parameter name="generateIRQ" value="true" />
+   <parameter name="bitClearingEdgeCapReg" value="false" />
+   <parameter name="captureEdge" value="true" />
+   <parameter name="resetValue" value="0" />
+   <parameter name="direction" value="Input" />
+   <parameter name="simDoTestBenchWiring" value="false" />
+  </preset>
+ </presets>
+</ip>
