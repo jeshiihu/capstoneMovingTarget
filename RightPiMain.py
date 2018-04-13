@@ -10,21 +10,24 @@ import json
 import socket
 import numpy as np
 # Camera Settings
-fps = 90
-videoSize = (640, 480)
+fps = 60
+videoSize = (640,480)
 videoCenter = (videoSize[0]/2, videoSize[1]/2)
 
 # Mask Settings
-lowerHSVBound = np.array([160, 175, 120])
+lowerHSVBound = np.array([160, 140, 90])
 upperHSVBound = np.array([180, 255, 255])
 displayColors = {'yellow':(0, 255, 255), 'black':(0,0,0)}
 
 # programStatus = { 'idle' : 0 , 'track' : 1 , 'send' : 2, 'test' : 3}
-programStatus = { 'idle' : 0 , 'track' : 1 , 'send' : 2}
+programStatus = { 'idle' : 0 , 'track' : 1 , 'send' : 2, 'track1' : 3}
 
 HOST = '169.254.48.206'
 PORT = 5005
 BUFFER_SIZE = 128
+
+throwAwayFrames = 3
+curFrame = 0
 
 def getMicroseconds():
     time = datetime.datetime.now() - timeStart
@@ -35,7 +38,7 @@ def getMilliseconds():
     time = getMicroseconds()/1000
     return time
 
-def trackObject(frame, time):
+def trackObject(frame):
    
 ##    time = getMilliseconds()
     
@@ -49,13 +52,13 @@ def trackObject(frame, time):
     
     
     if len(cnts) <= 0:
-        return frame, -1, -1, time
+        return frame, -1, -1
     
     c = max(cnts, key=cv2.contourArea)
     ((x, y), radius) = cv2.minEnclosingCircle(c)
 
     if radius < 6:
-        return frame, -1, -1, time
+        return frame, -1, -1
     
 ##    if checkProgram('track'):
 ##        
@@ -64,20 +67,19 @@ def trackObject(frame, time):
 ##    cv2.putText(frame, 'X: ' + str(x), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
 ##    cv2.putText(frame, 'Y: ' + str(y), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
     cv2.putText(frame, 'Radius: ' + str(radius), (20,100), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['yellow'], 2)
-    cv2.putText(frame, 'Time: ' + str(time), (20,140), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['yellow'], 2)
 ##    cv2.imwrite("throw/frame.jpg", frame)
 ##    cv2.imwrite("throw/mask.jpg", mask)
 
-    return frame, int(x), int(y), time
+    return frame, int(x), int(y)
 
 class RightPiCameraAnalysis(PiRGBAnalysis):
     
     def __init__(self, camera):
         super(RightPiCameraAnalysis, self).__init__(camera)
+        self.camera = camera
 
     def analyze(self, frame):
-        global trackedFrames
-        time = getMilliseconds()
+        global trackedFrames, curFrame
         
         if checkProgram('idle'):
             return
@@ -95,44 +97,58 @@ class RightPiCameraAnalysis(PiRGBAnalysis):
 
 
         if checkProgram('track'):
-            if not trackedFrames:
-                trackedFrames["throwaway"] = -1
+            time = camera.frame.timestamp/1000
+
+            if not trackedFrames.has_key("frame1Raw"):
+##                print "Frame1", camera.frame.index, time
+##                cv2.imwrite("throw/frame1.jpg", tracked)
+                trackedFrames["frame1Raw"] = (frame, time)
+                curFrame = 0
                 return
-            tracked, xTopLeft, yTopLeft, time = trackObject(frame, time)
+            
+            if curFrame < throwAwayFrames:
+                curFrame += 1
+                return
+            
+            
+            if not trackedFrames.has_key("frame2Raw"):
+##                print "Frame2", camera.frame.index, camera.frame.timestamp/1000
+##                cv2.imwrite("throw/frame2.jpg", tracked)
+##                print(x, y, time)
+                trackedFrames["frame2Raw"] = (frame, time)
+                return
+            
+            trackFrames()
+            setProgram('send')
+            return
+        
+        if checkProgram('track1'):
+            tracked, x, y = trackObject(frame)
+            time = camera.frame.timestamp/1000
             
 ##            if x == -1:
 ##                return
-            x = videoCenter[0]-xTopLeft
-            y = videoCenter[1] - yTopLeft
-            cv2.putText(frame, 'X: ' + str(x), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['yellow'], 2)
-            cv2.putText(frame, 'Y: ' + str(y), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['yellow'], 2)
+            cv2.putText(frame, 'X: ' + str(x), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
+            cv2.putText(frame, 'Y: ' + str(y), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
+            cv2.putText(frame, 'Time: ' + str(time), (20,140), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
             
-            if not trackedFrames.has_key("frame1R"):
-                cv2.imwrite("throw/frame1.jpg", tracked)
-##                print(x, y, time)
-                t.sleep(0.1)
-                return
-                
-            if not trackedFrames.has_key("frame2R"):
-                cv2.imwrite("throw/frame2.jpg", tracked)
-##                print(x, y, time)
-                trackedFrames["frame2R"] = (x, y, trashTime)
-                return
-            
+            trackedFrames['frame1'] = (x, y, time)
+            t.sleep(0.1)
             setProgram('send')
             return
 
-def startTCP():
+def startTCP(port):
     global tcpConnection
     tcpConnection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    tcpConnection.connect((HOST, PORT))
+    tcpConnection.connect((HOST, port))
     tcpConnection.sendall("Hello from right Pi")
     data = tcpConnection.recv(BUFFER_SIZE)
     print "TCP init: ", data
 
 
 def startCamera():
-    global camera, timeStart
+    global camera, timeStart, tcpConnection
+    tcpConnection.recv(BUFFER_SIZE)
     camera = PiCamera(resolution = videoSize, framerate = fps)
     t.sleep(2)
     
@@ -143,11 +159,15 @@ def startCamera():
 ##    camera.awb_gains = g
 ##    camera.vflip = False
     camera.annotate_background = Color('black')
-    
+    tcpConnection.recv(BUFFER_SIZE)
+
     camera.start_preview(alpha=200)
     analyzer = RightPiCameraAnalysis(camera)
+    tcpConnection.recv(BUFFER_SIZE)
+
     camera.start_recording(analyzer, 'bgr')
     timeStart = datetime.datetime.now()
+    
 
 def stopCamera():
     camera.stop_recording()
@@ -157,11 +177,12 @@ def closeTCP():
     tcpConnection.shutdown(socket.SHUT_RDWR)
     tcpConnection.close()
 
-def init():
+def init(port):
     cv2.namedWindow("video")
     
-    startTCP()
+    startTCP(port)
     startCamera()
+    print('finished init')
     setProgram('idle')
 
 def shutdown():
@@ -182,6 +203,31 @@ def sendFrames():
         tcpConnection.sendall(jsonFrames)
         setProgram('idle')
 
+def trackFrames():
+    
+    frame1 = trackedFrames.pop('frame1Raw')
+    frame2 = trackedFrames.pop('frame2Raw')
+    
+##    print len(frame1[0][0])
+    
+    tracked1, x1, y1 = trackObject(frame1[0])
+    tracked2, x2, y2 = trackObject(frame2[0])
+
+##            if x == -1:
+##                return
+    cv2.putText(tracked1, 'X: ' + str(x1), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
+    cv2.putText(tracked1, 'Y: ' + str(y1), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
+    cv2.putText(tracked1, 'Time: ' + str(frame1[1]), (20,140), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
+
+    cv2.putText(tracked2, 'X: ' + str(x2), (20,20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
+    cv2.putText(tracked2, 'Y: ' + str(y2), (20,60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
+    cv2.putText(tracked2, 'Time: ' + str(frame2[1]), (20,140), cv2.FONT_HERSHEY_SIMPLEX, 0.6, displayColors['black'], 2)
+    
+    cv2.imwrite('throw/frame1.jpeg', tracked1)
+    cv2.imwrite('throw/frame2.jpeg', tracked2)
+    
+    trackedFrames['frame1R'] = (x1, y1, frame1[1])
+    trackedFrames['frame2R'] = (x2, y2, frame2[1])
 
 def listenForCommand():
     global trackedFrames
@@ -202,7 +248,8 @@ def listenForCommand():
             
 
 def main():
-    init()
+    init(int(sys.argv[1]))
+
     while True:
 
         listenForCommand()
