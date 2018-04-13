@@ -69,10 +69,10 @@ endif
 all: MotorControl.axf
 
 # Tool invocations
-MotorControl.axf: $(OBJS) C:/Users/jhuynh/Desktop/Capstone/SD_Motor_3.0/software/MotorControl/BSP/ARM_COMPILER/scatter.scat $(USER_OBJS) $(LIBS)
+MotorControl.axf: $(OBJS) C:/Users/jhuynh/Documents/capstoneMovingTarget/SD_Motor_3.0/software/MotorControl/BSP/ARM_COMPILER/scatter.scat $(USER_OBJS) $(LIBS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: ARM Linker 5'
-	armlink --cpu=Cortex-A9 --entry=Start --scatter=""C:/Users/jhuynh/Desktop/Capstone/SD_Motor_3.0/software/MotorControl/BSP/ARM_COMPILER/scatter.scat"" --info=sizes -o "MotorControl.axf" $(OBJS) $(USER_OBJS) $(LIBS)
+	armlink --cpu=Cortex-A9 --entry=Start --scatter=""C:/Users/jhuynh/Documents/capstoneMovingTarget/SD_Motor_3.0/software/MotorControl/BSP/ARM_COMPILER/scatter.scat"" --info=sizes -o "MotorControl.axf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

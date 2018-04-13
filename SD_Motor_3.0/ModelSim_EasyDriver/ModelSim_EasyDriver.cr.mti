@@ -1,4 +1,20 @@
-C:/Users/jhuynh/Documents/capstoneMovingTarget/SD_Motor_3.0/ModelSim_EasyDriver/Easy_Driver.vhd {1 {vcom -work work -2002 -explicit -stats=none C:/Users/jhuynh/Documents/capstoneMovingTarget/SD_Motor_3.0/ModelSim_EasyDriver/Easy_Driver.vhd
+C:/Users/jhuynh/Documents/capstoneMovingTarget/SD_Motor_3.0/ModelSim_EasyDriver/tb_5steps_100Hz_50duty.vhd {1 {vcom -work work -2002 -explicit -stats=none {C:\Users\jhuynh\Documents\capstoneMovingTarget\SD_Motor_3.0\ModelSim_EasyDriver\tb_5steps_100Hz_50duty.vhd}
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity EasyDriver_tb_2
+-- Compiling architecture behave of EasyDriver_tb_2
+
+} {} {}} C:/Users/jhuynh/Documents/capstoneMovingTarget/SD_Motor_3.0/ModelSim_EasyDriver/tb_400steps_2000Hz_90duty.vhd {1 {vcom -work work -2002 -explicit -stats=none {C:\Users\jhuynh\Documents\capstoneMovingTarget\SD_Motor_3.0\ModelSim_EasyDriver\tb_400steps_2000Hz_90duty.vhd}
+Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity EasyDriver_tb
+-- Compiling architecture behave of EasyDriver_tb
+
+} {} {}} C:/Users/jhuynh/Documents/capstoneMovingTarget/SD_Motor_3.0/ModelSim_EasyDriver/Easy_Driver.vhd {1 {vcom -work work -2002 -explicit -stats=none C:/Users/jhuynh/Documents/capstoneMovingTarget/SD_Motor_3.0/ModelSim_EasyDriver/Easy_Driver.vhd
 Model Technology ModelSim - Intel FPGA Edition vcom 10.5b Compiler 2016.10 Oct  5 2016
 -- Loading package STANDARD
 -- Loading package TEXTIO

@@ -8995,3 +8995,5 @@ vsim work.easydriver_tb_2
 # Loading work.easy_driver(rtl)
 add wave -position insertpoint sim:/easydriver_tb_2/*
 run
+# End time: 16:56:42 on Apr 13,2018, Elapsed time: 2:21:14
+# Errors: 0, Warnings: 0
